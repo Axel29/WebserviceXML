@@ -1,0 +1,20 @@
+# Obligatoire pour l'utilisation sur 1&1 sans quoi nous obtenons une erreur 404.
+# Options -MultiViews
+
+RewriteEngine on
+
+#Obligatoire pour l'utilisation sur 1&1 sans quoi nous obtenons une erreur 404.
+# RewriteBase /
+
+# Obligatoire pour permettre les "." dans les paramètres
+RewriteCond %{SCRIPT_FILENAME} !-d
+RewriteCond %{SCRIPT_FILENAME} !-f
+RewriteCond %{Request_URI} !/CURL
+RewriteCond %{Request_URI} !/XML
+RewriteRule ^([a-zA-Z0-9\-\_\/\.]*)?([a-zA-Z0-9\-\_\/\.\=\&]*)$ index.php?p=$1 [QSA]
+
+RewriteCond %{SCRIPT_FILENAME} !-f
+RewriteRule ^([a-zA-Z0-9\-\_\/\.]*)$ index.php?p=$1 [L]
+
+# Display errors or not
+SetEnv IS_DEVELOPER_MODE
