@@ -33,14 +33,16 @@ $controllerFile = 'controllers/' . $controllerName . 'Controller.php';
 if (file_exists($controllerFile)) {
 	require_once($controllerFile);
 } else {
-	echo '404 Controller Not Found';
+	header("HTTP/1.0 404 Not Found");
+	exit;
 }
 
 $controller = new $controllerName;
 if (method_exists($route['controller'], $route['action'])) {
 	$routing->call_user_func_named($controller, $route['action'], $route['args']);
 } else {
-	echo '404 Page not found';
+	header("HTTP/1.0 404 Not Found");
+	exit;
 }
 
 echo '<pre>';
