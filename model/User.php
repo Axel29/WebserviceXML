@@ -106,7 +106,7 @@ class User extends BaseModel
 	public function updateUser($user)
 	{
 		var_dump($user);
-		$fields = array();
+		$fields = [];
 		$this->table = 'user';
 		$where = array('id_user' => $user['id']);
 
@@ -136,7 +136,7 @@ class User extends BaseModel
 	public function insertUser($user)
 	{
 		$userExists  = false;
-		$fields      = array();
+		$fields      = [];
 		$this->table = 'user';
 		$where       = array('email' => $user['email']);
 		
@@ -176,7 +176,7 @@ class User extends BaseModel
 	public function editUser($user)
 	{
 		$userExists  = false;
-		$fields      = array();
+		$fields      = [];
 		$this->table = 'user';
 		$where       = array('id_user' => $user['id_user']);
 		
@@ -212,7 +212,7 @@ class User extends BaseModel
 
 	public function insertUserRole($role)
 	{
-		$fields = array();
+		$fields = [];
 		$this->table = 'user_role';
 		$where = array('name' => $role['name']);
 
@@ -227,7 +227,7 @@ class User extends BaseModel
 
 	public function updateUserRole($role)
 	{
-		$fields = array();
+		$fields = [];
 		$this->table = 'user_role';
 		$where = array('id_user_role' => $role['id']);
 

@@ -1,7 +1,7 @@
 <?php
 class BaseController
 {
-	protected $vars   = array();
+	protected $vars   = [];
 	protected $layout = 'default';
 	protected $title  = SITE_NAME;
 

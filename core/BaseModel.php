@@ -10,7 +10,7 @@ class BaseModel
 		$this->db = new PDO(DB, USER, PASSWORD);
 	}
 
-	public function select($fields = array(), $where = array(), $or = array(), $join = array(), $order = array(), $limit = null, $fetch = 'all')
+	public function select($fields = [], $where = [], $or = [], $join = [], $order = [], $limit = null, $fetch = 'all')
 	{
 		// Build the request
 		$sql = 'SELECT ';
@@ -139,7 +139,7 @@ class BaseModel
 	}
 
 
-	public function delete($where = array())
+	public function delete($where = [])
 	{
 		$sql = 'DELETE FROM ' . $this->table;
 
@@ -165,7 +165,7 @@ class BaseModel
 		return $this;
 	}
 
-	public function insert($fields = array(), $where = array())
+	public function insert($fields = [], $where = [])
 	{
 		// If we send an id, then we update the field in database
 		if (
@@ -242,7 +242,7 @@ class BaseModel
 		}
 	}
 
-	public function update($fields = array(), $where = array(), $or = array())
+	public function update($fields = [], $where = [], $or = [])
 	{
 		// UPDATE
 		$sql = 'UPDATE ' . $this->table . ' SET ';
