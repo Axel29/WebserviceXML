@@ -23,7 +23,7 @@ class Routing
 		$params = array_values($params);
 
 		// Associate key - values for args
-		$args = array();
+		$args = [];
 		$i    = 0;
 		foreach ($params as $param) {
 			if ($i%2 == 0 && isset($params[$i+1])) {
@@ -35,11 +35,12 @@ class Routing
 			$i++;
 		}
 
-		$parsedUri = array(
+		$parsedUri = [
 			'controller' => $controller,
 			'action'     => $action . 'Action',
 			'args'       => $args,
-		);
+		];
+
 
 		return $parsedUri;
 	}
@@ -64,7 +65,7 @@ class Routing
 	    }
 
 		$reflect    = new ReflectionMethod($controller, $action);
-		$realParams = array();
+		$realParams = [];
 	    foreach ($reflect->getParameters() as $param)
 	    {
 	        $pname = $param->getName();

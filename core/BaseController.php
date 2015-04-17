@@ -15,7 +15,10 @@ class BaseController
      */
 	public function loadClass($class)
 	{
-		require(ROOT . 'model/' . ucfirst($class) . '.php');
+		$fileName = ROOT . 'model/' . ucfirst($class) . '.php';
+		if (file_exists($fileName)) {
+			require(ROOT . 'model/' . ucfirst($class) . '.php');
+		}
     }
 
 	/**
