@@ -6,7 +6,10 @@ if (isset($_SERVER['IS_DEVELOPER_MODE'])) {
 	ini_set('display_errors', 0);
 }
 
-session_start();
+if (!isset($_SESSION)) {
+	session_start();
+}
+
 date_default_timezone_set('Europe/Paris');
 
 define('ROOT', str_replace('index.php', '', $_SERVER['SCRIPT_FILENAME']));
