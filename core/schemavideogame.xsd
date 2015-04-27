@@ -282,15 +282,17 @@
     </xs:element>
 
     <!-- Dimensions du média -->
-    <xs:complexType name="dimensions">
-        <xs:simpleContent>
-            <xs:extension base="xs:string">
-                <xs:attribute type="xs:string" name="unit" use="required"/>
-                <xs:attribute type="xs:string" name="width" use="required"/>
-                <xs:attribute type="xs:string" name="height" use="required"/>
-            </xs:extension>
-        </xs:simpleContent>
-    </xs:complexType>
+    <xs:element name="dimensions">
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="xs:string">
+                    <xs:attribute type="xs:string" name="unit" use="required"/>
+                    <xs:attribute type="xs:string" name="width" use="required"/>
+                    <xs:attribute type="xs:string" name="height" use="required"/>
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
 
 <!-- @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ -->     
 
@@ -440,7 +442,7 @@
     <xs:element name="list">
         <xs:complexType>
             <xs:sequence>
-                <xs:element ref="game"/>
+                <xs:element ref="game" maxOccurs="unbounded" minOccurs="0"/>
             </xs:sequence>
         </xs:complexType>
     </xs:element>
