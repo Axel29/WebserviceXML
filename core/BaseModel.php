@@ -10,7 +10,7 @@ class BaseModel
 		$this->db = new PDO(DB, USER, PASSWORD);
 	}
 
-	public function select($fields = [], $where = [], $or = [], $join = [], $order = [], $limit = null, $fetchAll = true)
+	public function select($fields = [], $where = [], $or = [], $joins = [], $order = [], $limit = null, $fetchAll = true)
 	{
 		// Build the request
 		$sql = 'SELECT ';
@@ -31,14 +31,17 @@ class BaseModel
 				}
 				$i++;
 			}
+			$sql .= "\r\n";
 		} else {
 			$sql .= ' FROM ' . $this->table;
+			$sql .= "\r\n";
 		}
 
 		// Join tables
-		if (!empty($join)) {
-			foreach ($join as $joinType => $joinValue) {
-				$sql .= ' ' . $joinType . ' ' . $joinValue;
+		if (!empty($joins)) {
+			foreach ($joins as $join) {
+				$sql .= ' ' . $join['type'] . ' ' . $join['table'] . ' ON ' . $join['on'];
+				$sql .= "\r\n";
 			}
 		}
 
@@ -50,13 +53,14 @@ class BaseModel
 			$sql .= '(';
 			foreach ($where as $key => $value) {
 				if ($i == 0) {
-					$sql .= $key . ' = "' . $value . '"';	
+					$sql .= $key . ' = "' . $value . '"';
 				} else {
 					$sql .= ' AND ' . $key . ' = "' . $value . '"';
 				}				
 				$i++;
 			}
 			$sql .= ')';
+			$sql .= "\r\n";
 		}
 
 		// Getting OR clause if not empty.
@@ -73,6 +77,7 @@ class BaseModel
 				$i++;
 			}
 			$sql .= ')';
+			$sql .= "\r\n";
 		}
 
 		if ($order != null) {
@@ -90,23 +95,23 @@ class BaseModel
 
 		if ($limit != null) {
 			$sql .= ' LIMIT ' . $limit;
+			$sql .= "\r\n";
 		}
 
 		$sql .= ';';
 		
 		// Process the request
 		try{
-			//echo '<pre>'; var_dump($sql); echo '</pre>';
+			// echo '<pre>'; var_dump($sql); echo '</pre>'; die;
 			$query = $this->db->query($sql);
-			if ($fetchAll) {
-				$query = $query->fetchAll();
-			} else {
-				$query = $query->fetch();
+			if ($fetchAll && $query) {
+				$query = $query->fetchAll(PDO::FETCH_ASSOC);
+			} elseif ($query) {
+				$query = $query->fetch(PDO::FETCH_ASSOC);
 			}
-			}catch(PDOException $e){
+		} catch(PDOException $e){
 			echo 'There was an error processing the request: ' . $e->getMessage();
-		}
-		catch(Exception $e) {
+		} catch(Exception $e) {
 			echo 'There was an error processing the request: ' . $e->getMessage();
 		}
 		return $query;
