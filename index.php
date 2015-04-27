@@ -17,13 +17,13 @@ define('ROOT', str_replace('index.php', '', $_SERVER['SCRIPT_FILENAME']));
 require_once(ROOT . 'core/conf.php');
 require_once(ROOT . 'core/parameters.php');
 require_once(ROOT . 'core/Routing.php');
-require_once(ROOT . 'core/Connection.php');
+//require_once(ROOT . 'core/Connection.php');
 require_once(ROOT . 'core/BaseModel.php');
 require_once(ROOT . 'core/BaseController.php');
 
 // Instanciate PDO's connection in order to use it everywhere
-$pdo = new Connection();
-$pdo->getPDO();
+//$pdo = new Connection();
+//$pdo->getPDO();
 
 $routing = new Routing();
 $route   = $routing->parseUri();
@@ -45,6 +45,6 @@ if (method_exists($route['controller'], $route['action'])) {
 	exit;
 }
 
-echo '<pre>';
-	var_dump($route);
-echo '</pre>';
+// echo '<pre>';
+// 	var_dump($route);
+// echo '</pre>';
