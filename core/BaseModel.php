@@ -10,7 +10,7 @@ class BaseModel
 		$this->db = new PDO(DB, USER, PASSWORD);
 	}
 
-	public function select($fields = [], $where = [], $or = [], $join = [], $order = [], $limit = null, $fetch = 'all')
+	public function select($fields = [], $where = [], $or = [], $join = [], $order = [], $limit = null, $fetchAll = true)
 	{
 		// Build the request
 		$sql = 'SELECT ';
@@ -37,15 +37,8 @@ class BaseModel
 
 		// Join tables
 		if (!empty($join)) {
-			$sql .= ' INNER JOIN ';
-			$i = 0;
-			foreach ($join as $value) {
-				if ($i == 0) {
-					$sql .= $value;
-				} else {
-					$sql .= ' INNER JOIN ' . $value;
-				}
-				$i++;
+			foreach ($join as $joinType => $joinValue) {
+				$sql .= ' ' . $joinType . ' ' . $joinValue;
 			}
 		}
 
@@ -105,7 +98,7 @@ class BaseModel
 		try{
 			//echo '<pre>'; var_dump($sql); echo '</pre>';
 			$query = $this->db->query($sql);
-			if ($fetch == 'all') {
+			if ($fetchAll) {
 				$query = $query->fetchAll();
 			} else {
 				$query = $query->fetch();
