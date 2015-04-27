@@ -79,10 +79,12 @@ class BaseController
 		extract($this->vars); // Allow us to use directly var names instead of "$this->varName"
 
 		// Loading the view file
-		if (file_exists(ROOT . 'view/' . strtolower(get_class($this)) . '/' . $fileName . '.phtml')) {
-			require_once(ROOT . 'view/' . strtolower(get_class($this)) . '/' . $fileName . '.phtml');
+		$controller = strtolower(get_class($this));
+		$controller = str_replace('controller', '', $controller);
+		if (file_exists(ROOT . 'view/' . $controller . '/' . $fileName . '.phtml')) {
+			require_once(ROOT . 'view/' . $controller . '/' . $fileName . '.phtml');
 		} else {
-			echo 'La vue ' . ROOT . 'view/' . strtolower(get_class($this)) . '/' . $fileName . '.phtml n\'existe pas. ';
+			echo 'La vue ' . ROOT . 'view/' . $controller . '/' . $fileName . '.phtml n\'existe pas. ';
 		}
 
 		// Loading the end of the layout in order to put the content between <body> and </body> tags.
