@@ -2,7 +2,7 @@
 class Routing
 {
 	private $defaultController = 'Index';
-	private $defaultAction     = 'Index';
+	private $defaultAction     = 'index';
 
 	/**
 	 * Parse URI and return an array 

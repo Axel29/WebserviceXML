@@ -28,8 +28,8 @@ require_once(ROOT . 'core/BaseController.php');
 $routing = new Routing();
 $route   = $routing->parseUri();
 
-$controllerName = ucfirst($route['controller']);
-$controllerFile = 'controllers/' . $controllerName . 'Controller.php';
+$controllerName = ucfirst($route['controller']) . 'Controller';
+$controllerFile = 'controllers/' . $controllerName . '.php';
 if (file_exists($controllerFile)) {
 	require_once($controllerFile);
 } else {
@@ -38,7 +38,8 @@ if (file_exists($controllerFile)) {
 }
 
 $controller = new $controllerName;
-if (method_exists($route['controller'], $route['action'])) {
+
+if (method_exists($controller, $route['action'])) {
 	$routing->call_user_func_named($controller, $route['action'], $route['args']);
 } else {
 	header("HTTP/1.0 404 Not Found");
