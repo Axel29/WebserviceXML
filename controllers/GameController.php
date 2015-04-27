@@ -1,15 +1,14 @@
 <?php
-class Game extends BaseController
+class GameController extends BaseController
 {
 	/**
 	 * Show the full XML
 	 */
 	public function indexAction()
-	{		
-		$games = [
-			'1',
-			'2',
-		];
+	{
+		$gameModel  = new Game();
+		$games      = $gameModel->getGames();
+
 		$this->list = $this->generateXml($games);
 
 		if ($errors = $this->validateXML($this->list->asXML())) {
@@ -30,7 +29,9 @@ class Game extends BaseController
 	{
 		$this->loadLayout('xml');
 
-		$game       = ['1'];
+		$gameModel  = new Game();
+		$game       = $gameModel->getGames($id);
+
 		$this->game = $this->generateXml($game);
 
 		$this->render('show');
@@ -46,125 +47,133 @@ class Game extends BaseController
 	public function generateXml($games = [])
 	{
 		$list = new SimpleXMLElement('<list></list>');
-
+		// echo '<pre>'; var_dump($games); echo '</pre>'; die;
 		foreach ($games as $game) {
-			$game = $list->addChild('game');
+			$gameNode = $list->addChild('game');
 
-			$presentation = $game->addChild('presentation');
+			$presentation = $gameNode->addChild('presentation');
 				$genders = $presentation->addChild('genders');
-					$genders->addChild('gender', 'Action');
-					$genders->addChild('gender', 'Mélodramatique');
+				foreach ($game['genders'] as $gender) {
+					$genders->addChild('gender', $gender['gender']);
+				}
 
-				$presentation->addChild('title', 'ThisIsAVideoGame');
+				$presentation->addChild('title', $game['title']);
 
 				$editors = $presentation->addChild('editors');
-					$editors->addChild('editor', 'An editor');
+				foreach ($game['editors'] as $editor) {
+					$editors->addChild('editor', $editor['editor']);
+				}
 
 				$themes = $presentation->addChild('themes');
-					$themes->addChild('theme');
+					foreach ($game['themes'] as $theme) {
+						$themes->addChild('theme', $theme['theme']);	
+					}
 
-				$presentation->addChild('site');
+				$presentation->addChild('site', $game['site']);
 
 				$consoles = $presentation->addChild('consoles');
+				foreach ($game['consoles'] as $console) {
 					$console  = $consoles->addChild('console');
-						$console->addChild('businessModel');
+					$console->addChild('businessModel', $console['businessModel']);
+					$console->addChild('pegi', $console['pegi']);
+				}
 
-						$console->addChild('pegi');
+				$modes = $console->addChild('modes');
+				$modes->addChild('mode', $mode['mode']);
 
-						$modes = $console->addChild('modes');
-							$modes->addChild('mode');
+				$cover = $console->addChild('cover');
+				$frontCover = $cover->addChild('front');
+				$frontCover->addAttribute('url', 'test');
+				$backCover = $cover->addChild('back');
+				$backCover->addAttribute('url', '/location/to/content');
+				
 
-						$cover = $console->addChild('cover');
-							$frontCover = $cover->addChild('front');
-							$frontCover->addAttribute('url', 'test');
-							$backCover = $cover->addChild('back');
-							$backCover->addAttribute('url', '/location/to/content');
+				$supports = $console->addChild('supports');
+				$supports->addChild('support');
 
-						$supports = $console->addChild('supports');
-							$supports->addChild('support');
+				$console->addChild('release', '2015-01-25');
 
-						$console->addChild('release', '2015-01-25');
+				$editions = $console->addChild('editions');
+				$edition = $editions->addChild('edition');
+				$edition->addChild('name');
 
-						$editions = $console->addChild('editions');
-							$edition = $editions->addChild('edition');
-								$edition->addChild('name');
+				$edition->addChild('content');
 
-								$edition->addChild('content');
+				$shops = $edition->addChild('shops');
+				$shop = $shops->addChild('shop');
+				$shop->addAttribute('url', 'test');
+				$shop->addChild('name');
+				$shopPrice = $shop->addChild('price');
+				$shopPrice->addAttribute('devise', 'euro');
 
-								$shops = $edition->addChild('shops');
-									$shop = $shops->addChild('shop');
-										$shop->addAttribute('url', 'test');
-										$shop->addChild('name');
-										$shopPrice = $shop->addChild('price');
-										$shopPrice->addAttribute('devise', 'euro');
+				$console->addChild('name');
 
-						$console->addChild('name');
+				$console->addChild('description');
 
-						$console->addChild('description');
+				$dlcs = $console->addChild('dlcs');
+				$dlc = $dlcs->addChild('dlc');
+				$dlc->addChild('title');
+				$dlc->addChild('description');
+				$dlcPrice = $dlc->addChild('price');
+				$dlcPrice->addAttribute('devise', 'euro');
 
-						$dlcs = $console->addChild('dlcs');
-							$dlc = $dlcs->addChild('dlc');
-								$dlc->addChild('title');
-								$dlc->addChild('description');
-								$dlcPrice = $dlc->addChild('price');
-								$dlcPrice->addAttribute('devise', 'euro');
+				$configs = $console->addChild('configs');
+				$config = $configs->addChild('config');
+				$config->addAttribute('type', 'minimale');
+				$config = $configs->addChild('config');
+				$config->addAttribute('type', 'optimale');
 
-						$configs = $console->addChild('configs');
-							$config = $configs->addChild('config');
-								$config->addAttribute('type', 'minimale');
-								$config = $configs->addChild('config');
-								$config->addAttribute('type', 'optimale');
+				$test = $console->addChild('test');
+				$test->addChild('report');
+				$test->addChild('date', '2015-01-22T11:33:33');
+				$test->addChild('userName');
+				$test->addChild('note', '1');
 
-						$test = $console->addChild('test');
-							$test->addChild('report');
-							$test->addChild('date', '2015-01-22T11:33:33');
-							$test->addChild('userName');
-							$test->addChild('note', '1');
+				$comments = $test->addChild('comments');
+				$comment = $comments->addChild('comment');
+				$comment->addChild('text');
+				$comment->addChild('date', '2015-01-22T11:33:33');
+				$comment->addChild('userName');
+				$comment->addChild('note', '3');
+				$comment->addChild('like', '0');
+				$comment->addChild('dislike', '0');
 
-							$comments = $test->addChild('comments');
-								$comment = $comments->addChild('comment');
-								$comment->addChild('text');
-								$comment->addChild('date', '2015-01-22T11:33:33');
-								$comment->addChild('userName');
-								$comment->addChild('note', '3');
-								$comment->addChild('like', '0');
-								$comment->addChild('dislike', '0');
+				$analyses = $test->addChild('analyses');
+				$analyse = $analyses->addChild('analyse');
+				$analyse->addAttribute('type', 'positive');
+				$analyse = $analyses->addChild('analyse');
+				$analyse->addAttribute('type', 'negative');
 
-						$analyses = $test->addChild('analyses');
-							$analyse = $analyses->addChild('analyse');
-							$analyse->addAttribute('type', 'positive');
-							$analyse = $analyses->addChild('analyse');
-							$analyse->addAttribute('type', 'negative');
+				$languages = $presentation->addChild('languages');
+				$languages->addChild('language');
+				}
 
-					$languages = $presentation->addChild('languages');
-						$languages->addChild('language');
-
-			$articles = $game->addChild('articles');
+				$articles = $gameNode->addChild('articles');
 				$article = $articles->addChild('article');
 				$article->addAttribute('type', 'news');
-					$articleConsolesNames = $article->addChild('consolesNames');
-						$articleConsolesNames->addChild('consoleName');
+				$articleConsolesNames = $article->addChild('consolesNames');
+				$articleConsolesNames->addChild('consoleName');
 
-					$article->addChild('title');
-					$article->addChild('userName');
-					$article->addChild('date', '2015-01-22T11:33:33');
+				$article->addChild('title');
+				$article->addChild('userName');
+				$article->addChild('date', '2015-01-22T11:33:33');
 
-			$medias = $game->addChild('medias');
+				$medias = $gameNode->addChild('medias');
 				$media = $medias->addChild('media');
-					$media->addAttribute('type', 'video');
-					$media->addAttribute('url', 'path/to/media');
-					$mediaConsolesNames = $media->addChild('consolesNames');
-						$mediaConsolesNames->addChild('consoleName');
-							$mediaDimensions = $media->addChild('dimensions');
-							$mediaDimensions->addAttribute('unit', 'pt');
-							$mediaDimensions->addAttribute('height', '32.4');
-							$mediaDimensions->addAttribute('width', '90.5');
+				$media->addAttribute('type', 'video');
+				$media->addAttribute('url', 'path/to/media');
+				$mediaConsolesNames = $media->addChild('consolesNames');
+				$mediaConsolesNames->addChild('consoleName');
+				$mediaDimensions = $media->addChild('dimensions');
+				$mediaDimensions->addAttribute('unit', 'pt');
+				$mediaDimensions->addAttribute('height', '32.4');
+				$mediaDimensions->addAttribute('width', '90.5');
 
-			$tips = $game->addChild('tips');
+				$tips = $gameNode->addChild('tips');
 				$tip = $tips->addChild('tip');
 				$tipConsoleNames = $tip->addChild('consolesNames');
-					$tipConsoleNames->addChild('consoleName');
-					$tip->addChild('content');
+				$tipConsoleNames->addChild('consoleName');
+				$tip->addChild('content');
 		}
 
 		return $list;
