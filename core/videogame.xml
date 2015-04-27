@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<list xsi:noNamespaceSchemaLocation="schemavideogame.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<game>
+		<presentation>
+			<genders>
+				<gender>Action</gender>
+				<gender>Mélodramatique</gender>
+			</genders>
+			<title>ThisIsAVideoGame</title>
+			<editors>
+				<editor>An editor</editor>
+			</editors>
+			<themes>
+				<theme></theme>
+			</themes>
+			<site></site>
+			<consoles>
+				<console>
+					<businessModel></businessModel>
+					<pegi></pegi>
+					<modes>
+						<mode></mode>
+					</modes>
+					<cover>
+						<front url="test" />
+						<back url="/location/to/content" />
+					</cover>
+					<supports>
+						<support></support>
+					</supports>
+					<release>2015-01-25</release>
+					<editions>
+						<edition>
+							<name></name>
+							<content></content>
+							<shops>
+								<shop url="test">
+									<name></name>
+									<price devise="euro"></price>
+								</shop>
+							</shops>
+						</edition>
+					</editions>
+					<name></name>
+					<description></description>
+					<dlcs>
+						<dlc>
+							<title></title>
+							<description></description>
+							<price devise="euro"></price>
+						</dlc>
+					</dlcs>
+					<configs>
+						<config type="minimale"></config>
+						<config type="optimale"></config>
+					</configs>
+					<test>	
+						<report></report>
+						<date>2015-01-22T11:33:33</date>
+						<userName></userName>
+						<note>1</note>
+						<comments>
+							<comment>
+								<text></text>
+								<date>2015-01-22T11:33:33</date>
+								<userName></userName>
+								<note>3</note>
+								<like>0</like>
+								<dislike>0</dislike>
+							</comment>
+						</comments>
+						<analyses>
+							<analyse type="positive"></analyse>
+							<analyse type="negative"></analyse>
+						</analyses>
+					</test>
+				</console>
+			</consoles>
+			<languages>
+				<language></language>
+			</languages>
+		</presentation>
+		
+		<articles>
+			<article type="news">
+				<consolesNames>
+					<consoleName></consoleName>
+				</consolesNames>
+				<title></title>
+				<userName></userName>	
+				<date>2015-01-22T11:33:33</date>		
+			</article>
+		</articles>
+		
+		<medias>
+			<media type="video" url="path/to/media" >
+				<consolesNames>
+					<consoleName></consoleName>
+				</consolesNames>
+				<dimensions unit="pt" width="32.4" height="90.5" />
+			</media>
+		</medias>
+		
+		<tips>
+			<tip>
+				<consolesNames>
+					<consoleName></consoleName>
+				</consolesNames>
+				<content></content>
+			</tip>
+		</tips>
+	</game>
+</list>

@@ -1,0 +1,447 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    
+    <!-- Prix -->
+    <xs:element name="price">
+        <xs:complexType>
+            <xs:attribute name="devise" type="xs:string" use="required"/>
+        </xs:complexType>
+    </xs:element>
+
+<!-- @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ -->   
+
+    <!-- Boutique où il est possible d'acheter le jeu-->
+    <xs:element name="shop">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="name"/>
+                <xs:element ref="price"/>
+            </xs:sequence>
+            <xs:attribute name="url" type="xs:anyURI" use="required"/>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- Contenu du commentaire -->
+    <xs:element name="text" type="xs:string"/>
+
+    <!-- Nombre de like du commentaire -->
+    <xs:element name="like" type="xs:integer"/> 
+    
+    <!-- Nombre de dislike du commentaire -->
+    <xs:element name="dislike" type="xs:integer"/>
+
+<!-- @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ -->      
+
+    <!-- Nom en général -->
+    <xs:element name="name" type="xs:string"/>
+
+    <!-- Contenu de l'édition -->
+    <xs:element name="content" type="xs:string"/>
+
+    <xs:element name="shops">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="shop" minOccurs="0"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- Commentaire utilisateur -->
+    <xs:element name="comment">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="text"/>
+                <xs:element ref="date"/>
+                <xs:element ref="userName"/>
+                <xs:element ref="note"/>
+                <xs:element ref="like"/>
+                <xs:element ref="dislike"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- Point positif/négatif -->
+    <xs:element name="analyse">
+        <xs:complexType>
+            <xs:attribute name="type" type="xs:string" use="required"/>
+        </xs:complexType>
+    </xs:element>
+
+<!-- @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ -->   
+
+    <!-- Mode de jeu (solo, multi-joueurs, ...) -->
+    <xs:element name="mode" type="xs:string"/>
+
+    <!-- Jaquette avant / arrière -->
+    <xs:element name="front">
+        <xs:complexType>
+            <xs:attribute name="url" type="xs:anyURI"/>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="back">
+        <xs:complexType>
+            <xs:attribute name="url" type="xs:anyURI"/>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- Type de support (physique, dématérialisé, ...) -->
+    <xs:element name="support" type="xs:string"/>
+
+    <!-- Information relative à une édition -->
+    <xs:element name="edition">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="name"/>
+                <xs:element ref="content"/>
+                <xs:element ref="shops"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="dlc">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="title"/>
+                <xs:element ref="description"/>
+                <xs:element ref="price"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- Détail de la configuration -->
+    <xs:element name="config">
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="xs:string">
+                    <xs:attribute name="type" type="xs:string" use="required"/>
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- Résumé du test -->
+    <xs:element name="report" type="xs:string"/>
+
+    <!-- Date de publication -->
+    <xs:element name="date" type="xs:dateTime"/>
+
+    <!-- Nom du testeur -->
+    <xs:element name="userName" type="xs:string"/>
+
+    <!-- Note du testeur -->
+    <xs:element name="note" type="xs:integer"/>
+
+    <!-- Commentaires des utilisateurs -->
+    <xs:element name="comments">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="comment" minOccurs="0"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- Liste des points positifs/négatifs -->
+    <xs:element name="analyses">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="analyse" maxOccurs="unbounded" minOccurs="0"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+<!-- @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ -->     
+
+    <!-- Modèle économique du jeu (Free to play, ...) -->
+    <xs:element name="businessModel" type="xs:string"/>
+
+    <!-- Age minimum requis -->
+    <xs:element name="pegi" type="xs:string"/>
+
+    <xs:element name="modes">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="mode"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- Jaquette du jeu -->
+    <xs:element name="cover">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="front"/>
+                <xs:element ref="back"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="supports">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="support"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- Date de sortie du jeu -->
+    <xs:element name="release" type="xs:date"/>
+
+    <!-- Gestion de l'édition du jeu (collector, standard, ...) -->
+    <xs:element name="editions">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="edition"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- Description du contenu -->
+    <xs:element name="description" type="xs:string"/>
+
+    <!-- Liste les DLCs du jeu -->
+    <xs:element name="dlcs">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="dlc" minOccurs="0"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- Recommandations sur la configuration matérielle pour lancer le jeu --> 
+    <xs:element name="configs">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="config" maxOccurs="2" minOccurs="0"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- Test du jeu -->
+     <xs:element name="test">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="report"/>
+                <xs:element ref="date"/>
+                <xs:element ref="userName"/>
+                <xs:element ref="note"/>
+                <xs:element ref="comments"/>
+                <xs:element ref="analyses"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- Nom de console -->
+    <xs:element name="consoleName" type="xs:string"/>
+
+    <!-- Hauteur/Largeur du média -->
+    <xs:element name="height" type="xs:float"/>
+    <xs:element name="width" type="xs:float"/>
+
+<!-- @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ -->      
+
+    <!-- Genre du jeu (Action, FPS, ...) -->
+    <xs:element name="gender" type="xs:string"/>
+
+    <!-- Nom des studios d'édition du jeu -->
+    <xs:element name="editor" type="xs:string"/>
+
+    <!-- Thème de l'univers du jeu (Fantasy, Horeur, ...) -->
+    <xs:element name="theme" type="xs:string"/>
+
+    <!-- Eléments dépendants pour chaque console -->
+    <xs:element name="console">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="businessModel"/>
+                <xs:element ref="pegi"/>
+                <xs:element ref="modes"/>
+                <xs:element ref="cover"/>
+                <xs:element ref="supports"/>
+                <xs:element ref="release"/>
+                <xs:element ref="editions"/>
+                <xs:element ref="name"/>
+                <xs:element ref="description"/>
+                <xs:element ref="dlcs"/>
+                <xs:element ref="configs"/>
+                <xs:element ref="test"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- Langue -->
+    <xs:element name="language" type="xs:string"/>
+
+    <!-- Liste des consoles concernées par le contenu -->
+    <xs:element name="consolesNames">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="consoleName"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- Dimensions du média -->
+    <xs:complexType name="dimensions">
+        <xs:simpleContent>
+            <xs:extension base="xs:string">
+                <xs:attribute type="xs:string" name="unit" use="required"/>
+                <xs:attribute type="xs:string" name="width" use="required"/>
+                <xs:attribute type="xs:string" name="height" use="required"/>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+
+<!-- @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ -->     
+
+    <xs:element name="genders">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="gender" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- Titre du contenu -->
+    <xs:element name="title" type="xs:string"/>
+
+    <xs:element name="editors">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="editor" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="themes">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="theme" maxOccurs="unbounded" minOccurs="0"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- Lien vers le site du jeu -->
+    <xs:element name="site" type="xs:anyURI"/>
+
+    <xs:element name="consoles">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="console" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- Langues disponibles pour le jeu -->
+    <xs:element name="languages">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="language" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- Un article (news, article, ...) -->
+    <xs:element name="article">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="consolesNames"/>
+                <xs:element ref="title"/>
+                <xs:element ref="userName"/>
+                <xs:element ref="date"/>
+            </xs:sequence>
+            <xs:attribute name="type" type="xs:string" use="required"/>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- Media -->
+    <xs:element name="media">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="consolesNames"/>
+                <xs:element ref="dimensions"/>
+            </xs:sequence>
+            <xs:attribute name="type" type="xs:string" use="required"/>
+            <xs:attribute name="url" type="xs:anyURI" use="required"/>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- Astuce -->
+    <xs:element name="tip">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="consolesNames"/>
+                <xs:element ref="content"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+
+<!-- @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ -->      
+
+    <!-- Fiche de présentation du jeu -->
+    <xs:element name="presentation">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="genders"/>
+                <xs:element ref="title"/>
+                <xs:element ref="editors"/>
+                <xs:element ref="themes"/>
+                <xs:element ref="site"/>
+                <xs:element ref="consoles"/>
+                <xs:element ref="languages"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- Liste des articles -->
+    <xs:element name="articles">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="article" minOccurs="0"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- Liste des médias -->
+    <xs:element name="medias">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="media" minOccurs="0"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- Liste des astuces -->
+    <xs:element name="tips">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="tip" minOccurs="0"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+<!-- @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ -->     
+
+    <xs:element name="game">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="presentation"/>
+                <xs:element ref="articles"/>
+                <xs:element ref="medias"/>
+                <xs:element ref="tips"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+<!-- @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ -->   
+
+    <!-- Liste des jeux -->
+    <xs:element name="list">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="game"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>
