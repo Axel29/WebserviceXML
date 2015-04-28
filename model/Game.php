@@ -9,6 +9,7 @@ class Game extends BaseModel
 	 */
 	public function getGames($gameId = null)
 	{
+		// $this->debug = true;
 		$games = [];
 
 		foreach ($this->getGameInfos($gameId) as $game) {
