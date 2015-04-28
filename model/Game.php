@@ -590,10 +590,6 @@ class Game extends BaseModel
 	 */
 	public function addGame($post)
 	{
-		/**
-		 * @todo Tester que toutes les valeurs obligatoires sont présentes avec des if(isset($post['...']))
-		 */
-
 		// Insertion of the game
 		$this->table = 'game';
 
