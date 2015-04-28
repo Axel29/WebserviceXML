@@ -4,7 +4,11 @@
     <!-- Prix -->
     <xs:element name="price">
         <xs:complexType>
-            <xs:attribute name="devise" type="xs:string" use="required"/>
+            <xs:simpleContent>
+                <xs:extension base="xs:string">
+                    <xs:attribute name="devise" type="xs:string" use="required"/>
+                </xs:extension>
+            </xs:simpleContent>
         </xs:complexType>
     </xs:element>
 
@@ -41,7 +45,7 @@
     <xs:element name="shops">
         <xs:complexType>
             <xs:sequence>
-                <xs:element ref="shop" minOccurs="0"/>
+                <xs:element ref="shop" minOccurs="0" maxOccurs="unbounded" />
             </xs:sequence>
         </xs:complexType>
     </xs:element>
@@ -63,7 +67,11 @@
     <!-- Point positif/négatif -->
     <xs:element name="analyse">
         <xs:complexType>
-            <xs:attribute name="type" type="xs:string" use="required"/>
+            <xs:simpleContent>
+                <xs:extension base="xs:string">
+                    <xs:attribute name="type" type="xs:string" use="required"/>
+                </xs:extension>
+            </xs:simpleContent>
         </xs:complexType>
     </xs:element>
 
@@ -161,7 +169,7 @@
     <xs:element name="modes">
         <xs:complexType>
             <xs:sequence>
-                <xs:element ref="mode"/>
+                <xs:element ref="mode" maxOccurs="unbounded" />
             </xs:sequence>
         </xs:complexType>
     </xs:element>
@@ -179,7 +187,7 @@
     <xs:element name="supports">
         <xs:complexType>
             <xs:sequence>
-                <xs:element ref="support"/>
+                <xs:element ref="support" maxOccurs="unbounded" />
             </xs:sequence>
         </xs:complexType>
     </xs:element>
@@ -191,7 +199,7 @@
     <xs:element name="editions">
         <xs:complexType>
             <xs:sequence>
-                <xs:element ref="edition"/>
+                <xs:element ref="edition" maxOccurs="unbounded" />
             </xs:sequence>
         </xs:complexType>
     </xs:element>
@@ -276,7 +284,7 @@
     <xs:element name="consolesNames">
         <xs:complexType>
             <xs:sequence>
-                <xs:element ref="consoleName"/>
+                <xs:element ref="consoleName" maxOccurs="unbounded" />
             </xs:sequence>
         </xs:complexType>
     </xs:element>

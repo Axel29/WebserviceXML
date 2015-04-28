@@ -51,134 +51,186 @@ class GameController extends BaseController
 	public function generateXml($games = [])
 	{
 		$list = new SimpleXMLElement('<list></list>');
-		echo '<pre>'; var_dump($games); echo '</pre>'; die;
 		foreach ($games as $game) {
 			$gameNode = $list->addChild('game');
 
-			$presentation = $gameNode->addChild('presentation');
-				$genders = $presentation->addChild('genders');
-				foreach ($game['genders'] as $gender) {
-					$genders->addChild('gender', $gender['gender']);
+			$presentationNode = $gameNode->addChild('presentation');
+				// Game's genders
+				$gendersNode = $presentationNode->addChild('genders');
+				foreach ($game['presentation']['genders'] as $gender) {
+					$gendersNode->addChild('gender', $gender['gender']);
 				}
 
-				$presentation->addChild('title', $game['title']);
+				// Game's title
+				$presentationNode->addChild('title', $game['presentation']['title']);
 
-				$editors = $presentation->addChild('editors');
-				foreach ($game['editors'] as $editor) {
-					$editors->addChild('editor', $editor['editor']);
+				// Game's editors
+				$editorsNode = $presentationNode->addChild('editors');
+				foreach ($game['presentation']['editors'] as $editor) {
+					$editorsNode->addChild('editor', $editor['editor']);
 				}
 
-				$themes = $presentation->addChild('themes');
-				foreach ($game['themes'] as $theme) {
-					$themes->addChild('theme', $theme['theme']);
+				// Game's themes
+				$themesNode = $presentationNode->addChild('themes');
+				foreach ($game['presentation']['themes'] as $theme) {
+					$themesNode->addChild('theme', $theme['theme']);
 				}
 
-				$presentation->addChild('site', $game['site']);
+				// Game's website
+				$presentationNode->addChild('site', $game['presentation']['site']);
 
-				$consoles = $presentation->addChild('consoles');
-				foreach ($game['consoles'] as $console) {
-					$console  = $consoles->addChild('console');
-					$console->addChild('businessModel', $console['businessModel']);
-					$console->addChild('pegi', $console['pegi']);
-				}
+				$consolesNode = $presentationNode->addChild('consoles');
+				foreach ($game['presentation']['consoles'] as $console) {
+					$consoleNode  = $consolesNode->addChild('console');
+					// Console's business model
+					$consoleNode->addChild('businessModel', $console['business_model']);
+					// Console's pegi
+					$consoleNode->addChild('pegi', $console['pegi']);
 
-				$modes = $console->addChild('modes');
-				$modes->addChild('mode', $mode['mode']);
+					// Console's modes
+					$modesNode = $consoleNode->addChild('modes');
+					foreach ($console['modes'] as $mode) {
+						$modesNode->addChild('mode', $mode['mode']);
+					}
 
-				$cover = $console->addChild('cover');
-				$frontCover = $cover->addChild('front');
-				$frontCover->addAttribute('url', 'test');
-				$backCover = $cover->addChild('back');
-				$backCover->addAttribute('url', '/location/to/content');
+					// Console's covers
+					$coverNode  = $consoleNode->addChild('cover');
+					$frontCover = $coverNode->addChild('front');
+					$frontCover->addAttribute('url', $console['cover_front']);
+
+					$backCover  = $coverNode->addChild('back');
+					$backCover->addAttribute('url', $console['cover_back']);
 				
+					// Console's supports
+					$supportsNode = $consoleNode->addChild('supports');
+					foreach ($console['supports'] as $support) {
+						$supportsNode->addChild('support', $support['support']);
+					}
 
-				$supports = $console->addChild('supports');
-				$supports->addChild('support');
+					// Console's release date
+					$consoleNode->addChild('release', $console['release']);
 
-				$console->addChild('release', '2015-01-25');
+					// Editions
+					$editionsNode = $consoleNode->addChild('editions');
+					foreach ($console['editions'] as $edition) {
+						$editionNode = $editionsNode->addChild('edition');
+						$editionNode->addChild('name', $edition['name']);
+						$editionNode->addChild('content', $edition['content']);
 
-				$editions = $console->addChild('editions');
-				$edition = $editions->addChild('edition');
-				$edition->addChild('name');
+						// Edition's shops
+						$shopsNode = $editionNode->addChild('shops');
+						foreach ($edition['shops'] as $shop) {
+							$shopNode = $shopsNode->addChild('shop');
+							$shopNode->addAttribute('url', $shop['url']);
+							$shopNode->addChild('name', $shop['name']);
+							$shopPrice = $shopNode->addChild('price', $shop['price']);
+							$shopPrice->addAttribute('devise', $shop['devise']);
+						}
+					}
 
-				$edition->addChild('content');
+					// Console's name
+					$consoleNode->addChild('name', $console['name']);
 
-				$shops = $edition->addChild('shops');
-				$shop = $shops->addChild('shop');
-				$shop->addAttribute('url', 'test');
-				$shop->addChild('name');
-				$shopPrice = $shop->addChild('price');
-				$shopPrice->addAttribute('devise', 'euro');
+					// Console's description
+					$consoleNode->addChild('description', $console['description']);
 
-				$console->addChild('name');
+					// DLCs
+					$dlcsNode = $consoleNode->addChild('dlcs');
+					foreach ($console['dlcs'] as $dlc) {
+						$dlcNode = $dlcsNode->addChild('dlc');
+						$dlcNode->addChild('title', $dlc['title']);
+						$dlcNode->addChild('description', $dlc['description']);
+						$dlcPrice = $dlcNode->addChild('price', $dlc['price']);
+						$dlcPrice->addAttribute('devise', $dlc['devise']);						
+					}
 
-				$console->addChild('description');
+					// Configs
+					$configsNode = $consoleNode->addChild('configs');
+					foreach ($console['configs'] as $config) {
+						$configNode = $configsNode->addChild('config', $config['config']);
+						$configNode->addAttribute('type', $config['type']);
+					}
 
-				$dlcs = $console->addChild('dlcs');
-				$dlc = $dlcs->addChild('dlc');
-				$dlc->addChild('title');
-				$dlc->addChild('description');
-				$dlcPrice = $dlc->addChild('price');
-				$dlcPrice->addAttribute('devise', 'euro');
+					// Tests
+					foreach ($console['tests'] as $test) {
+						$testNode = $consoleNode->addChild('test');
+						$testNode->addChild('report', $test['report']);
+						$testNode->addChild('date', $test['date']);
+						$testNode->addChild('userName', $test['user_name']);
+						$testNode->addChild('note', $test['note']);
 
-				$configs = $console->addChild('configs');
-				$config = $configs->addChild('config');
-				$config->addAttribute('type', 'minimale');
-				$config = $configs->addChild('config');
-				$config->addAttribute('type', 'optimale');
+						// Test's comments
+						$commentsNode = $testNode->addChild('comments');
+						foreach ($test['comments'] as $comment) {
+							$commentNode = $commentsNode->addChild('comment');
+							$commentNode->addChild('text', $comment['text']);
+							$commentNode->addChild('date', $comment['date']);
+							$commentNode->addChild('userName', $comment['user_name']);
+							$commentNode->addChild('note', $comment['note']);
+							$commentNode->addChild('like', $comment['like']);
+							$commentNode->addChild('dislike', $comment['dislike']);
+						}
 
-				$test = $console->addChild('test');
-				$test->addChild('report');
-				$test->addChild('date', '2015-01-22T11:33:33');
-				$test->addChild('userName');
-				$test->addChild('note', '1');
+						// Test's analyses
+						$analysesNode = $testNode->addChild('analyses');
+						foreach ($test['analyses'] as $analyse) {
+							$analyseNode = $analysesNode->addChild('analyse', $analyse['analyse']);
+							$analyseNode->addAttribute('type', $analyse['type']);
+						}
+					}
+				}
 
-				$comments = $test->addChild('comments');
-				$comment = $comments->addChild('comment');
-				$comment->addChild('text');
-				$comment->addChild('date', '2015-01-22T11:33:33');
-				$comment->addChild('userName');
-				$comment->addChild('note', '3');
-				$comment->addChild('like', '0');
-				$comment->addChild('dislike', '0');
+				// Game's languages
+				$languages = $presentationNode->addChild('languages');
+				foreach ($game['presentation']['languages'] as $language) {
+					$languages->addChild('language', $language['language']);
+				}
 
-				$analyses = $test->addChild('analyses');
-				$analyse = $analyses->addChild('analyse');
-				$analyse->addAttribute('type', 'positive');
-				$analyse = $analyses->addChild('analyse');
-				$analyse->addAttribute('type', 'negative');
+				// Game's articles
+				$articlesNode = $gameNode->addChild('articles');
+				foreach ($game['articles'] as $article) {
+					$articleNode = $articlesNode->addChild('article');
+					$articleNode->addAttribute('type', $article['type']);
+					$articleConsolesNames = $articleNode->addChild('consolesNames');
+					foreach (explode(',', $article['consoles_names']) as $consoleName) {
+						$articleConsolesNames->addChild('consoleName', $consoleName);
+					}
+					$articleNode->addChild('title', $article['title']);
+					$articleNode->addChild('userName', $article['user_name']);
+					$articleNode->addChild('date', $article['date']);
+				}
 
-				$languages = $presentation->addChild('languages');
-				$languages->addChild('language');
 
-				$articles = $gameNode->addChild('articles');
-				$article = $articles->addChild('article');
-				$article->addAttribute('type', 'news');
-				$articleConsolesNames = $article->addChild('consolesNames');
-				$articleConsolesNames->addChild('consoleName');
+				// Game's medias
+				$mediasNode = $gameNode->addChild('medias');
+				foreach ($game['medias'] as $media) {
+					$mediaNode = $mediasNode->addChild('media');
+					$mediaNode->addAttribute('type', $media['type']);
+					$mediaNode->addAttribute('url', $media['url']);
+					$mediaConsolesNames = $mediaNode->addChild('consolesNames');
+					foreach (explode(',', $media['consoles_names']) as $consoleName) {
+						$mediaConsolesNames->addChild('consoleName', $consoleName);
+					}
+					$mediaDimensions = $mediaNode->addChild('dimensions');
+					$mediaDimensions->addAttribute('unit', $media['unit']);
+					$mediaDimensions->addAttribute('height', $media['height']);
+					$mediaDimensions->addAttribute('width', $media['width']);
+				}
 
-				$article->addChild('title');
-				$article->addChild('userName');
-				$article->addChild('date', '2015-01-22T11:33:33');
-
-				$medias = $gameNode->addChild('medias');
-				$media = $medias->addChild('media');
-				$media->addAttribute('type', 'video');
-				$media->addAttribute('url', 'path/to/media');
-				$mediaConsolesNames = $media->addChild('consolesNames');
-				$mediaConsolesNames->addChild('consoleName');
-				$mediaDimensions = $media->addChild('dimensions');
-				$mediaDimensions->addAttribute('unit', 'pt');
-				$mediaDimensions->addAttribute('height', '32.4');
-				$mediaDimensions->addAttribute('width', '90.5');
-
-				$tips = $gameNode->addChild('tips');
-				$tip = $tips->addChild('tip');
-				$tipConsoleNames = $tip->addChild('consolesNames');
-				$tipConsoleNames->addChild('consoleName');
-				$tip->addChild('content');
+				// Game's tips
+				$tipsNode = $gameNode->addChild('tips');
+				foreach ($game['tips'] as $tip) {
+					$tipNode = $tipsNode->addChild('tip');
+					$tipConsoleNames = $tipNode->addChild('consolesNames');
+					foreach (explode(',', $tip['consoles_names']) as $consoleName) {
+						$tipConsoleNames->addChild('consoleName', $consoleName);
+					}
+					$tipNode->addChild('content', $tip['content']);
+				}
 		}
 
+		// header("Content-type: text/xml; charset=UTF-8");
+		// echo $list->asXML(); die;
 		return $list;
 	}
 

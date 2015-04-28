@@ -160,14 +160,15 @@ class Game extends BaseModel
 	{
 		$this->table = 'article a';
 		
-		$where = [];
+		$fields = ['`idArticle`', '`type`', '`title`', '`user_name`', 'DATE_FORMAT(`date`, "%Y-%m-%dT%H:%i:%s") as `date`', '`consoles_names`', '`game_idGame`'];
+		$where  = [];
 		if ($gameId) {
 			$where = [
 				'a.game_idGame' => $gameId,
 			];
 		}
 
-		$articles = $this->select(['*'], $where);
+		$articles = $this->select($fields, $where);
 
 		return $articles;
 	}
@@ -182,14 +183,15 @@ class Game extends BaseModel
 	{
 		$this->table = 'comment c';
 		
-		$where = [];
+		$fields = ['idComment', 'DATE_FORMAT(`date`, "%Y-%m-%dT%H:%i:%s") as `date`', '`user_name`', '`note`', '`like`', '`dislike`', '`text`', '`test_idTest`'];
+		$where  = [];
 		if ($testId) {
 			$where = [
 				'c.test_idTest' => $testId,
 			];
 		}
 
-		$comments = $this->select(['*'], $where);
+		$comments = $this->select($fields, $where);
 
 		return $comments;
 	}
@@ -526,14 +528,15 @@ class Game extends BaseModel
 	{
 		$this->table = 'test t';
 		
-		$where = [];
+		$fields = ['`idTest`', '`report`', 'DATE_FORMAT(`date`, "%Y-%m-%dT%H:%i:%s") as `date`', '`user_name`', '`note`', '`console_idConsole`'];
+		$where  = [];
 		if ($consoleId) {
 			$where = [
 				't.console_idConsole' => $consoleId,
 			];
 		}
 
-		$tests = $this->select(['*'], $where);
+		$tests = $this->select($fields, $where);
 
 		return $tests;
 	}
