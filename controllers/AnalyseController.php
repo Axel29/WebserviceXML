@@ -3,6 +3,7 @@ class AnalyseController extends BaseController
 {
 	/**
 	 * Show the full XML
+	 * Route: /analyse/update
 	 */
 	public function updateAction()
 	{
@@ -25,6 +26,7 @@ class AnalyseController extends BaseController
 
 	/**
 	 * Delete an analyse by it's ID
+	 * Route: /analyse/delete/id/{id}
 	 *
 	 * @param $id int Analyse's ID to delete
 	 */
