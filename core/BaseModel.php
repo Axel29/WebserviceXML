@@ -4,6 +4,7 @@ class BaseModel
 	protected $db;
 	protected $table;
 	protected $id;
+	protected $debug = false;
 
 	public function __construct()
 	{
@@ -102,7 +103,9 @@ class BaseModel
 		
 		// Process the request
 		try{
-			// echo '<pre>'; var_dump($sql); echo '</pre>'; die;
+			if ($this->debug) {
+				echo '<pre>'; var_dump($sql); echo '</pre>'; die;
+			}
 			$query = $this->db->query($sql);
 			if ($fetchAll && $query) {
 				$query = $query->fetchAll(PDO::FETCH_ASSOC);
@@ -120,7 +123,9 @@ class BaseModel
 	public function simpleselect($select, $fetch = 'all')
 	{
 		try{
-			// echo '<pre>'; var_dump($select); echo '</pre>';
+			if ($this->debug) {
+				echo '<pre>'; var_dump($select); echo '</pre>';
+			}
 			$query = $this->db->query($select);
 			if ($fetch == 'all') {
 				$query = $query->fetchAll();
@@ -285,7 +290,9 @@ class BaseModel
 			$sql .= ')';
 		}
 
-		// echo '<pre>'; var_dump($sql); echo '</pre>'; die;
+		if ($this->debug) {
+			echo '<pre>'; var_dump($sql); echo '</pre>'; die;
+		}
 		try {
 			$query = $this->db->query($sql);
 		} catch(PDOException $e) {
