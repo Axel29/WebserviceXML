@@ -114,8 +114,10 @@ class BaseModel
 			}
 		} catch(PDOException $e){
 			echo 'There was an error processing the request: ' . $e->getMessage();
+			return false;
 		} catch(Exception $e) {
 			echo 'There was an error processing the request: ' . $e->getMessage();
+			return false;
 		}
 		return $query;
 	}
@@ -132,11 +134,12 @@ class BaseModel
 			} else {
 				$query = $query->fetch();
 			}
-			}catch(PDOException $e){
+		} catch(PDOException $e) {
 			echo 'There was an error processing the request: ' . $e->getMessage();
-		}
-		catch(Exception $e) {
+			return false;
+		} catch(Exception $e) {
 			echo 'There was an error processing the request: ' . $e->getMessage();
+			return false;
 		}
 		return $query;
 	}
@@ -167,6 +170,7 @@ class BaseModel
 			$query = $this->db->query($sql);
 		} catch(PDOException $e) {
 			echo 'There was an error processing the request: ' . $e->getMessage();
+			return false;
 		}
 
 		return $this;
@@ -206,14 +210,14 @@ class BaseModel
 				}
 			}
 
-			try{
+			try {
 				$query = $this->db->query($sql);
-			}catch(PDOException $e){
+			} catch(PDOException $e) {
 				echo 'There was an error processing the request: ' . $e->getMessage();
+				return false;
 			}
 
 			return $this;
-
 		} else {
 			// INSERT
 			$sql = 'INSERT INTO ' . $this->table . ' (';
@@ -243,6 +247,7 @@ class BaseModel
 				$query = $this->db->query($sql);
 			} catch (PDOException $e) {
 				echo 'There was an error processing the request: ' . $e->getMessage();
+				return false;
 			}
 			
 			if ($lastInsertId = $this->db->lastInsertId()) {
@@ -305,6 +310,7 @@ class BaseModel
 			$query = $this->db->query($sql);
 		} catch(PDOException $e) {
 			echo 'There was an error processing the request: ' . $e->getMessage();
+			return false;
 		}
 
 		return $this;
