@@ -108,7 +108,7 @@ class Game extends BaseModel
 	 * Retrieve main informations for every game or a specific game.
 	 *
 	 * @param $gameId int Game's ID to retrieve if not list mode.
-	 * @return $game array Game object
+	 * @return $gameInfos array Game object
 	 */
 	public function getGameInfos($gameId = null)
 	{
@@ -123,9 +123,9 @@ class Game extends BaseModel
 			];
 		}
 
-		$analyses = $this->select($fields, $where);
+		$gameInfos = $this->select($fields, $where);
 
-		return $analyses;
+		return $gameInfos;
 	}
 
 	/**
