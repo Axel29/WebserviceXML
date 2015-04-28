@@ -23,19 +23,19 @@ class AnalyseController extends BaseController
 		$this->sendStatus(204);
 	}
 
-	public function deleteAction()
+	/**
+	 * Delete an analyse by it's ID
+	 *
+	 * @param $id int Analyse's ID to delete
+	 */
+	public function deleteAction($id)
 	{
 		if (!$this->getRequestMethod() == 'POST') {
 			$this->exitError(405);
 		}
 
-		if (!isset($_POST['idAnalyse']))
-		{
-			$this->exitError(400, 'idAnalyse is a required field.');
-		}
-
 		$analyseModel = new Analyse();
-		$analyseModel->deleteAnalyse($_POST['idAnalyse']);
+		$analyseModel->deleteAnalyse((int)$id);
 
 		$this->sendStatus(204);
 	}
