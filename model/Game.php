@@ -608,7 +608,7 @@ class Game extends BaseModel
 		// Insertion of the gender
 		if ($insertedGame) {
 			$this->table    = 'gender';
-			$insertedGender = $this->insert(['editor' => $post['editor']]);
+			$insertedGender = $this->insert(['gender' => $post['gender']]);
 
 			if ($insertedGender) {
 				$this->table    = 'game_has_gender';
