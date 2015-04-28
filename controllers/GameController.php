@@ -368,7 +368,7 @@ class GameController extends BaseController
 			isset($_POST['articles']['title']) &&
 			isset($_POST['articles']['user_name']) &&
 			isset($_POST['articles']['date']) &&
-			isset($_POST['articles']['console_names']) &&
+			isset($_POST['articles']['consoles_names']) &&
 			isset($_POST['comments']['date']) &&
 			isset($_POST['comments']['user_name']) &&
 			isset($_POST['comments']['note']) &&
@@ -400,7 +400,7 @@ class GameController extends BaseController
 			isset($_POST['medias']['unit']) &&
 			isset($_POST['medias']['width']) &&
 			isset($_POST['medias']['height']) &&
-			isset($_POST['medias']['console_names']) &&
+			isset($_POST['medias']['consoles_names']) &&
 			isset($_POST['modes']['name']) &&
 			isset($_POST['shops']['url']) && 
 			isset($_POST['shops']['name']) && 
@@ -413,7 +413,7 @@ class GameController extends BaseController
 			isset($_POST['tests']['note']) &&
 			isset($_POST['themes']['theme']) &&
 			isset($_POST['tips']['content']) &&
-			isset($_POST['tips']['console_names'])
+			isset($_POST['tips']['consoles_names'])
 			) {
 
 			$gameModel = new Game();
