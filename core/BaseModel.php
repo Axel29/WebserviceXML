@@ -245,7 +245,11 @@ class BaseModel
 				echo 'There was an error processing the request: ' . $e->getMessage();
 			}
 			
-			return $this->db->lastInsertId();
+			if ($lastInsertId = $this->db->lastInsertId()) {
+				return $lastInsertId;
+			} else {
+				return true;
+			}
 		}
 	}
 
