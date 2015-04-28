@@ -288,14 +288,13 @@ class GameController extends BaseController
 			return;
 		}
 
-		$post = [
-			/**
-			 * @todo Ajouter tous les paramètres. Prendre exemple sur le controller Analyse.
-			 */
-		];
+		/**
+		 * @todo Tester que toutes les valeurs obligatoires sont présentes avec des if(isset($_POST['...']))
+		 * Si un champ non présent, retourner un code statut "400" (Bad Request).
+		 */
 
 		$gameModel = new Game();
-		$gameModel->addGame($post);
+		$gameModel->addGame($_POST);
 
 		$this->sendStatus(204);
 	}

@@ -597,7 +597,18 @@ class Game extends BaseModel
 		if (
 			isset($post['analyse']) && isset($post['type']) isset($post['analyse'])
 
-		) {
+			) {
+
+				// Insertion of the game
+				$this->table = 'game';
+
+				$fields = [
+					'site'  => $post['site'],
+					'title' => $post['title'],
+				];
+
+				// insertedGame = ID of the inserted game in database
+				$insertedGame = $this->insert($fields);
 					
 				// Insertion of the game
 				$this->table = 'game';
