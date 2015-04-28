@@ -12,8 +12,7 @@ class GameController extends BaseController
 		$this->list = $this->generateXml($games);
 
 		if ($errors = $this->validateXML($this->list->asXML())) {
-			$this->loadLayout();
-			echo $errors;
+			$this->exitError(400, $errors);
 		} else {
 			$this->loadLayout('xml');
 			$this->render('index');
