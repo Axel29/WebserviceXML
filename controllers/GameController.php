@@ -228,9 +228,6 @@ class GameController extends BaseController
 					$tipNode->addChild('content', $tip['content']);
 				}
 		}
-
-		// header("Content-type: text/xml; charset=UTF-8");
-		// echo $list->asXML(); die;
 		return $list;
 	}
 
