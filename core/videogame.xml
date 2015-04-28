@@ -4,38 +4,38 @@
 	<game>
 		<presentation>
 			<genders>
-				<gender>Action</gender>
-				<gender>Mélodramatique</gender>
+				<gender id="">Action</gender>
+				<gender id="">Mélodramatique</gender>
 			</genders>
 			<title>ThisIsAVideoGame</title>
 			<editors>
-				<editor>An editor</editor>
+				<editor id="">An editor</editor>
 			</editors>
 			<themes>
-				<theme></theme>
+				<theme id=""></theme>
 			</themes>
 			<site></site>
 			<consoles>
-				<console>
+				<console id="">
 					<businessModel></businessModel>
 					<pegi></pegi>
 					<modes>
-						<mode></mode>
+						<mode id=""></mode>
 					</modes>
 					<cover>
 						<front url="test" />
 						<back url="/location/to/content" />
 					</cover>
 					<supports>
-						<support></support>
+						<support id=""></support>
 					</supports>
 					<release>2015-01-25</release>
 					<editions>
-						<edition>
+						<edition id="">
 							<name></name>
 							<content></content>
 							<shops>
-								<shop url="test">
+								<shop id="" url="test">
 									<name></name>
 									<price devise="euro"></price>
 								</shop>
@@ -45,15 +45,15 @@
 					<name></name>
 					<description></description>
 					<dlcs>
-						<dlc>
+						<dlc id="">
 							<title></title>
 							<description></description>
 							<price devise="euro"></price>
 						</dlc>
 					</dlcs>
 					<configs>
-						<config type="minimale"></config>
-						<config type="optimale"></config>
+						<config id="" type="minimale"></config>
+						<config id="" type="optimale"></config>
 					</configs>
 					<test>	
 						<report></report>
@@ -61,7 +61,7 @@
 						<userName></userName>
 						<note>1</note>
 						<comments>
-							<comment>
+							<comment id="">
 								<text></text>
 								<date>2015-01-22T11:33:33</date>
 								<userName></userName>
@@ -71,19 +71,19 @@
 							</comment>
 						</comments>
 						<analyses>
-							<analyse type="positive"></analyse>
-							<analyse type="negative"></analyse>
+							<analyse id="" type="positive"></analyse>
+							<analyse id="" type="negative"></analyse>
 						</analyses>
 					</test>
 				</console>
 			</consoles>
 			<languages>
-				<language></language>
+				<language id=""></language>
 			</languages>
 		</presentation>
 		
 		<articles>
-			<article type="news">
+			<article id="" type="news">
 				<consolesNames>
 					<consoleName></consoleName>
 				</consolesNames>
@@ -94,7 +94,7 @@
 		</articles>
 		
 		<medias>
-			<media type="video" url="path/to/media" >
+			<media id="" type="video" url="path/to/media" >
 				<consolesNames>
 					<consoleName></consoleName>
 				</consolesNames>
@@ -103,7 +103,7 @@
 		</medias>
 		
 		<tips>
-			<tip>
+			<tip id="">
 				<consolesNames>
 					<consoleName></consoleName>
 				</consolesNames>

@@ -51,14 +51,16 @@ class GameController extends BaseController
 	public function generateXml($games = [])
 	{
 		$list = new SimpleXMLElement('<list></list>');
-		foreach ($games as $game) {
+		foreach ($games as $idGame => $game) {
 			$gameNode = $list->addChild('game');
+			$gameNode->addAttribute('id', $idGame);
 
 			$presentationNode = $gameNode->addChild('presentation');
 				// Game's genders
 				$gendersNode = $presentationNode->addChild('genders');
 				foreach ($game['presentation']['genders'] as $gender) {
-					$gendersNode->addChild('gender', $gender['gender']);
+					$genderNode = $gendersNode->addChild('gender', $gender['gender']);
+					$genderNode->addAttribute('id', $gender['idGender']);
 				}
 
 				// Game's title
@@ -67,13 +69,15 @@ class GameController extends BaseController
 				// Game's editors
 				$editorsNode = $presentationNode->addChild('editors');
 				foreach ($game['presentation']['editors'] as $editor) {
-					$editorsNode->addChild('editor', $editor['editor']);
+					$editorNode = $editorsNode->addChild('editor', $editor['editor']);
+					$editorNode->addAttribute('id', $editor['idEditor']);
 				}
 
 				// Game's themes
 				$themesNode = $presentationNode->addChild('themes');
 				foreach ($game['presentation']['themes'] as $theme) {
-					$themesNode->addChild('theme', $theme['theme']);
+					$themeNode = $themesNode->addChild('theme', $theme['theme']);
+					$themeNode->addAttribute('id', $theme['idTheme']);
 				}
 
 				// Game's website
@@ -82,6 +86,7 @@ class GameController extends BaseController
 				$consolesNode = $presentationNode->addChild('consoles');
 				foreach ($game['presentation']['consoles'] as $console) {
 					$consoleNode  = $consolesNode->addChild('console');
+					$consoleNode->addAttribute('id', $console['idConsole']);
 					// Console's business model
 					$consoleNode->addChild('businessModel', $console['business_model']);
 					// Console's pegi
@@ -90,7 +95,8 @@ class GameController extends BaseController
 					// Console's modes
 					$modesNode = $consoleNode->addChild('modes');
 					foreach ($console['modes'] as $mode) {
-						$modesNode->addChild('mode', $mode['mode']);
+						$modeNode = $modesNode->addChild('mode', $mode['mode']);
+						$modeNode->addAttribute('id', $mode['idMode']);
 					}
 
 					// Console's covers
@@ -104,7 +110,8 @@ class GameController extends BaseController
 					// Console's supports
 					$supportsNode = $consoleNode->addChild('supports');
 					foreach ($console['supports'] as $support) {
-						$supportsNode->addChild('support', $support['support']);
+						$supportNode = $supportsNode->addChild('support', $support['support']);
+						$supportNode->addAttribute('id', $support['idSupport']);
 					}
 
 					// Console's release date
@@ -114,6 +121,7 @@ class GameController extends BaseController
 					$editionsNode = $consoleNode->addChild('editions');
 					foreach ($console['editions'] as $edition) {
 						$editionNode = $editionsNode->addChild('edition');
+						$editionNode->addAttribute('id', $edition['idEdition']);
 						$editionNode->addChild('name', $edition['name']);
 						$editionNode->addChild('content', $edition['content']);
 
@@ -121,6 +129,7 @@ class GameController extends BaseController
 						$shopsNode = $editionNode->addChild('shops');
 						foreach ($edition['shops'] as $shop) {
 							$shopNode = $shopsNode->addChild('shop');
+							$shopNode->addAttribute('id', $shop['idShop']);
 							$shopNode->addAttribute('url', $shop['url']);
 							$shopNode->addChild('name', $shop['name']);
 							$shopPrice = $shopNode->addChild('price', $shop['price']);
@@ -138,6 +147,7 @@ class GameController extends BaseController
 					$dlcsNode = $consoleNode->addChild('dlcs');
 					foreach ($console['dlcs'] as $dlc) {
 						$dlcNode = $dlcsNode->addChild('dlc');
+						$dlcNode->addAttribute('id', $dlc['idDlc']);
 						$dlcNode->addChild('title', $dlc['title']);
 						$dlcNode->addChild('description', $dlc['description']);
 						$dlcPrice = $dlcNode->addChild('price', $dlc['price']);
@@ -148,6 +158,7 @@ class GameController extends BaseController
 					$configsNode = $consoleNode->addChild('configs');
 					foreach ($console['configs'] as $config) {
 						$configNode = $configsNode->addChild('config', $config['config']);
+						$configNode->addAttribute('id', $config['idConfig']);
 						$configNode->addAttribute('type', $config['type']);
 					}
 
@@ -163,6 +174,7 @@ class GameController extends BaseController
 						$commentsNode = $testNode->addChild('comments');
 						foreach ($test['comments'] as $comment) {
 							$commentNode = $commentsNode->addChild('comment');
+							$commentNode->addAttribute('id', $comment['idComment']);
 							$commentNode->addChild('text', $comment['text']);
 							$commentNode->addChild('date', $comment['date']);
 							$commentNode->addChild('userName', $comment['user_name']);
@@ -175,21 +187,24 @@ class GameController extends BaseController
 						$analysesNode = $testNode->addChild('analyses');
 						foreach ($test['analyses'] as $analyse) {
 							$analyseNode = $analysesNode->addChild('analyse', $analyse['analyse']);
+							$analyseNode->addAttribute('id', $analyse['idAnalyse']);
 							$analyseNode->addAttribute('type', $analyse['type']);
 						}
 					}
 				}
 
 				// Game's languages
-				$languages = $presentationNode->addChild('languages');
+				$languagesNode = $presentationNode->addChild('languages');
 				foreach ($game['presentation']['languages'] as $language) {
-					$languages->addChild('language', $language['language']);
+					$languageNode = $languagesNode->addChild('language', $language['language']);
+					$languageNode->addAttribute('id', $language['idLanguage']);
 				}
 
 				// Game's articles
 				$articlesNode = $gameNode->addChild('articles');
 				foreach ($game['articles'] as $article) {
 					$articleNode = $articlesNode->addChild('article');
+					$articleNode->addAttribute('id', $article['idArticle']);
 					$articleNode->addAttribute('type', $article['type']);
 					$articleConsolesNames = $articleNode->addChild('consolesNames');
 					foreach (explode(',', $article['consoles_names']) as $consoleName) {
@@ -205,6 +220,7 @@ class GameController extends BaseController
 				$mediasNode = $gameNode->addChild('medias');
 				foreach ($game['medias'] as $media) {
 					$mediaNode = $mediasNode->addChild('media');
+					$mediaNode->addAttribute('id', $media['idMedia']);
 					$mediaNode->addAttribute('type', $media['type']);
 					$mediaNode->addAttribute('url', $media['url']);
 					$mediaConsolesNames = $mediaNode->addChild('consolesNames');
@@ -221,6 +237,7 @@ class GameController extends BaseController
 				$tipsNode = $gameNode->addChild('tips');
 				foreach ($game['tips'] as $tip) {
 					$tipNode = $tipsNode->addChild('tip');
+					$tipNode->addAttribute('id', $tip['idTip']);
 					$tipConsoleNames = $tipNode->addChild('consolesNames');
 					foreach (explode(',', $tip['consoles_names']) as $consoleName) {
 						$tipConsoleNames->addChild('consoleName', $consoleName);
