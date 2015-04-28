@@ -27,14 +27,18 @@ class GameController extends BaseController
 	 */
 	public function showAction($id)
 	{
-		$this->loadLayout('xml');
-
 		$gameModel  = new Game();
 		$game       = $gameModel->getGames($id);
 
 		$this->game = $this->generateXml($game);
 
-		$this->render('show');
+		if ($errors = $this->validateXML($this->game->asXML())) {
+			$this->loadLayout();
+			echo $errors;
+		} else {
+			$this->loadLayout('xml');
+			$this->render('show');
+		}
 	}
 
 	/**
@@ -47,7 +51,7 @@ class GameController extends BaseController
 	public function generateXml($games = [])
 	{
 		$list = new SimpleXMLElement('<list></list>');
-		// echo '<pre>'; var_dump($games); echo '</pre>'; die;
+		echo '<pre>'; var_dump($games); echo '</pre>'; die;
 		foreach ($games as $game) {
 			$gameNode = $list->addChild('game');
 
@@ -65,9 +69,9 @@ class GameController extends BaseController
 				}
 
 				$themes = $presentation->addChild('themes');
-					foreach ($game['themes'] as $theme) {
-						$themes->addChild('theme', $theme['theme']);	
-					}
+				foreach ($game['themes'] as $theme) {
+					$themes->addChild('theme', $theme['theme']);
+				}
 
 				$presentation->addChild('site', $game['site']);
 
@@ -146,7 +150,6 @@ class GameController extends BaseController
 
 				$languages = $presentation->addChild('languages');
 				$languages->addChild('language');
-				}
 
 				$articles = $gameNode->addChild('articles');
 				$article = $articles->addChild('article');

@@ -14,24 +14,91 @@ class Game extends BaseModel
 		foreach ($this->getGameInfos($gameId) as $game) {
 			$gameId = $game['idGame'];
 
-			$games[$gameId]['title']     = $game['title'];
-			$games[$gameId]['site']      = $game['site'];
-			$games[$gameId]['analyses']  = $this->getGameAnalyses($gameId);
-			$games[$gameId]['articles']  = $this->getGameArticles($gameId);
-			$games[$gameId]['comments']  = $this->getGameComments($gameId);
-			$games[$gameId]['config']    = $this->getGameConfigs($gameId);
-			$games[$gameId]['consoles']  = $this->getGameConsoles($gameId);
-			$games[$gameId]['dlcs']      = $this->getGameDlcs($gameId);
-			$games[$gameId]['editions']  = $this->getGameEditions($gameId);
-			$games[$gameId]['editors']   = $this->getGameEditors($gameId);
-			$games[$gameId]['genders']   = $this->getGameGenders($gameId);
-			$games[$gameId]['languages'] = $this->getGameLanguages($gameId);
-			$games[$gameId]['medias']    = $this->getGameMedias($gameId);
-			$games[$gameId]['modes']     = $this->getGameModes($gameId);
-			$games[$gameId]['shops']     = $this->getGameShops($gameId);
-			$games[$gameId]['supports']  = $this->getGameSupports($gameId);
-			$games[$gameId]['themes']    = $this->getGameThemes($gameId);
-			$games[$gameId]['tips']      = $this->getGameTips($gameId);
+			// Presentation
+			$games[$gameId]['presentation']['genders']   = $this->getGameGenders($gameId);
+			$games[$gameId]['presentation']['title']     = $game['title'];
+			$games[$gameId]['presentation']['editors']   = $this->getGameEditors($gameId);
+			$games[$gameId]['presentation']['themes']    = $this->getGameThemes($gameId);
+			$games[$gameId]['presentation']['site']      = $game['site'];
+
+			// Consoles
+			foreach ($this->getGameConsoles($gameId) as $console) {
+				$idConsole = $console['idConsole'];
+				$games[$gameId]['presentation']['consoles'][$idConsole]  = $console;
+
+				// Modes
+				foreach ($this->getGameModes($idConsole) as $mode) {
+					$games[$gameId]['presentation']['consoles'][$idConsole]['modes'][$mode['idMode']] = $mode;
+				}
+
+				// Supports
+				foreach ($this->getGameSupports($idConsole) as $support) {
+					$games[$gameId]['presentation']['consoles'][$idConsole]['supports'][$support['idSupport']] = $support;
+				}
+
+				// Editions
+				foreach ($this->getGameEditions($idConsole) as $edition) {
+					$idEdition = $edition['idEdition'];
+					$games[$gameId]['presentation']['consoles'][$idConsole]['editions'][$idEdition] = $edition;
+
+					// Shops
+					foreach ($this->getGameShops($idEdition) as $shop) {
+						$games[$gameId]['presentation']['consoles'][$idConsole]['editions'][$idEdition]['shops'][$shop['idShop']] = $shop;
+					}
+				}
+
+				// Dlcs
+				foreach ($this->getGameDlcs($idConsole) as $dlc) {
+					$games[$gameId]['presentation']['consoles'][$idConsole]['dlcs'][$dlc['idDlc']] = $dlc;
+				}
+
+				// Configs
+				foreach ($this->getGameConfigs($idConsole) as $config) {
+					$games[$gameId]['presentation']['consoles'][$idConsole]['configs'][$config['idConfig']] = $config;
+				}
+
+				// Tests
+				foreach ($this->getGameTests($idConsole) as $test) {
+					$idTest = $test['idTest'];
+					$games[$gameId]['presentation']['consoles'][$idConsole]['tests'][$idTest] = $test;
+
+					// Comments
+					foreach ($this->getGameComments($idTest) as $comment) {
+						$games[$gameId]['presentation']['consoles'][$idConsole]['tests'][$idTest]['comments'][$comment['idComment']] = $comment;
+					}
+
+					// Analyses
+					foreach ($this->getGameAnalyses($idTest) as $analyse) {
+						$games[$gameId]['presentation']['consoles'][$idConsole]['tests'][$idTest]['analyses'][$analyse['idAnalyse']] = $analyse;
+					}
+				}
+			}
+			// End consoles
+
+			// Languages
+			foreach ($this->getGameLanguages($gameId) as $language) {
+				$games[$gameId]['presentation']['languages'][$language['idLanguage']]  = $language;
+			}
+			// End prentation
+
+			// Articles
+			foreach ($this->getGameArticles($gameId) as $article) {
+				$games[$gameId]['articles'][$article['idArticle']]  = $article;
+			}
+			// End Articles
+
+			// Media
+			foreach ($this->getGameMedias($gameId) as $media) {
+				$games[$gameId]['medias'][$media['idMedia']]  = $media;
+			}
+			// End Media
+
+			// Tips
+			foreach ($this->getGameTips($gameId) as $tip) {
+				$games[$gameId]['tips'][$tip['idTip']]  = $tip;
+			}
+			// End Tips
+			// echo '<pre>'; var_dump($games); echo '</pre>'; die;
 		}
 
 		return $games;
@@ -45,7 +112,7 @@ class Game extends BaseModel
 	 */
 	public function getGameInfos($gameId = null)
 	{
-		$this->table = 'Game g';
+		$this->table = 'game g';
 
 		$fields = ['`idGame`', '`title`', '`site`'];
 		
@@ -62,25 +129,23 @@ class Game extends BaseModel
 	}
 
 	/**
-	 * Retrieve every available analyses or analyses by game ID
+	 * Retrieve every available analyses or analyses by test ID
 	 *
-	 * @param $gameId in Game's ID
+	 * @param $testId int Test's ID attached to the analyse
 	 * @return $analyses array
 	 */
-	public function getGameAnalyses($gameId = null)
+	public function getGameAnalyses($testId = null)
 	{
-		$this->table = 'Analyses a';
-
-		$fields = ['`analyse`', '`type`'];
+		$this->table = 'analyse a';
 		
 		$where = [];
-		if ($gameId) {
+		if ($testId) {
 			$where = [
-				'a.Game_idGame' => $gameId,
+				'a.test_idTest' => $testId,
 			];
 		}
 
-		$analyses = $this->select($fields, $where);
+		$analyses = $this->select(['*'], $where);
 
 		return $analyses;
 	}
@@ -88,85 +153,65 @@ class Game extends BaseModel
 	/**
 	 * Retrieve every available articles or articles by game ID
 	 *
-	 * @param $gameId in Game's ID
+	 * @param $gameId int Game's ID
 	 * @return $articles array
 	 */
 	public function getGameArticles($gameId = null)
 	{
-		$this->table = 'Articles a';
-
-		$fields = ['`title`', '`userName`', '`date`', '`consoleNames`'];
+		$this->table = 'article a';
 		
 		$where = [];
 		if ($gameId) {
 			$where = [
-				'a.Game_idGame' => $gameId,
+				'a.game_idGame' => $gameId,
 			];
 		}
 
-		$articles = $this->select($fields, $where);
+		$articles = $this->select(['*'], $where);
 
 		return $articles;
 	}
 
 	/**
-	 * Retrieve every available comments or comments by game ID
+	 * Retrieve every available comments or comments by test ID
 	 *
-	 * @param $gameId in Game's ID
+	 * @param $testId int Test's ID attached to the comment
 	 * @return $comments array
 	 */
-	public function getGameComments($gameId = null)
+	public function getGameComments($testId = null)
 	{
-		$this->table = 'Comments c';
-
-		$fields = ['`date`', '`userName`', '`note`', '`like`', '`dislike`', '`texte`'];
+		$this->table = 'comment c';
 		
 		$where = [];
-		if ($gameId) {
+		if ($testId) {
 			$where = [
-				'c.Game_idGame' => $gameId,
+				'c.test_idTest' => $testId,
 			];
 		}
 
-		$comments = $this->select($fields, $where);
+		$comments = $this->select(['*'], $where);
 
 		return $comments;
 	}
 
 	/**
-	 * Retrieve every available configs or configs by game ID
+	 * Retrieve every available configs or configs by consoleId ID
 	 *
-	 * @param $gameId int Game's ID
+	 * @param $consoleId int Console's ID attached to the config
 	 * @return $configs array
 	 */
-	public function getGameConfigs($gameId = null)
+	public function getGameConfigs($consoleId = null)
 	{
-		$this->table = 'Configs c';
+		$this->table = 'config c';
 
-		$fields = ['config', 'type'];
-		
 		$where = [];
-		$join  = [];
-		if ($gameId) {
+		if ($consoleId) {
 			$where = [
-				'ghc.Game_idGame' => $gameId,
-			];
-
-			$join = [
-				[
-					'type'  => 'INNER JOIN',
-					'table' => 'Game_has_Configs ghc',
-					'on'    => 'c.idConfigs = ghc.Configs_idConfigs',
-				],
-				[
-					'type'  => 'INNER JOIN',
-					'table' => 'Game g',
-					'on'    => 'g.idGame = ghc.Game_idGame',
-				],
+				'c.console_idConsole' => $consoleId,
 			];
 		}
 
-		$configs = $this->select($fields, $where, [], $join);
+		$configs = $this->select(['*'], $where);
 
 		return $configs;
 	}
@@ -179,56 +224,38 @@ class Game extends BaseModel
 	 */
 	public function getGameConsoles($gameId = null)
 	{
-		$this->table = 'Consoles c';
+		$this->table = 'console c';
 
-		$fields = ['`businessModel`', '`pegi`', '`release`', '`name`', '`description`', '`testReport`', '`testDate`', '`testUserName`', '`testNote`', '`coverFront`', '`coverBack`'];
-		
 		$where = [];
-		$join  = [];
 		if ($gameId) {
 			$where = [
-				'ghc.Game_idGame' => $gameId,
-			];
-
-			$join = [
-				[
-					'type'  => 'INNER JOIN',
-					'table' => 'Game_has_Consoles ghc',
-					'on'    => 'c.idConsoles = ghc.Consoles_idConsoles',
-				],
-				[
-					'type'  => 'INNER JOIN',
-					'table' => 'Game g',
-					'on'    => 'g.idGame = ghc.Game_idGame',
-				],
+				'c.game_idGame' => $gameId,
 			];
 		}
 
-		$consoles = $this->select($fields, $where, [], $join);
+		$consoles = $this->select(['*'], $where);
 
 		return $consoles;
 	}
 
 	/**
-	 * Retrieve every available dlcs or dlcs by game ID
+	 * Retrieve every available dlcs or dlcs by console ID
 	 *
-	 * @param $gameId in Game's ID
+	 * @param $consoleId int Console's ID attached to the dlc
 	 * @return $dlcs array
 	 */
-	public function getGameDlcs($gameId = null)
+	public function getGameDlcs($consoleId = null)
 	{
-		$this->table = 'dlcs d';
-
-		$fields = ['`title`', '`description`', '`price`'];
+		$this->table = 'dlc d';
 		
 		$where = [];
-		if ($gameId) {
+		if ($consoleId) {
 			$where = [
-				'd.Game_idGame' => $gameId,
+				'd.console_idConsole' => $consoleId,
 			];
 		}
 
-		$dlcs = $this->select($fields, $where);
+		$dlcs = $this->select(['*'], $where);
 
 		return $dlcs;
 	}
@@ -236,37 +263,21 @@ class Game extends BaseModel
 	/**
 	 * Retrieve every available editions or editions by game ID
 	 *
-	 * @param $gameId int Game's ID
+	 * @param $consoleId int Console's ID attached to the edition
 	 * @return $editions array
 	 */
-	public function getGameEditions($gameId = null)
+	public function getGameEditions($consoleId = null)
 	{
-		$this->table = 'Editions e';
-
-		$fields = ['`name`', '`content`'];
+		$this->table = 'edition e';
 		
 		$where = [];
-		$join  = [];
-		if ($gameId) {
+		if ($consoleId) {
 			$where = [
-				'ghe.Game_idGame' => $gameId,
-			];
-
-			$join = [
-				[
-					'type'  => 'INNER JOIN',
-					'table' => 'Game_has_Editions ghe',
-					'on'    => 'e.idEditions = ghe.Editions_idEditions',
-				],
-				[
-					'type'  => 'INNER JOIN',
-					'table' => 'Game g',
-					'on'    => 'g.idGame = ghe.Game_idGame',
-				],
+				'e.console_idConsole' => $consoleId,
 			];
 		}
 
-		$editions = $this->select($fields, $where, [], $join);
+		$editions = $this->select(['*'], $where);
 
 		return $editions;
 	}
@@ -274,70 +285,70 @@ class Game extends BaseModel
 	/**
 	 * Retrieve every available edtiors or edtiors by game ID
 	 *
-	 * @param $gameId int Game's ID
+	 * @param $gameId int Game's ID attached to the editor
 	 * @return $edtiors array
 	 */
 	public function getGameEditors($gameId = null)
 	{
-		$this->table = 'Editors e';
+		$this->table = 'editor e';
 
-		$fields = ['`editor`'];
+		$fields = ['`idEditor`', '`editor`'];
 		
 		$where = [];
 		$join  = [];
 		if ($gameId) {
 			$where = [
-				'ghe.Game_idGame' => $gameId,
+				'ghe.game_idGame' => $gameId,
 			];
 
 			$join = [
 				[
 					'type'  => 'INNER JOIN',
-					'table' => 'Game_has_Editors ghe',
-					'on'    => 'e.idEditors = ghe.Editors_idEditors',
+					'table' => 'game_has_editor ghe',
+					'on'    => 'e.idEditor = ghe.game_idGame',
 				],
 				[
 					'type'  => 'INNER JOIN',
-					'table' => 'Game g',
-					'on'    => 'g.idGame = ghe.Game_idGame',
+					'table' => 'game g',
+					'on'    => 'g.idGame = ghe.game_idGame',
 				],
 			];
 		}
 
-		$edtiors = $this->select($fields, $where, [], $join);
+		$genders = $this->select($fields, $where, [], $join);
 
-		return $edtiors;
+		return $genders;
 	}
 
 	/**
 	 * Retrieve every available genders or genders by game ID
 	 *
-	 * @param $gameId int Game's ID
+	 * @param $gameId int Game's ID attached to the gender
 	 * @return $genders array
 	 */
 	public function getGameGenders($gameId = null)
 	{
-		$this->table = 'Genders gender';
+		$this->table = 'gender ge';
 
-		$fields = ['`gender`'];
+		$fields = ['`idGender`', '`gender`'];
 		
 		$where = [];
 		$join  = [];
 		if ($gameId) {
 			$where = [
-				'ghg.Game_idGame' => $gameId,
+				'ghg.game_idGame' => $gameId,
 			];
 
 			$join = [
 				[
 					'type'  => 'INNER JOIN',
-					'table' => 'Game_has_Genders ghg',
-					'on'    => 'gender.idGenders = ghg.Genders_idGenders',
+					'table' => 'game_has_gender ghg',
+					'on'    => 'ge.idGender = ghg.gender_idGender',
 				],
 				[
 					'type'  => 'INNER JOIN',
-					'table' => 'Game g',
-					'on'    => 'g.idGame = ghg.Game_idGame',
+					'table' => 'game ga',
+					'on'    => 'ga.idGame = ghg.game_idGame',
 				],
 			];
 		}
@@ -350,32 +361,32 @@ class Game extends BaseModel
 	/**
 	 * Retrieve every available languages or languages by game ID
 	 *
-	 * @param $gameId int Game's ID
+	 * @param $gameId int Game's ID attached to the language
 	 * @return $languages array
 	 */
 	public function getGameLanguages($gameId = null)
 	{
-		$this->table = 'Languages l';
+		$this->table = 'language l';
 
-		$fields = ['`language`'];
+		$fields = ['`idLanguage`', '`language`'];
 		
 		$where = [];
 		$join  = [];
 		if ($gameId) {
 			$where = [
-				'ghl.Game_idGame' => $gameId,
+				'ghl.game_idGame' => $gameId,
 			];
 
 			$join = [
 				[
 					'type'  => 'INNER JOIN',
-					'table' => 'Game_has_Languages ghl',
-					'on'    => 'l.idLanguages = ghl.Languages_idLanguages',
+					'table' => 'game_has_language ghl',
+					'on'    => 'l.idLanguage = ghl.language_idLanguage',
 				],
 				[
 					'type'  => 'INNER JOIN',
-					'table' => 'Game g',
-					'on'    => 'g.idGame = ghl.Game_idGame',
+					'table' => 'game g',
+					'on'    => 'g.idGame = ghl.game_idGame',
 				],
 			];
 		}
@@ -388,60 +399,54 @@ class Game extends BaseModel
 	/**
 	 * Retrieve every available medias or medias by game ID
 	 *
-	 * @param $gameId in Game's ID
+	 * @param $gameId in Game's ID attached to the media
 	 * @return $medias array
 	 */
 	public function getGameMedias($gameId = null)
 	{
-		$this->table = 'Medias m';
-
-		$fields = ['`type`', '`url`', '`unit`', '`width`', '`height`', '`consoleNames`', '`Game_idGame`'];
+		$this->table = 'media m';
 		
 		$where = [];
 		if ($gameId) {
 			$where = [
-				'm.Game_idGame' => $gameId,
+				'm.game_idGame' => $gameId,
 			];
 		}
 
-		$medias = $this->select($fields, $where);
+		$medias = $this->select(['*'], $where);
 
-		if (!count($medias)) {
-			return false;
-		} else {
-			return $medias;
-		}
+		return $medias;
 	}
 
 	/**
-	 * Retrieve every available modes or modes by game ID
+	 * Retrieve every available modes or modes by console ID
 	 *
-	 * @param $gameId int Game's ID
+	 * @param $consoleId int Console's ID attached to the mode
 	 * @return $modes array
 	 */
-	public function getGameModes($gameId = null)
+	public function getGameModes($consoleId = null)
 	{
-		$this->table = 'Modes m';
+		$this->table = 'mode m';
 
-		$fields = ['`mode`'];
+		$fields = ['`idMode`', '`mode`'];
 		
 		$where = [];
 		$join  = [];
-		if ($gameId) {
+		if ($consoleId) {
 			$where = [
-				'ghm.Game_idGame' => $gameId,
+				'chm.console_idConsole' => $consoleId,
 			];
 
 			$join = [
 				[
 					'type'  => 'INNER JOIN',
-					'table' => 'Game_has_Modes ghm',
-					'on'    => 'm.idModes = ghm.Modes_idModes',
+					'table' => 'console_has_mode chm',
+					'on'    => 'm.idMode = chm.mode_idMode',
 				],
 				[
 					'type'  => 'INNER JOIN',
-					'table' => 'Game g',
-					'on'    => 'g.idGame = ghm.Game_idGame',
+					'table' => 'console c',
+					'on'    => 'c.idConsole = chm.console_idConsole',
 				],
 			];
 		}
@@ -452,58 +457,56 @@ class Game extends BaseModel
 	}
 
 	/**
-	 * Retrieve every available shops or shops by game ID
+	 * Retrieve every available shops or shops by edition ID
 	 *
-	 * @param $gameId in Game's ID
+	 * @param $editionId in Edition's ID attached to the shop
 	 * @return $shops array
 	 */
-	public function getGameShops($gameId = null)
+	public function getGameShops($editionId = null)
 	{
-		$this->table = 'Shops s';
-
-		$fields = ['`shop`', '`price`'];
+		$this->table = 'shop s';
 		
 		$where = [];
-		if ($gameId) {
+		if ($editionId) {
 			$where = [
-				's.Game_idGame' => $gameId,
+				's.edition_idEdition' => $editionId,
 			];
 		}
 
-		$shops = $this->select($fields, $where);
+		$shops = $this->select(['*'], $where);
 
 		return $shops;
 	}
 
 	/**
-	 * Retrieve every available supports or supports by game ID
+	 * Retrieve every available supports or supports by console ID
 	 *
-	 * @param $gameId int Game's ID
+	 * @param $consoleId int Console's ID attached to the support
 	 * @return $supports array
 	 */
-	public function getGameSupports($gameId = null)
+	public function getGameSupports($consoleId = null)
 	{
-		$this->table = 'Supports s';
+		$this->table = 'support s';
 
-		$fields = ['`support`'];
+		$fields = ['`idSupport`', '`support`'];
 		
 		$where = [];
 		$join  = [];
-		if ($gameId) {
+		if ($consoleId) {
 			$where = [
-				'ghs.Game_idGame' => $gameId,
+				'chs.console_idConsole' => $consoleId,
 			];
 
 			$join = [
 				[
 					'type'  => 'INNER JOIN',
-					'table' => 'Game_has_Supports ghs',
-					'on'    => 's.idSupports = ghs.Supports_idSupports',
+					'table' => 'console_has_support chs',
+					'on'    => 's.idSupport = chs.support_idSupport',
 				],
 				[
 					'type'  => 'INNER JOIN',
-					'table' => 'Game g',
-					'on'    => 'g.idGame = ghs.Game_idGame',
+					'table' => 'console c',
+					'on'    => 'c.idConsole = chs.console_idConsole',
 				],
 			];
 		}
@@ -514,34 +517,56 @@ class Game extends BaseModel
 	}
 
 	/**
+	 * Retrieve every available tests or tests by consle ID
+	 *
+	 * @param $consoleId int Console's ID attached to the test
+	 * @return $tests array
+	 */
+	public function getGameTests($consoleId = null)
+	{
+		$this->table = 'test t';
+		
+		$where = [];
+		if ($consoleId) {
+			$where = [
+				't.console_idConsole' => $consoleId,
+			];
+		}
+
+		$tests = $this->select(['*'], $where);
+
+		return $tests;
+	}
+
+	/**
 	 * Retrieve every available themes or themes by game ID
 	 *
-	 * @param $gameId int Game's ID
+	 * @param $gameId int Game's ID attached to the theme
 	 * @return $themes array
 	 */
 	public function getGameThemes($gameId = null)
 	{
-		$this->table = 'Themes t';
+		$this->table = 'theme t';
 
-		$fields = ['`theme`'];
+		$fields = ['`idTheme`', '`theme`'];
 		
 		$where = [];
 		$join  = [];
 		if ($gameId) {
 			$where = [
-				'ght.Game_idGame' => $gameId,
+				'ght.game_idGame' => $gameId,
 			];
 
 			$join = [
 				[
 					'type'  => 'INNER JOIN',
-					'table' => 'Game_has_Themes ght',
-					'on'    => 't.idThemes = ght.Themes_idThemes',
+					'table' => 'game_has_theme ght',
+					'on'    => 't.idTheme = ght.theme_idTheme',
 				],
 				[
 					'type'  => 'INNER JOIN',
-					'table' => 'Game g',
-					'on'    => 'g.idGame = ght.Game_idGame',
+					'table' => 'game g',
+					'on'    => 'g.idGame = ght.game_idGame',
 				],
 			];
 		}
@@ -554,19 +579,19 @@ class Game extends BaseModel
 	/**
 	 * Retrieve every available tips or tips by game ID
 	 *
-	 * @param $gameId in Game's ID
+	 * @param $gameId int Game's ID attached to the tip
 	 * @return $tips array
 	 */
 	public function getGameTips($gameId = null)
 	{
-		$this->table = 'Tips t';
+		$this->table = 'tip t';
 
-		$fields = ['`content`', '`consoleNames`'];
+		$fields = ['`idTip`', '`content`', '`consoles_names`'];
 		
 		$where = [];
 		if ($gameId) {
 			$where = [
-				't.Game_idGame' => $gameId,
+				't.game_idGame' => $gameId,
 			];
 		}
 
