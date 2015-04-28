@@ -3,6 +3,7 @@ class GameController extends BaseController
 {
 	/**
 	 * Show the full XML
+	 * Route: /game
 	 */
 	public function indexAction()
 	{
@@ -21,6 +22,7 @@ class GameController extends BaseController
 
 	/**
 	 * Show a single game's XML by it's ID.
+	 * Route: /game/show/id/{id}
 	 *
 	 * @param $id int Game's ID
 	 */
@@ -277,6 +279,7 @@ class GameController extends BaseController
 
 	/**
 	 * Add new game
+	 * Route: /game/add
 	 */
 	public function addAction()
 	{
@@ -299,6 +302,7 @@ class GameController extends BaseController
 
 	/**
 	 * Update game
+	 * Route: /game/update
 	 */
 	public function updateAction()
 	{
@@ -321,20 +325,18 @@ class GameController extends BaseController
 
 	/**
 	 * Delete game
+	 * Route: /game/delete/id/{id}
+	 *
+	 * @param $id int Game's ID to delete
 	 */
-	public function deleteAction()
+	public function deleteAction($id)
 	{
 		if (!$this->getRequestMethod() == 'POST') {
 			$this->exitError(405);
 		}
 
-		if (!isset($_POST['idGame']))
-		{
-			$this->exitError(400, 'idGame is a required field.');
-		}
-
 		$gameModel = new Game();
-		$gameModel->deleteGame($_POST['idGame']);
+		$gameModel->deleteGame((int)$id);
 
 		$this->sendStatus(204);
 	}

@@ -593,18 +593,36 @@ class Game extends BaseModel
 		/**
 		 * @todo Tester que toutes les valeurs obligatoires sont présentes avec des if(isset($post['...']))
 		 */
-		
+
+		// Insertion of the game
 		$this->table = 'game';
 
 		$fields = [
-			/**
-			 * @todo Ajouter tous les champs avec la structure suivante : cle => valeur (ou clé = nom du champ en BDD)
-			 */
-			'site' => 'toto',
-			'title' => 'blablabla',
+			'site'  => $post['site'],
+			'title' => $post['title'],
 		];
 
-		$this->insert($fields, $where);
+		// insertedGame = ID of the inserted game in database
+		$insertedGame = $this->insert($fields);
+
+		// Insertion of the gender
+		if ($insertedGame) {
+			$this->table    = 'gender';
+			$insertedGender = $this->insert(['editor' => $post['editor']]);
+
+			if ($insertedGender) {
+				$this->table    = 'game_has_gender';
+				$fields = [
+					'game_idGame'     => $insertedGame,
+					'gender_idGender' => $insertedGender,
+				];
+				$this->insert($fields);
+			} else {
+				return false;
+			}
+		} else {
+			return false;
+		}
 	}
 
 	/**
