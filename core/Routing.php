@@ -1,7 +1,7 @@
 <?php
 class Routing
 {
-	private $defaultController = 'Index';
+	private $defaultController = 'Game';
 	private $defaultAction     = 'index';
 
 	/**
