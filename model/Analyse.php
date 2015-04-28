@@ -24,18 +24,6 @@ class Analyse extends BaseModel
 	}
 
 	/**
-	 * Delete an analyse by it's ID
-	 *
-	 * @param $id int Analyse's ID
-	 */
-	public function deleteAnalyse($id)
-	{
-		$this->table = 'analyse';
-		$this->delete(['idAnalyse' => (int)$id]);
-	}
-
-
-	/**
 	 * Update analyse
 	 *
 	 * @param $gameId int Game ID to retrieve
@@ -56,5 +44,16 @@ class Analyse extends BaseModel
 		} else {
 			return false;
 		}
+	}
+
+	/**
+	 * Delete an analyse by it's ID
+	 *
+	 * @param $id int Analyse's ID
+	 */
+	public function deleteAnalyse($id)
+	{
+		$this->table = 'analyse';
+		$this->delete(['idAnalyse' => (int)$id]);
 	}
 }
