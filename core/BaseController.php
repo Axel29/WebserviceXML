@@ -78,6 +78,15 @@ class BaseController
 	{
 		extract($this->vars); // Allow us to use directly var names instead of "$this->varName"
 
+		if (in_array($fileName, array('404', '500'))) {
+			require_once(ROOT . 'view/errors/' . $fileName . '.phtml');
+		
+			// Stops the temporization started in loadLayout()
+			echo ob_get_clean();
+
+			return;
+		}
+
 		// Loading the view file
 		$controller = strtolower(get_class($this));
 		$controller = str_replace('controller', '', $controller);
@@ -104,5 +113,33 @@ class BaseController
 	public function getRequestMethod()
 	{
 		return $_SERVER['REQUEST_METHOD'];
+	}
+
+	public function sendStatus($httpCode)
+	{
+		$codes = [
+	        200 => 'OK',
+	        201 => 'Created',
+	        204 => 'No content',
+	        400 => 'Bad request',
+	        404 => 'Not found',
+	        401 => 'Unauthorized',
+	        405 => 'Method not allowed',
+	        409 => 'Conflict',
+	        500 => 'Internal server error',
+	    ];
+	    header('HTTP/1.1 ' . $httpCode . $codes[$httpCode]);
+	}
+
+	/**
+	 * Set HTTP header and die the script with a message
+	 *
+	 * @param $httpCode string HTTP header to set
+	 * @param $error string Error message
+	 */
+	public function exitError($httpCode, $error = '')
+	{
+		$this->sendStatus($httpCode);
+		die($error);
 	}
 }

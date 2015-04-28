@@ -159,9 +159,13 @@ class BaseModel
 			}
 		}
 
-		try{
+		if ($this->debug) {
+			echo '<pre>'; var_dump($sql); echo '</pre>'; die;
+		}
+
+		try {
 			$query = $this->db->query($sql);
-		}catch(PDOException $e){
+		} catch(PDOException $e) {
 			echo 'There was an error processing the request: ' . $e->getMessage();
 		}
 
