@@ -21,6 +21,7 @@
                 <xs:element ref="name"/>
                 <xs:element ref="price"/>
             </xs:sequence>
+            <xs:attribute name="id" type="xs:positiveInteger" use="required"/>
             <xs:attribute name="url" type="xs:anyURI" use="required"/>
         </xs:complexType>
     </xs:element>
@@ -61,6 +62,7 @@
                 <xs:element ref="like"/>
                 <xs:element ref="dislike"/>
             </xs:sequence>
+            <xs:attribute name="id" type="xs:positiveInteger" use="required"/>
         </xs:complexType>
     </xs:element>
 
@@ -69,6 +71,7 @@
         <xs:complexType>
             <xs:simpleContent>
                 <xs:extension base="xs:string">
+                    <xs:attribute name="id" type="xs:positiveInteger" use="required"/>
                     <xs:attribute name="type" type="xs:string" use="required"/>
                 </xs:extension>
             </xs:simpleContent>
@@ -78,7 +81,15 @@
 <!-- @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ -->   
 
     <!-- Mode de jeu (solo, multi-joueurs, ...) -->
-    <xs:element name="mode" type="xs:string"/>
+    <xs:element name="mode">
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="xs:string">
+                    <xs:attribute name="id" type="xs:positiveInteger" use="required"/>
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
 
     <!-- Jaquette avant / arrière -->
     <xs:element name="front">
@@ -94,7 +105,15 @@
     </xs:element>
 
     <!-- Type de support (physique, dématérialisé, ...) -->
-    <xs:element name="support" type="xs:string"/>
+    <xs:element name="support">
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="xs:string">
+                    <xs:attribute name="id" type="xs:positiveInteger" use="required"/>
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
 
     <!-- Information relative à une édition -->
     <xs:element name="edition">
@@ -104,6 +123,7 @@
                 <xs:element ref="content"/>
                 <xs:element ref="shops"/>
             </xs:sequence>
+            <xs:attribute name="id" type="xs:positiveInteger" use="required"/>
         </xs:complexType>
     </xs:element>
 
@@ -114,6 +134,7 @@
                 <xs:element ref="description"/>
                 <xs:element ref="price"/>
             </xs:sequence>
+            <xs:attribute name="id" type="xs:positiveInteger" use="required"/>
         </xs:complexType>
     </xs:element>
 
@@ -122,6 +143,7 @@
         <xs:complexType>
             <xs:simpleContent>
                 <xs:extension base="xs:string">
+                    <xs:attribute name="id" type="xs:positiveInteger" use="required"/>
                     <xs:attribute name="type" type="xs:string" use="required"/>
                 </xs:extension>
             </xs:simpleContent>
@@ -249,13 +271,37 @@
 <!-- @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ -->      
 
     <!-- Genre du jeu (Action, FPS, ...) -->
-    <xs:element name="gender" type="xs:string"/>
+    <xs:element name="gender">
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="xs:string">
+                    <xs:attribute name="id" type="xs:positiveInteger" use="required"/>
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
 
     <!-- Nom des studios d'édition du jeu -->
-    <xs:element name="editor" type="xs:string"/>
+    <xs:element name="editor">
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="xs:string">
+                    <xs:attribute name="id" type="xs:positiveInteger" use="required"/>
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
 
     <!-- Thème de l'univers du jeu (Fantasy, Horeur, ...) -->
-    <xs:element name="theme" type="xs:string"/>
+    <xs:element name="theme">
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="xs:string">
+                    <xs:attribute name="id" type="xs:positiveInteger" use="required"/>
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
 
     <!-- Eléments dépendants pour chaque console -->
     <xs:element name="console">
@@ -274,11 +320,20 @@
                 <xs:element ref="configs"/>
                 <xs:element ref="test"/>
             </xs:sequence>
+            <xs:attribute name="id" type="xs:positiveInteger" use="required"/>
         </xs:complexType>
     </xs:element>
 
     <!-- Langue -->
-    <xs:element name="language" type="xs:string"/>
+    <xs:element name="language">
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="xs:string">
+                    <xs:attribute name="id" type="xs:positiveInteger" use="required"/>
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
 
     <!-- Liste des consoles concernées par le contenu -->
     <xs:element name="consolesNames">
@@ -360,6 +415,7 @@
                 <xs:element ref="userName"/>
                 <xs:element ref="date"/>
             </xs:sequence>
+            <xs:attribute name="id" type="xs:positiveInteger" use="required"/>
             <xs:attribute name="type" type="xs:string" use="required"/>
         </xs:complexType>
     </xs:element>
@@ -371,6 +427,7 @@
                 <xs:element ref="consolesNames"/>
                 <xs:element ref="dimensions"/>
             </xs:sequence>
+            <xs:attribute name="id" type="xs:positiveInteger" use="required"/>
             <xs:attribute name="type" type="xs:string" use="required"/>
             <xs:attribute name="url" type="xs:anyURI" use="required"/>
         </xs:complexType>
@@ -383,6 +440,7 @@
                 <xs:element ref="consolesNames"/>
                 <xs:element ref="content"/>
             </xs:sequence>
+            <xs:attribute name="id" type="xs:positiveInteger" use="required"/>
         </xs:complexType>
     </xs:element>
 
@@ -441,6 +499,7 @@
                 <xs:element ref="medias"/>
                 <xs:element ref="tips"/>
             </xs:sequence>
+            <xs:attribute name="id" type="xs:positiveInteger" use="required"/>
         </xs:complexType>
     </xs:element>
 
