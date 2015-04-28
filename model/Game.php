@@ -69,7 +69,8 @@ class Game extends BaseModel
 					}
 
 					// Analyses
-					foreach ($this->getGameAnalyses($idTest) as $analyse) {
+					$analyses = new Analyse();
+					foreach ($analyses->getAnalyses($idTest) as $analyse) {
 						$games[$gameId]['presentation']['consoles'][$idConsole]['tests'][$idTest]['analyses'][$analyse['idAnalyse']] = $analyse;
 					}
 				}
@@ -127,28 +128,6 @@ class Game extends BaseModel
 		$gameInfos = $this->select($fields, $where);
 
 		return $gameInfos;
-	}
-
-	/**
-	 * Retrieve every available analyses or analyses by test ID
-	 *
-	 * @param $testId int Test's ID attached to the analyse
-	 * @return $analyses array
-	 */
-	public function getGameAnalyses($testId = null)
-	{
-		$this->table = 'analyse a';
-		
-		$where = [];
-		if ($testId) {
-			$where = [
-				'a.test_idTest' => $testId,
-			];
-		}
-
-		$analyses = $this->select(['*'], $where);
-
-		return $analyses;
 	}
 
 	/**
