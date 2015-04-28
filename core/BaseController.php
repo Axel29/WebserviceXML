@@ -95,4 +95,14 @@ class BaseController
 		// Stops the temporization started in loadLayout()
 		echo ob_get_clean();
 	}
+
+	/**
+	 * Get request method from $_SERVER global variable
+	 *
+	 * @ return $_SERVER['REQUEST_METHOD'] array
+	 */
+	public function getRequestMethod()
+	{
+		return $_SERVER['REQUEST_METHOD'];
+	}
 }
