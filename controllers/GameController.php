@@ -311,7 +311,7 @@ class GameController extends BaseController
 		$_POST['articles']['title'] = 'article title';
 		$_POST['articles']['user_name'] = ' article user_name';
 		$_POST['articles']['date'] = '2005-08-15';
-		$_POST['articles']['console_names'] = 'article console_names';
+		$_POST['articles']['consoles_names'] = 'article consoles_names';
 		$_POST['comments']['date'] = '2005-08-15';
 		$_POST['comments']['user_name'] = ' comment user_name';
 		$_POST['comments']['note'] = '8';
@@ -343,7 +343,7 @@ class GameController extends BaseController
 		$_POST['medias']['unit'] = 'media unit';
 		$_POST['medias']['width'] = '14';
 		$_POST['medias']['height'] = '13';
-		$_POST['medias']['console_names'] = 'medias console_names';
+		$_POST['medias']['consoles_names'] = 'medias consoles_names';
 		$_POST['modes']['name'] = 'mode name';
 		$_POST['shops']['url'] = 'shops url'; 
 		$_POST['shops']['name'] = 'shops name'; 
@@ -356,7 +356,7 @@ class GameController extends BaseController
 		$_POST['tests']['note'] = '2';
 		$_POST['themes']['theme'] = 'themes theme';
 		$_POST['tips']['content'] = 'tips content';
-		$_POST['tips']['console_names'] = 'tips console_names';
+		$_POST['tips']['consoles_names'] = 'tips consoles_names';
 
 		/**
 		 * @todo Tester que toutes les valeurs obligatoires sont présentes avec des if(isset($_POST['...']))
@@ -422,7 +422,7 @@ class GameController extends BaseController
 			$this->sendStatus(204);
 
 		} else {
-			$this->exitError(400, $errors);
+			$this->exitError(400);
 		}
 	}
 
