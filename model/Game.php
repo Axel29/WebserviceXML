@@ -590,34 +590,56 @@ class Game extends BaseModel
 	 */
 	public function addGame($post)
 	{
-		// Insertion of the game
-		$this->table = 'game';
+		/**
+		 * @todo Tester que toutes les valeurs obligatoires sont présentes avec des if(isset($post['...']))
+		 */
 
-		$fields = [
-			'site'  => $post['site'],
-			'title' => $post['title'],
-		];
+		if (
+			isset($post['analyse']) && isset($post['type']) isset($post['analyse'])
 
-		// insertedGame = ID of the inserted game in database
-		$insertedGame = $this->insert($fields);
+			) {
 
-		// Insertion of the gender
-		if ($insertedGame) {
-			$this->table    = 'gender';
-			$insertedGender = $this->insert(['gender' => $post['gender']]);
+				// Insertion of the game
+				$this->table = 'game';
 
-			if ($insertedGender) {
-				$this->table    = 'game_has_gender';
 				$fields = [
-					'game_idGame'     => $insertedGame,
-					'gender_idGender' => $insertedGender,
+					'site'  => $post['site'],
+					'title' => $post['title'],
 				];
-				$this->insert($fields);
-			} else {
-				return false;
-			}
-		} else {
-			return false;
+
+				// insertedGame = ID of the inserted game in database
+				$insertedGame = $this->insert($fields);
+					
+				// Insertion of the game
+				$this->table = 'game';
+
+				$fields = [
+					'site'  => $post['site'],
+					'title' => $post['title'],
+				];
+
+				// insertedGame = ID of the inserted game in database
+				$insertedGame = $this->insert($fields);
+
+				// Insertion of the gender
+				if ($insertedGame) {
+					$this->table    = 'gender';
+					$insertedGender = $this->insert(['gender' => $post['gender']]);
+
+					if ($insertedGender) {
+						$this->table    = 'game_has_gender';
+						$fields = [
+							'game_idGame'     => $insertedGame,
+							'gender_idGender' => $insertedGender,
+						];
+						$this->insert($fields);
+					} else {
+						return false;
+					}
+				} else {
+					return false;
+				}
+
 		}
 	}
 
