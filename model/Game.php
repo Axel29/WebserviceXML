@@ -657,7 +657,7 @@ class Game extends BaseModel
 	 *
 	 * @param $id int Game's ID
 	 */
-	public function deleteAnalyse($id)
+	public function deleteGame($id)
 	{
 		$this->table = 'game';
 		$this->delete(['idGame' => (int)$id]);
