@@ -283,20 +283,130 @@ class GameController extends BaseController
 	 */
 	public function addAction()
 	{
-		if ($this->getRequestMethod() != 'POST') {
-			$this->exitError(405, 'Only post methods are accepted.');
-			return;
-		}
+		// if ($this->getRequestMethod() != 'POST') {
+		// 	$this->exitError(405, 'Only post methods are accepted.');
+		// 	return;
+		// }
+
+		$_POST['analyses']['analyse'] = 'analyse test';
+		$_POST['analyses']['type'] = 'analyse type';
+		$_POST['articles']['type'] = 'article type';
+		$_POST['articles']['title'] = 'article title';
+		$_POST['articles']['user_name'] = ' article user_name';
+		$_POST['articles']['date'] = '2005-08-15';
+		$_POST['articles']['console_names'] = 'article console_names';
+		$_POST['comments']['date'] = '2005-08-15';
+		$_POST['comments']['user_name'] = ' comment user_name';
+		$_POST['comments']['note'] = '8';
+		$_POST['comments']['like'] = '2';
+		$_POST['comments']['dislike'] = '1';
+		$_POST['comments']['text'] = 'comment text';
+		$_POST['configs']['config'] = 'config config';
+		$_POST['configs']['type'] = 'config type';
+		$_POST['consoles']['business_model'] = 'console business_model';
+		$_POST['consoles']['pegi'] = '+12';
+		$_POST['consoles']['release'] = '2005-08-15';
+		$_POST['consoles']['name'] = 'console name';
+		$_POST['consoles']['description'] = 'console description';
+		$_POST['consoles']['cover_front'] = 'console cover_front';
+		$_POST['consoles']['cover_back'] = 'console cover_back';
+		$_POST['dlcs']['title'] = 'dlcs title';
+		$_POST['dlcs']['description'] = 'dlcs description';
+		$_POST['dlcs']['price'] = '12';
+		$_POST['dlcs']['devise'] = 'dls devise';
+		$_POST['editions']['name'] = 'editions name';
+		$_POST['editions']['content'] = 'editions content';
+		$_POST['editors']['editor'] = 'editors editor';
+		$_POST['game']['title'] = 'game title';
+		$_POST['game']['site'] = 'game site';
+		$_POST['genders']['gender'] = 'genders gender';
+		$_POST['languages']['language'] = 'languages language';
+		$_POST['medias']['type'] = ' media type';
+		$_POST['medias']['url'] = 'media url';
+		$_POST['medias']['unit'] = 'media unit';
+		$_POST['medias']['width'] = '14';
+		$_POST['medias']['height'] = '13';
+		$_POST['medias']['console_names'] = 'medias console_names';
+		$_POST['modes']['name'] = 'mode name';
+		$_POST['shops']['url'] = 'shops url'; 
+		$_POST['shops']['name'] = 'shops name'; 
+		$_POST['shops']['price'] = 'shops price';
+		$_POST['shops']['device'] = 'shops device'; 
+		$_POST['supports']['support'] = 'supports support';
+		$_POST['tests']['report'] = 'test report';
+		$_POST['tests']['date'] = '2005-08-15';
+		$_POST['tests']['user_name'] = 'test user_name';
+		$_POST['tests']['note'] = '2';
+		$_POST['themes']['theme'] = 'themes theme';
+		$_POST['tips']['content'] = 'tips content';
+		$_POST['tips']['console_names'] = 'tips console_names';
 
 		/**
 		 * @todo Tester que toutes les valeurs obligatoires sont présentes avec des if(isset($_POST['...']))
 		 * Si un champ non présent, retourner un code statut "400" (Bad Request).
 		 */
+		if (isset($_POST['analyses']['analyse']) && 
+			isset($_POST['analyses']['type']) &&
+			isset($_POST['articles']['type']) &&
+			isset($_POST['articles']['title']) &&
+			isset($_POST['articles']['user_name']) &&
+			isset($_POST['articles']['date']) &&
+			isset($_POST['articles']['console_names']) &&
+			isset($_POST['comments']['date']) &&
+			isset($_POST['comments']['user_name']) &&
+			isset($_POST['comments']['note']) &&
+			isset($_POST['comments']['like']) &&
+			isset($_POST['comments']['dislike']) &&
+			isset($_POST['comments']['text']) &&
+			isset($_POST['configs']['config']) &&
+			isset($_POST['configs']['type']) &&
+			isset($_POST['consoles']['business_model']) &&
+			isset($_POST['consoles']['pegi']) &&
+			isset($_POST['consoles']['release']) &&
+			isset($_POST['consoles']['name']) &&
+			isset($_POST['consoles']['description']) &&
+			isset($_POST['consoles']['cover_front']) &&
+			isset($_POST['consoles']['cover_back']) &&
+			isset($_POST['dlcs']['title']) &&
+			isset($_POST['dlcs']['description']) &&
+			isset($_POST['dlcs']['price']) &&
+			isset($_POST['dlcs']['devise']) &&
+			isset($_POST['editions']['name']) &&
+			isset($_POST['editions']['content']) &&
+			isset($_POST['editors']['editor']) &&
+			isset($_POST['game']['title']) &&
+			isset($_POST['game']['site']) &&
+			isset($_POST['genders']['gender']) &&
+			isset($_POST['languages']['language']) &&
+			isset($_POST['medias']['type']) &&
+			isset($_POST['medias']['url']) &&
+			isset($_POST['medias']['unit']) &&
+			isset($_POST['medias']['width']) &&
+			isset($_POST['medias']['height']) &&
+			isset($_POST['medias']['console_names']) &&
+			isset($_POST['modes']['name']) &&
+			isset($_POST['shops']['url']) && 
+			isset($_POST['shops']['name']) && 
+			isset($_POST['shops']['price']) &&
+			isset($_POST['shops']['device']) && 
+			isset($_POST['supports']['support']) &&
+			isset($_POST['tests']['report']) &&
+			isset($_POST['tests']['date']) &&
+			isset($_POST['tests']['user_name']) &&
+			isset($_POST['tests']['note']) &&
+			isset($_POST['themes']['theme']) &&
+			isset($_POST['tips']['content']) &&
+			isset($_POST['tips']['console_names'])
+			) {
 
-		$gameModel = new Game();
-		$gameModel->addGame($_POST);
+			$gameModel = new Game();
+			$gameModel->addGame($_POST);
 
-		$this->sendStatus(204);
+			$this->sendStatus(204);
+
+		} else {
+			$this->exitError(400, $errors);
+		}
 	}
 
 	/**

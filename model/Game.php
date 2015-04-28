@@ -594,37 +594,21 @@ class Game extends BaseModel
 		 * @todo Tester que toutes les valeurs obligatoires sont présentes avec des if(isset($post['...']))
 		 */
 
-		if (
-			isset($post['analyse']) && isset($post['type']) isset($post['analyse'])
-
-			) {
-
 				// Insertion of the game
 				$this->table = 'game';
 
 				$fields = [
-					'site'  => $post['site'],
-					'title' => $post['title'],
-				];
-
-				// insertedGame = ID of the inserted game in database
-				$insertedGame = $this->insert($fields);
-					
-				// Insertion of the game
-				$this->table = 'game';
-
-				$fields = [
-					'site'  => $post['site'],
-					'title' => $post['title'],
+					'site'  => $post['game']['site'],
+					'title' => $post['game']['title'],
 				];
 
 				// insertedGame = ID of the inserted game in database
 				$insertedGame = $this->insert($fields);
 
-				// Insertion of the gender
 				if ($insertedGame) {
+					// Insertion of the gender
 					$this->table    = 'gender';
-					$insertedGender = $this->insert(['gender' => $post['gender']]);
+					$insertedGender = $this->insert(['gender' => $post['genders']['gender']]);
 
 					if ($insertedGender) {
 						$this->table    = 'game_has_gender';
@@ -636,11 +620,248 @@ class Game extends BaseModel
 					} else {
 						return false;
 					}
+
+					//insertion of the editor
+					$this->table    = 'editor';
+					$insertedEditor = $this->insert(['editor' => $post['editors']['editor']]);
+
+					if ($insertedEditor) {
+						$this->table    = 'game_has_editor';
+						$fields = [
+							'game_idGame'     => $insertedGame,
+							'editor_idEditor' => $insertedEditor,
+						];
+						$this->insert($fields);
+					} else {
+						return false;
+					}
+
+					//insertion of the theme
+					$this->table    = 'theme';
+					$insertedTheme = $this->insert(['theme' => $post['themes']['theme']]);
+
+					if ($insertedTheme) {
+						$this->table    = 'game_has_theme';
+						$fields = [
+							'game_idGame'     => $insertedGame,
+							'theme_idTheme' => $insertedTheme,
+						];
+						$this->insert($fields);
+					} else {
+						return false;
+					}
+
+
+					//insertion of the console
+					$this->table    = 'console';
+					$fields = [
+						'business_model' => $post['consoles']['business_model'],
+						'pegi' => $post['consoles']['pegi'],
+						'release' => $post['consoles']['release'],
+						'name' => $post['consoles']['name'],
+						'description' => $post['consoles']['description'],
+						'cover_front' => $post['consoles']['cover_front'],
+						'cover_back' => $post['consoles']['cover_back'],
+						'game_idGame' => $insertedGame,
+					];
+					$insertedConsole = $this->insert($fields);
+
+					if ($insertedConsole) {
+
+						$this->table    = 'mode';
+						$fields = ['mode' => $post['modes']['name']];
+
+						$insertedMode = $this->insert($fields);
+
+						if ($insertedMode) {
+
+							$this->table    = 'support';
+							$fields = ['support' => $post['supports']['support']];
+
+							$insertedSupport = $this->insert($fields);
+
+							if ($insertedSupport) {
+
+								$this->table    = 'edition';
+								$fields = [
+									'name' => $post['editions']['name'],
+									'content' => $post['editions']['content'],
+									];
+
+								$insertedEdition = $this->insert($fields);
+
+									if ($insertedEdition) {
+
+									if(isset($post['shop'])){
+										$this->table    = 'shop';
+										$fields = [
+											'url' => $post['shops']['url'],
+											'name' => $post['shops']['name'],
+											'price' => $post['shops']['price'],
+											'devise' => $post['shops']['devise'],
+											'edition_idEdition' => $insertedEdition,
+											];
+
+										$insertedShop = $this->insert($fields);
+									}
+
+									if (isset($post['shop']) && $insertedShop || !isset($post['shop'])) {
+
+										$this->table    = 'dlc';
+										$fields = [
+											'title' => $post['dlcs']['title'],
+											'description' => $post['dlcs']['description'],
+											'price' => $post['dlcs']['price'],
+											'devise' => $post['dlcs']['devise'],
+											'console_idConsole' => $insertedConsole,
+											];
+
+										$insertedDlc = $this->insert($fields);
+
+										if ($insertedDlc) {
+
+											$this->table    = 'config';
+											$fields = [
+												'config' => $post['configs']['config'],
+												'type' => $post['configs']['type'],
+												];
+
+											$insertedConfig = $this->insert($fields);
+
+											if ($insertedConfig) {
+												$this->table    = 'console_has_config';
+												$fields = [
+													'console_idConsole'     => $insertedConsole,
+													'config_idConfig' => $insertedConfig,
+												];
+												$this->insert($fields);
+
+
+												if ($insertedConfig) {
+													$this->table    = 'test';
+													$fields = [
+														'report'     => $post['tests']['report'],
+														'date' => $post['tests']['date'],
+														'user_name' => $post['tests']['user_name'],
+														'note' => $post['tests']['note'],
+														'console_idConsole' => $insertedConsole,
+													];
+
+													$insertedTest = $this->insert($fields);
+
+													if ($insertedTest) {
+														$this->table    = 'language';
+														$fields = [
+															'language'     => $post['languages']['language'],
+														];
+
+														$insertedLanguage = $this->insert($fields);
+
+														if ($insertedLanguage) {
+															$this->table    = 'game_has_language';
+															$fields = [
+																'game_idGame'     => $insertedGame,
+																'language_idLanguage' => $insertedLanguage,
+															];
+															$this->insert($fields);
+
+
+															if ($insertedLanguage) {
+																$this->table    = 'article';
+																$fields = [
+																	'type'     => $post['articles']['type'],
+																	'title' => $post['articles']['title'],
+																	'user_name' => $post['articles']['user_name'],
+																	'date' => $post['articles']['date'],
+																	'consoles_names' => $post['articles']['consoles_names'],
+																	'game_idGame' => $insertedGame,
+																];
+
+																$insertedArticle = $this->insert($fields);
+
+																			if ($insertedArticle) {
+																				$this->table    = 'media';
+																				$fields = [
+																					'type'     => $post['medias']['type'],
+																					'url' => $post['medias']['url'],
+																					'unit' => $post['medias']['unit'],
+																					'width' => $post['medias']['width'],
+																					'height' => $post['medias']['height'],
+																					'consoles_names' => $post['medias']['consoles_names'],
+																					'game_idGame' => $insertedGame,
+																				];
+
+																				$insertedMedia = $this->insert($fields);
+
+
+																					if ($insertedMedia) {
+																						$this->table    = 'tip';
+																						$fields = [
+																							'content'     => $post['tips']['content'],																		
+																							'consoles_names' => $post['tips']['consoles_names'],
+																							'game_idGame' => $insertedGame,
+																						];
+
+																						$insertedTip = $this->insert($fields);
+
+																						} else {
+																							return false;
+																						}
+
+																				} else {
+																					return false;
+																				}
+
+																} else {
+																	return false;
+																}
+
+														} else {
+															return false;
+														}
+
+													} else {
+														return false;
+													}
+
+												} else {
+													return false;
+												}
+
+											} else {
+												return false;
+											}
+
+										} else {
+											return false;
+										}
+
+									} else {
+										return false;
+									}
+
+								} else {
+									return false;
+								}
+
+							} else {
+								return false;
+							}
+
+						} else {
+							return false;
+						}
+
+						
+					} else {
+						return false;
+					}
+
+
 				} else {
 					return false;
 				}
 
-		}
 	}
 
 	/**
