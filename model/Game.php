@@ -582,4 +582,66 @@ class Game extends BaseModel
 
 		return $tips;
 	}
+
+	/**
+	 * Add new game
+	 *
+	 * @param $post array Datas for the new game
+	 */
+	public function addGame($post)
+	{
+		/**
+		 * @todo Tester que toutes les valeurs obligatoires sont présentes avec des if(isset($post['...']))
+		 */
+		
+		$this->table = 'game';
+
+		$fields = [
+			/**
+			 * @todo Ajouter tous les champs avec la structure suivante : cle => valeur (ou clé = nom du champ en BDD)
+			 */
+			'site' => 'toto',
+			'title' => 'blablabla',
+		];
+
+		$this->insert($fields, $where);
+	}
+
+	/**
+	 * Update game
+	 *
+	 * @param $gameId int Game ID to retrieve
+	 */
+	public function updateGame($post)
+	{
+		/**
+		 * @todo Tester que toutes les valeurs obligatoires sont présentes avec des if(isset($post['...']))
+		 */
+		if (isset($post['idGame'])) {
+			$this->table = 'game';
+
+			$fields = [
+				/**
+				 * @todo Ajouter tous les champs avec la structure suivante : cle => valeur (ou clé = nom du champ en BDD)
+				 */
+			];
+
+			$where = ['idGame' => $post['idGame']];
+
+			$this->update($fields, $where);
+		} else {
+			return false;
+		}
+	}
+
+	/**
+	 * Delete a game by it's ID
+	 *
+	 * @param $id int Game's ID
+	 */
+	public function deleteAnalyse($id)
+	{
+		$this->table = 'game';
+		$this->delete(['idGame' => (int)$id]);
+	}
 }

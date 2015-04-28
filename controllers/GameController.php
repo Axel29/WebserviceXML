@@ -274,4 +274,68 @@ class GameController extends BaseController
 
 		return $result;
 	}
+
+	/**
+	 * Add new game
+	 */
+	public function addAction()
+	{
+		if ($this->getRequestMethod() != 'POST') {
+			$this->exitError(405, 'Only post methods are accepted.');
+			return;
+		}
+
+		$post = [
+			/**
+			 * @todo Ajouter tous les paramètres. Prendre exemple sur le controller Analyse.
+			 */
+		];
+
+		$gameModel = new Game();
+		$gameModel->addGame($post);
+
+		$this->sendStatus(204);
+	}
+
+	/**
+	 * Update game
+	 */
+	public function updateAction()
+	{
+		if ($this->getRequestMethod() != 'POST') {
+			$this->exitError(405, 'Only post methods are accepted.');
+			return;
+		}
+
+		$post = [
+			/**
+			 * @todo Ajouter tous les paramètres. Prendre exemple sur le controller Analyse.
+			 */
+		];
+
+		$gameModel = new Game();
+		$gameModel->updateGame($post);
+
+		$this->sendStatus(204);
+	}
+
+	/**
+	 * Delete game
+	 */
+	public function deleteAction()
+	{
+		if (!$this->getRequestMethod() == 'POST') {
+			$this->exitError(405);
+		}
+
+		if (!isset($_POST['idGame']))
+		{
+			$this->exitError(400, 'idGame is a required field.');
+		}
+
+		$gameModel = new Game();
+		$gameModel->deleteGame($_POST['idGame']);
+
+		$this->sendStatus(204);
+	}
 }
