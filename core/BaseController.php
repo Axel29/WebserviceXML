@@ -115,6 +115,11 @@ class BaseController
 		return $_SERVER['REQUEST_METHOD'];
 	}
 
+	/**
+	 * Set HTTP status code
+	 *
+	 * @param $httpCode int HTTP status code
+	 */
 	public function sendStatus($httpCode)
 	{
 		$codes = [
