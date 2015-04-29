@@ -243,6 +243,10 @@ class BaseModel
 			}
 			$sql .= ')';
 
+			if ($this->debug) {
+				echo '<pre>'; var_dump($sql); echo '</pre>'; die;
+			}
+
 			try {
 				$query = $this->db->query($sql);
 			} catch (PDOException $e) {
