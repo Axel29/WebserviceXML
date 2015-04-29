@@ -607,6 +607,7 @@ class Game extends BaseModel
 
 				if ($insertedGame) {
 					// Insertion of the gender
+					$this->debug = true;
 					$this->table    = 'gender';
 					$insertedGender = $this->insert(['gender' => $post['genders']['gender']]);
 

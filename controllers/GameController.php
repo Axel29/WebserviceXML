@@ -2,43 +2,251 @@
 class GameController extends BaseController
 {
 	/**
-	 * Show the full XML
-	 * Route: /game
+	 * @var $id int Game's ID
 	 */
-	public function indexAction()
+	private $id;
+
+	/**
+	 * Redirect the request to the matching method regarding the request method
+	 * Route: /game
+	 *
+	 * @param $id int ID of the game. Used for POST, PUT and DELETE methods
+	 */
+	public function indexAction($id = null)
 	{
-		$gameModel  = new Game();
-		$games      = $gameModel->getGames();
+		if ($id) {
+			$this->setId($id);
+		}
 
-		$this->list = $this->generateXml($games);
-
-		if ($errors = $this->validateXML($this->list->asXML())) {
-			$this->exitError(400, $errors);
-		} else {
-			$this->loadLayout('xml');
-			$this->render('index');
+		switch ($this->getRequestMethod()) {
+			case 'GET':
+				$this->show();
+				break;
+			case 'POST':
+				$this->add();
+				break;
+			case 'PUT':
+				$this->update();
+				break;
+			case 'DELETE':
+				$this->delete();
+				break;
+			
+			default:
+				$this->show();
+				break;
 		}
 	}
 
 	/**
-	 * Show a single game's XML by it's ID.
-	 * Route: /game/show/id/{id}
+	 * Show the full games list or a specific game by it's ID
 	 *
 	 * @param $id int Game's ID
 	 */
-	public function showAction($id)
+	public function show()
 	{
-		$gameModel  = new Game();
-		$game       = $gameModel->getGames($id);
+		$gameModel = new Game();
 
-		$this->game = $this->generateXml($game);
+		// Show the full games list or a specific game by it's ID
+		if ($id = $this->getId()) {
+			$datas = $gameModel->getGames($id);
+		} else {
+			$datas = $gameModel->getGames();
+		}
 
-		if ($errors = $this->validateXML($this->game->asXML())) {
+		$this->xml = $this->generateXml($datas)->asXML();
+
+		if ($errors = $this->validateXML($this->xml)) {
 			$this->exitError(400, $errors);
 		} else {
 			$this->loadLayout('xml');
 			$this->render('show');
 		}
+	}
+
+	/**
+	 * Add new game
+	 * Route: /game/add
+	 */
+	public function addAction()
+	{
+		// Security check for the request method
+		if ($this->getRequestMethod() != 'POST') {
+			$this->exitError(405, 'Only POST methods are allowed.');
+			return;
+		}
+
+		$_POST['analyses']['analyse'] = 'analyse test';
+		$_POST['analyses']['type'] = 'analyse type';
+		$_POST['articles']['type'] = 'article type';
+		$_POST['articles']['title'] = 'article title';
+		$_POST['articles']['user_name'] = ' article user_name';
+		$_POST['articles']['date'] = '2005-08-15';
+		$_POST['articles']['consoles_names'] = 'article consoles_names';
+		$_POST['comments']['date'] = '2005-08-15';
+		$_POST['comments']['user_name'] = ' comment user_name';
+		$_POST['comments']['note'] = '8';
+		$_POST['comments']['like'] = '2';
+		$_POST['comments']['dislike'] = '1';
+		$_POST['comments']['text'] = 'comment text';
+		$_POST['configs']['config'] = 'config config';
+		$_POST['configs']['type'] = 'config type';
+		$_POST['consoles']['business_model'] = 'console business_model';
+		$_POST['consoles']['pegi'] = '+12';
+		$_POST['consoles']['release'] = '2005-08-15';
+		$_POST['consoles']['name'] = 'console name';
+		$_POST['consoles']['description'] = 'console description';
+		$_POST['consoles']['cover_front'] = 'console cover_front';
+		$_POST['consoles']['cover_back'] = 'console cover_back';
+		$_POST['dlcs']['title'] = 'dlcs title';
+		$_POST['dlcs']['description'] = 'dlcs description';
+		$_POST['dlcs']['price'] = '12';
+		$_POST['dlcs']['devise'] = 'dls devise';
+		$_POST['editions']['name'] = 'editions name';
+		$_POST['editions']['content'] = 'editions content';
+		$_POST['editors']['editor'] = 'editors editor';
+		$_POST['game']['title'] = 'game title';
+		$_POST['game']['site'] = 'game site';
+		$_POST['genders']['gender'] = 'genders gender';
+		$_POST['languages']['language'] = 'languages language';
+		$_POST['medias']['type'] = ' media type';
+		$_POST['medias']['url'] = 'media url';
+		$_POST['medias']['unit'] = 'media unit';
+		$_POST['medias']['width'] = '14';
+		$_POST['medias']['height'] = '13';
+		$_POST['medias']['consoles_names'] = 'medias consoles_names';
+		$_POST['modes']['name'] = 'mode name';
+		$_POST['shops']['url'] = 'shops url'; 
+		$_POST['shops']['name'] = 'shops name'; 
+		$_POST['shops']['price'] = 'shops price';
+		$_POST['shops']['device'] = 'shops device'; 
+		$_POST['supports']['support'] = 'supports support';
+		$_POST['tests']['report'] = 'test report';
+		$_POST['tests']['date'] = '2005-08-15';
+		$_POST['tests']['user_name'] = 'test user_name';
+		$_POST['tests']['note'] = '2';
+		$_POST['themes']['theme'] = 'themes theme';
+		$_POST['tips']['content'] = 'tips content';
+		$_POST['tips']['consoles_names'] = 'tips consoles_names';
+
+		/**
+		 * @todo Tester que toutes les valeurs obligatoires sont présentes avec des if(isset($_POST['...']))
+		 * Si un champ non présent, retourner un code statut "400" (Bad Request).
+		 */
+		if (isset($_POST['analyses']['analyse']) && 
+			isset($_POST['analyses']['type']) &&
+			isset($_POST['articles']['type']) &&
+			isset($_POST['articles']['title']) &&
+			isset($_POST['articles']['user_name']) &&
+			isset($_POST['articles']['date']) &&
+			isset($_POST['articles']['consoles_names']) &&
+			isset($_POST['comments']['date']) &&
+			isset($_POST['comments']['user_name']) &&
+			isset($_POST['comments']['note']) &&
+			isset($_POST['comments']['like']) &&
+			isset($_POST['comments']['dislike']) &&
+			isset($_POST['comments']['text']) &&
+			isset($_POST['configs']['config']) &&
+			isset($_POST['configs']['type']) &&
+			isset($_POST['consoles']['business_model']) &&
+			isset($_POST['consoles']['pegi']) &&
+			isset($_POST['consoles']['release']) &&
+			isset($_POST['consoles']['name']) &&
+			isset($_POST['consoles']['description']) &&
+			isset($_POST['consoles']['cover_front']) &&
+			isset($_POST['consoles']['cover_back']) &&
+			isset($_POST['dlcs']['title']) &&
+			isset($_POST['dlcs']['description']) &&
+			isset($_POST['dlcs']['price']) &&
+			isset($_POST['dlcs']['devise']) &&
+			isset($_POST['editions']['name']) &&
+			isset($_POST['editions']['content']) &&
+			isset($_POST['editors']['editor']) &&
+			isset($_POST['game']['title']) &&
+			isset($_POST['game']['site']) &&
+			isset($_POST['genders']['gender']) &&
+			isset($_POST['languages']['language']) &&
+			isset($_POST['medias']['type']) &&
+			isset($_POST['medias']['url']) &&
+			isset($_POST['medias']['unit']) &&
+			isset($_POST['medias']['width']) &&
+			isset($_POST['medias']['height']) &&
+			isset($_POST['medias']['consoles_names']) &&
+			isset($_POST['modes']['name']) &&
+			isset($_POST['shops']['url']) && 
+			isset($_POST['shops']['name']) && 
+			isset($_POST['shops']['price']) &&
+			isset($_POST['shops']['device']) && 
+			isset($_POST['supports']['support']) &&
+			isset($_POST['tests']['report']) &&
+			isset($_POST['tests']['date']) &&
+			isset($_POST['tests']['user_name']) &&
+			isset($_POST['tests']['note']) &&
+			isset($_POST['themes']['theme']) &&
+			isset($_POST['tips']['content']) &&
+			isset($_POST['tips']['consoles_names'])
+			) {
+
+			$gameModel = new Game();
+			$gameModel->addGame($_POST);
+
+			$this->sendStatus(204);
+
+		} else {
+			$this->exitError(400);
+		}
+	}
+
+	/**
+	 * Update game
+	 * Route: /game/update
+	 */
+	public function update()
+	{
+		// Security check for the request method
+		if ($this->getRequestMethod() != 'PUT') {
+			$this->exitError(405, 'Only PUT methods are allowed.');
+			return;
+		}
+		
+		if (!$this->getId()) {
+			$this->exitError(400, 'ID must be specified.');
+		}
+
+		$post = [
+			/**
+			 * @todo Ajouter tous les paramètres.
+			 */
+		];
+
+		$gameModel = new Game();
+		$gameModel->updateGame($this->getId(), $post);
+
+		$this->sendStatus(204);
+	}
+
+	/**
+	 * Delete game
+	 * Route: /game/delete/id/{id}
+	 *
+	 * @param $id int Game's ID to delete
+	 */
+	public function delete()
+	{		
+		// Security check for the request method
+		if (!$this->getRequestMethod() == 'DELETE') {
+			$this->exitError(405, 'Only DELETE methods are allowed.');
+			return;
+		}
+
+		if (!$this->getId()) {
+			$this->exitError(400, 'ID must be specified.');
+		}
+
+		$gameModel = new Game();
+		$gameModel->deleteGame($this->getId());
+
+		$this->sendStatus(204);
 	}
 
 	/**
@@ -295,175 +503,26 @@ class GameController extends BaseController
 	}
 
 	/**
-	 * Add new game
-	 * Route: /game/add
-	 */
-	public function addAction()
-	{
-		// if ($this->getRequestMethod() != 'POST') {
-		// 	$this->exitError(405, 'Only post methods are accepted.');
-		// 	return;
-		// }
-
-		$_POST['analyses']['analyse'] = 'analyse test';
-		$_POST['analyses']['type'] = 'analyse type';
-		$_POST['articles']['type'] = 'article type';
-		$_POST['articles']['title'] = 'article title';
-		$_POST['articles']['user_name'] = ' article user_name';
-		$_POST['articles']['date'] = '2005-08-15';
-		$_POST['articles']['consoles_names'] = 'article consoles_names';
-		$_POST['comments']['date'] = '2005-08-15';
-		$_POST['comments']['user_name'] = ' comment user_name';
-		$_POST['comments']['note'] = '8';
-		$_POST['comments']['like'] = '2';
-		$_POST['comments']['dislike'] = '1';
-		$_POST['comments']['text'] = 'comment text';
-		$_POST['configs']['config'] = 'config config';
-		$_POST['configs']['type'] = 'config type';
-		$_POST['consoles']['business_model'] = 'console business_model';
-		$_POST['consoles']['pegi'] = '+12';
-		$_POST['consoles']['release'] = '2005-08-15';
-		$_POST['consoles']['name'] = 'console name';
-		$_POST['consoles']['description'] = 'console description';
-		$_POST['consoles']['cover_front'] = 'console cover_front';
-		$_POST['consoles']['cover_back'] = 'console cover_back';
-		$_POST['dlcs']['title'] = 'dlcs title';
-		$_POST['dlcs']['description'] = 'dlcs description';
-		$_POST['dlcs']['price'] = '12';
-		$_POST['dlcs']['devise'] = 'dls devise';
-		$_POST['editions']['name'] = 'editions name';
-		$_POST['editions']['content'] = 'editions content';
-		$_POST['editors']['editor'] = 'editors editor';
-		$_POST['game']['title'] = 'game title';
-		$_POST['game']['site'] = 'game site';
-		$_POST['genders']['gender'] = 'genders gender';
-		$_POST['languages']['language'] = 'languages language';
-		$_POST['medias']['type'] = ' media type';
-		$_POST['medias']['url'] = 'media url';
-		$_POST['medias']['unit'] = 'media unit';
-		$_POST['medias']['width'] = '14';
-		$_POST['medias']['height'] = '13';
-		$_POST['medias']['consoles_names'] = 'medias consoles_names';
-		$_POST['modes']['name'] = 'mode name';
-		$_POST['shops']['url'] = 'shops url'; 
-		$_POST['shops']['name'] = 'shops name'; 
-		$_POST['shops']['price'] = 'shops price';
-		$_POST['shops']['device'] = 'shops device'; 
-		$_POST['supports']['support'] = 'supports support';
-		$_POST['tests']['report'] = 'test report';
-		$_POST['tests']['date'] = '2005-08-15';
-		$_POST['tests']['user_name'] = 'test user_name';
-		$_POST['tests']['note'] = '2';
-		$_POST['themes']['theme'] = 'themes theme';
-		$_POST['tips']['content'] = 'tips content';
-		$_POST['tips']['consoles_names'] = 'tips consoles_names';
-
-		/**
-		 * @todo Tester que toutes les valeurs obligatoires sont présentes avec des if(isset($_POST['...']))
-		 * Si un champ non présent, retourner un code statut "400" (Bad Request).
-		 */
-		if (isset($_POST['analyses']['analyse']) && 
-			isset($_POST['analyses']['type']) &&
-			isset($_POST['articles']['type']) &&
-			isset($_POST['articles']['title']) &&
-			isset($_POST['articles']['user_name']) &&
-			isset($_POST['articles']['date']) &&
-			isset($_POST['articles']['consoles_names']) &&
-			isset($_POST['comments']['date']) &&
-			isset($_POST['comments']['user_name']) &&
-			isset($_POST['comments']['note']) &&
-			isset($_POST['comments']['like']) &&
-			isset($_POST['comments']['dislike']) &&
-			isset($_POST['comments']['text']) &&
-			isset($_POST['configs']['config']) &&
-			isset($_POST['configs']['type']) &&
-			isset($_POST['consoles']['business_model']) &&
-			isset($_POST['consoles']['pegi']) &&
-			isset($_POST['consoles']['release']) &&
-			isset($_POST['consoles']['name']) &&
-			isset($_POST['consoles']['description']) &&
-			isset($_POST['consoles']['cover_front']) &&
-			isset($_POST['consoles']['cover_back']) &&
-			isset($_POST['dlcs']['title']) &&
-			isset($_POST['dlcs']['description']) &&
-			isset($_POST['dlcs']['price']) &&
-			isset($_POST['dlcs']['devise']) &&
-			isset($_POST['editions']['name']) &&
-			isset($_POST['editions']['content']) &&
-			isset($_POST['editors']['editor']) &&
-			isset($_POST['game']['title']) &&
-			isset($_POST['game']['site']) &&
-			isset($_POST['genders']['gender']) &&
-			isset($_POST['languages']['language']) &&
-			isset($_POST['medias']['type']) &&
-			isset($_POST['medias']['url']) &&
-			isset($_POST['medias']['unit']) &&
-			isset($_POST['medias']['width']) &&
-			isset($_POST['medias']['height']) &&
-			isset($_POST['medias']['consoles_names']) &&
-			isset($_POST['modes']['name']) &&
-			isset($_POST['shops']['url']) && 
-			isset($_POST['shops']['name']) && 
-			isset($_POST['shops']['price']) &&
-			isset($_POST['shops']['device']) && 
-			isset($_POST['supports']['support']) &&
-			isset($_POST['tests']['report']) &&
-			isset($_POST['tests']['date']) &&
-			isset($_POST['tests']['user_name']) &&
-			isset($_POST['tests']['note']) &&
-			isset($_POST['themes']['theme']) &&
-			isset($_POST['tips']['content']) &&
-			isset($_POST['tips']['consoles_names'])
-			) {
-
-			$gameModel = new Game();
-			$gameModel->addGame($_POST);
-
-			$this->sendStatus(204);
-
-		} else {
-			$this->exitError(400);
-		}
-	}
-
-	/**
-	 * Update game
-	 * Route: /game/update
-	 */
-	public function updateAction()
-	{
-		if ($this->getRequestMethod() != 'POST') {
-			$this->exitError(405, 'Only post methods are accepted.');
-			return;
-		}
-
-		$post = [
-			/**
-			 * @todo Ajouter tous les paramètres. Prendre exemple sur le controller Analyse.
-			 */
-		];
-
-		$gameModel = new Game();
-		$gameModel->updateGame($post);
-
-		$this->sendStatus(204);
-	}
-
-	/**
-	 * Delete game
-	 * Route: /game/delete/id/{id}
+	 * Get the ID
 	 *
-	 * @param $id int Game's ID to delete
+	 * @return int
 	 */
-	public function deleteAction($id)
+	public function getId()
 	{
-		if (!$this->getRequestMethod() == 'POST') {
-			$this->exitError(405);
+		return $this->id;
+	}
+
+	/**
+	 * Set the ID
+	 *
+	 * @param $id int
+	 */
+	public function setId($id)
+	{
+		if (is_int($id)) {
+			$this->id = $id;
+		} else {
+			$this->exitError(400, sprintf('The ID must be an integer. %s given', gettype($id)));
 		}
-
-		$gameModel = new Game();
-		$gameModel->deleteGame((int)$id);
-
-		$this->sendStatus(204);
 	}
 }
