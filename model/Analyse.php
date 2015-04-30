@@ -24,36 +24,85 @@ class Analyse extends BaseModel
 	}
 
 	/**
-	 * Update analyse
+	 * Insert a new analyse in database.
 	 *
-	 * @param $gameId int Game ID to retrieve
+	 * @param $datas array Analyse's name
+	 * @return $id int Analyse's ID
 	 */
-	public function updateAnalyse($post)
+	public function insertAnalyse($datas)
 	{
-		if (isset($post['idAnalyse']) && isset($post['analyse']) && isset($post['type'])) {
-			$this->table = 'analyse';
+		try {
+			$pdo  = $this->db;
+			$stmt = $pdo->prepare('INSERT INTO `analyse` (`analyse`, `type`, `test_idTest`) 
+								   VALUES (:analyse, :type, :test_idTest)');
+			$stmt->bindParam(':analyse', $datas['analyse'], PDO::PARAM_STR);
+			$stmt->bindParam(':type', $datas['type'], PDO::PARAM_STR);
+			$stmt->bindParam(':test_idTest', $datas['test_idTest'], PDO::PARAM_INT);
+			$stmt->execute();
 
-			$fields = [
-				'analyse' => $post['analyse'],
-				'type'    => $post['type'],
-			];
-
-			$where = ['idAnalyse' => $post['idAnalyse']];
-
-			$this->update($fields, $where);
-		} else {
+			return $pdo->lastInsertId();
+		} catch (PDOException $e) {
+			return false;
+		} catch (Exception $e) {
 			return false;
 		}
 	}
 
 	/**
-	 * Delete an analyse by it's ID
+	 * Update analyse
+	 *
+	 * @param $idAnalyse int Analyse's ID
+	 * @param $datas array Datas to update
+	 */
+	public function updateAnalyse($idAnalyse, $datas)
+	{
+		try {
+			$pdo  = $this->db;
+			$stmt = $pdo->prepare('UPDATE `analyse` 
+								   SET `analyse` = :analyse, `type` = :type, `test_idTest` = :test_idTest 
+								   WHERE `idAnalyse` =  :idAnalyse');
+			$stmt->bindParam(':analyse', $datas['analyse'], PDO::PARAM_STR);
+			$stmt->bindParam(':type', $datas['type'], PDO::PARAM_STR);
+			$stmt->bindParam(':test_idTest', $datas['test_idTest'], PDO::PARAM_INT);
+			$stmt->bindParam(':idAnalyse', $idAnalyse, PDO::PARAM_INT);
+			$stmt->execute();
+
+			/*
+			 * Check that the update was performed on an existing analyse.
+			 * MySQL won't send any error as, regarding to him, the request is correct, so we have to handle it manually.
+			 */
+			return $stmt->rowCount();
+		} catch (PDOException $e) {
+			return false;
+		} catch (Exception $e) {
+			return false;
+		}
+	}
+
+	/**
+	 * Delete a analyse by it's ID
 	 *
 	 * @param $id int Analyse's ID
 	 */
-	public function deleteAnalyse($id)
+	public function deleteAnalyse($idAnalyse)
 	{
-		$this->table = 'analyse';
-		$this->delete(['idAnalyse' => (int)$id]);
+		try {
+			$pdo  = $this->db;
+			$stmt = $pdo->prepare('DELETE 
+								   FROM `analyse` 
+								   WHERE `idAnalyse` =  :idAnalyse');
+			$stmt->bindParam(':idAnalyse', $idAnalyse, PDO::PARAM_INT);
+			$stmt->execute();
+
+			/*
+			 * Check that the update was performed on an existing analyse.
+			 * MySQL won't send any error as, regarding to him, the request is correct, so we have to handle it manually.
+			 */
+			return $stmt->rowCount();
+		} catch (PDOException $e) {
+			return false;
+		} catch (Exception $e) {
+			return false;
+		}
 	}
 }
