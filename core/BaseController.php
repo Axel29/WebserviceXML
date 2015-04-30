@@ -176,6 +176,12 @@ class BaseController
 		return false;
 	}
 
+	public function isDate($date, $format = 'Y-m-d H:i:s')
+	{
+		$dateTime = DateTime::createFromFormat($format, $date);
+		return $dateTime && $dateTime->format($format) == $date;
+	}
+
 	/**
 	 * Check that every required field is filled and that they match the expected type.
 	 *
@@ -192,6 +198,7 @@ class BaseController
 				|| ($type == 'string' && !is_string($datas[$field])) 
 				|| ($type == 'int' && !$this->isInt($datas[$field]))
 				|| ($type == 'float' && !$this->isFloat($datas[$field]))
+				|| ($type == 'date' && !$this->isDate($datas[$field]))
 				|| ($type == 'bool' && $datas[$field])
 			) {
 				$hasError = true;
