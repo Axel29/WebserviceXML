@@ -5,7 +5,7 @@
 class CommentController extends BaseController
 {
 	/**
-	 * @var $id int Game's ID
+	 * @var $id int Comment's ID
 	 */
 	private $id = null;
 
@@ -134,7 +134,7 @@ class CommentController extends BaseController
 	}
 
 	/**
-	 * Delete game
+	 * Delete comment
 	 * Route: /comment/delete/id/{id}
 	 *
 	 * @param $id int Comment's ID to delete
@@ -166,7 +166,7 @@ class CommentController extends BaseController
 	 * Can generate either the entire database's XML, either only one comment's XML.
 	 *
 	 * @param array $comment Comment to insert in the XML
-	 * @return SimpleXMLElement $comments List of comments or game
+	 * @return SimpleXMLElement $comments List of comments or comment
 	 */
 	public function generateXml($comments = [])
 	{

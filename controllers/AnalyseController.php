@@ -5,7 +5,7 @@
 class AnalyseController extends BaseController
 {
 	/**
-	 * @var $id int Game's ID
+	 * @var $id int Analyse's ID
 	 */
 	private $id = null;
 
@@ -133,7 +133,7 @@ class AnalyseController extends BaseController
 	}
 
 	/**
-	 * Delete game
+	 * Delete analyse
 	 * Route: /analyse/delete/id/{id}
 	 *
 	 * @param $id int Analyse's ID to delete
@@ -165,7 +165,7 @@ class AnalyseController extends BaseController
 	 * Can generate either the entire database's XML, either only one analyse's XML.
 	 *
 	 * @param array $analyse Analyse to insert in the XML
-	 * @return SimpleXMLElement $analyses List of analyses or game
+	 * @return SimpleXMLElement $analyses List of analyses or analyse
 	 */
 	public function generateXml($analyses = [])
 	{
