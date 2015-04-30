@@ -1,9 +1,9 @@
 <?php
 class BaseController
 {
-	protected $vars   = [];
-	protected $layout = 'default';
-	protected $title  = SITE_NAME;
+	protected $vars        = [];
+	protected $layout      = 'default';
+	protected $title       = SITE_NAME;
 
 	public function __construct()
 	{
@@ -146,5 +146,64 @@ class BaseController
 	{
 		$this->sendStatus($httpCode);
 		die($error);
+	}
+
+	/**
+	 * Check if the value is a real int
+	 *
+	 * @param $value mixed Value to test
+	 */
+	public function isInt($value)
+	{
+		if (is_numeric($value) && is_int((int)$value)) {
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Check if the value is a real float
+	 *
+	 * @param $value mixed Value to test
+	 */
+	public function isFloat($value)
+	{
+		if (is_numeric($value) && is_float((float)$value)) {
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Check that every required field is filled and that they match the expected type.
+	 *
+	 * @param $fields
+	 * @return bool
+	 */
+	public function checkRequiredFields($fields, $datas)
+	{
+		$hasError = false;
+		$i        = 0;
+		$error    = '';
+		foreach ($fields as $field => $type) {
+			if (!isset($datas[$field]) 
+				|| ($type == 'string' && !is_string($datas[$field])) 
+				|| ($type == 'int' && !$this->isInt($datas[$field]))
+				|| ($type == 'float' && !$this->isFloat($datas[$field]))
+				|| ($type == 'bool' && $datas[$field])
+			) {
+				$hasError = true;
+				$error .= "'$field' is a required field and must be of type: $type";
+				$error .= ($i++ != count($fields)) ? "\r\n" : '';
+			}
+		}
+
+		if ($hasError) {
+			$this->exitError(400, $error);
+		}
+
+		return true;
 	}
 }
