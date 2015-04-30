@@ -3,18 +3,12 @@
 -- http://www.phpmyadmin.net
 --
 -- Client :  localhost:3306
--- Généré le :  Jeu 30 Avril 2015 à 09:22
+-- Généré le :  Jeu 30 Avril 2015 à 11:18
 -- Version du serveur :  5.5.38
 -- Version de PHP :  5.6.2
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
-
-
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
 
 --
 -- Base de données :  `videoGames`
@@ -269,7 +263,7 @@ DROP TABLE IF EXISTS `editor`;
 CREATE TABLE IF NOT EXISTS `editor` (
 `idEditor` int(11) NOT NULL,
   `editor` varchar(255) NOT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
 
 --
 -- Contenu de la table `editor`
@@ -278,7 +272,6 @@ CREATE TABLE IF NOT EXISTS `editor` (
 INSERT INTO `editor` (`idEditor`, `editor`) VALUES
 (1, 'Capcom'),
 (2, 'EA Sports'),
-(7, 'editors editor'),
 (3, 'Epic Games'),
 (4, 'Gameloft'),
 (5, 'Supercell'),
@@ -472,7 +465,7 @@ DROP TABLE IF EXISTS `mode`;
 CREATE TABLE IF NOT EXISTS `mode` (
 `idMode` int(11) NOT NULL,
   `mode` varchar(255) NOT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 
 --
 -- Contenu de la table `mode`
@@ -480,7 +473,6 @@ CREATE TABLE IF NOT EXISTS `mode` (
 
 INSERT INTO `mode` (`idMode`, `mode`) VALUES
 (4, 'MMO'),
-(6, 'mode name'),
 (2, 'Multijoueur'),
 (1, 'Solo'),
 (5, 'Stratégie'),
@@ -522,7 +514,7 @@ DROP TABLE IF EXISTS `support`;
 CREATE TABLE IF NOT EXISTS `support` (
 `idSupport` int(11) NOT NULL,
   `support` varchar(255) NOT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
 --
 -- Contenu de la table `support`
@@ -530,8 +522,7 @@ CREATE TABLE IF NOT EXISTS `support` (
 
 INSERT INTO `support` (`idSupport`, `support`) VALUES
 (2, 'Dématérialisé'),
-(1, 'Physique'),
-(3, 'supports support');
+(1, 'Physique');
 
 -- --------------------------------------------------------
 
@@ -821,7 +812,7 @@ MODIFY `idEdition` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=4;
 -- AUTO_INCREMENT pour la table `editor`
 --
 ALTER TABLE `editor`
-MODIFY `idEditor` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=8;
+MODIFY `idEditor` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=7;
 --
 -- AUTO_INCREMENT pour la table `game`
 --
@@ -846,7 +837,7 @@ MODIFY `idMedia` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=3;
 -- AUTO_INCREMENT pour la table `mode`
 --
 ALTER TABLE `mode`
-MODIFY `idMode` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=7;
+MODIFY `idMode` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=6;
 --
 -- AUTO_INCREMENT pour la table `shop`
 --
@@ -856,7 +847,7 @@ MODIFY `idShop` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=5;
 -- AUTO_INCREMENT pour la table `support`
 --
 ALTER TABLE `support`
-MODIFY `idSupport` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=4;
+MODIFY `idSupport` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=3;
 --
 -- AUTO_INCREMENT pour la table `test`
 --
@@ -995,7 +986,3 @@ ADD CONSTRAINT `fk_test_console1` FOREIGN KEY (`console_idConsole`) REFERENCES `
 --
 ALTER TABLE `tip`
 ADD CONSTRAINT `fk_tip_game1` FOREIGN KEY (`game_idGame`) REFERENCES `game` (`idGame`) ON DELETE CASCADE ON UPDATE CASCADE;
-
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
