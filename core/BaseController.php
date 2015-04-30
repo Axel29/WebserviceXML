@@ -152,6 +152,7 @@ class BaseController
 	 * Check if the value is a real int
 	 *
 	 * @param $value mixed Value to test
+	 * @return bool
 	 */
 	public function isInt($value)
 	{
@@ -166,6 +167,7 @@ class BaseController
 	 * Check if the value is a real float
 	 *
 	 * @param $value mixed Value to test
+	 * @return bool
 	 */
 	public function isFloat($value)
 	{
@@ -176,6 +178,13 @@ class BaseController
 		return false;
 	}
 
+	/**
+	 * Validate date with format.
+	 *
+	 * @param $date date Date to check
+	 * @param $format string Date format (default : Y-m-d H:i:is)
+	 * @return bool
+	 */
 	public function isDate($date, $format = 'Y-m-d H:i:s')
 	{
 		$dateTime = DateTime::createFromFormat($format, $date);
