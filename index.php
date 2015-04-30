@@ -21,10 +21,6 @@ require_once(ROOT . 'core/Routing.php');
 require_once(ROOT . 'core/BaseModel.php');
 require_once(ROOT . 'core/BaseController.php');
 
-// Instanciate PDO's connection in order to use it everywhere
-//$pdo = new Connection();
-//$pdo->getPDO();
-
 $routing = new Routing();
 $route   = $routing->parseUri();
 
@@ -45,7 +41,3 @@ if (method_exists($controller, $route['action'])) {
 	header("HTTP/1.0 404 Not Found");
 	exit;
 }
-
-// echo '<pre>';
-// 	var_dump($route);
-// echo '</pre>';
