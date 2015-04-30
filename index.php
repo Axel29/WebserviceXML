@@ -39,5 +39,5 @@ if (method_exists($controller, $route['action'])) {
 	$routing->call_user_func_named($controller, $route['action'], $route['args']);
 } else {
 	header("HTTP/1.0 404 Not Found");
-	exit;
+	exit('Oops an error has occured! Please try again later.');
 }
