@@ -138,30 +138,4 @@ class Gender extends BaseModel
 			return false;
 		}
 	}
-
-	/**
-	 * Delete a gender by it's ID
-	 *
-	 * @param $id int Gender's ID
-	 */
-	public function deleteGender($idGender)
-	{
-		try {
-			$pdo  = $this->db;
-			$stmt = $pdo->prepare('DELETE FROM `gender` 
-								   WHERE `idGender` =  :idGender');
-			$stmt->bindParam(':idGender', $idGender, PDO::PARAM_INT);
-			$stmt->execute();
-
-			/*
-			 * Check that the update was performed on an existing gender.
-			 * MySQL won't send any error as, regarding to him, the request is correct, so we have to handle it manually.
-			 */
-			return $stmt->rowCount();
-		} catch (PDOException $e) {
-			return false;
-		} catch (Exception $e) {
-			return false;
-		}
-	}
 }
