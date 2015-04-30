@@ -2,7 +2,7 @@
 class GenderController extends BaseController
 {
 	/**
-	 * @var $id int Game's ID
+	 * @var $id int Gender's ID
 	 */
 	private $id = null;
 
@@ -47,7 +47,7 @@ class GenderController extends BaseController
 		$genderModel = new Gender();
 
 		// Show the full gender list or a specific gender by it's ID
-		$datas = $genderModel->getGenders($this->getId());
+		$datas = $genderModel->findBY('idGender', $this->getId());
 
 		$this->xml = $this->generateXml($datas)->asXML();
 
@@ -135,31 +135,14 @@ class GenderController extends BaseController
 	}
 
 	/**
-	 * Delete game
+	 * Delete gender. Forbiddent action.
 	 * Route: /gender/delete/id/{id}
 	 *
 	 * @param $id int Gender's ID to delete
 	 */
 	public function delete()
 	{		
-		// Security check for the request method
-		if (!$this->getRequestMethod() == 'DELETE') {
-			$this->exitError(405, 'Only DELETE methods are allowed.');
-			return;
-		}
-
-		if (!$this->getId()) {
-			$this->exitError(400, "'id' must be specified.");
-		}
-
-		$genderModel   = new Gender();
-		$deletedGender = $genderModel->deleteGender($this->getId());
-
-		if ($deletedGender) {
-			$this->sendStatus(204);
-		} else {
-			$this->exitError(400, 'An error has occured. Please try again.');
-		}
+		$this->exitError(405, 'Genders deletion is not allowed.')
 	}
 
 	/**
@@ -167,7 +150,7 @@ class GenderController extends BaseController
 	 * Can generate either the entire database's XML, either only one gender's XML.
 	 *
 	 * @param array $gender Gender to insert in the XML
-	 * @return SimpleXMLElement $genders List of genders or game
+	 * @return SimpleXMLElement $genders List of genders or gender
 	 */
 	public function generateXml($genders = [])
 	{

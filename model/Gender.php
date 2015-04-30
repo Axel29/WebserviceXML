@@ -2,12 +2,13 @@
 class Gender extends BaseModel
 {
 	/**
-	 * Retrieve every available genders or genders by game ID
+	 * Retrieve every available genders or genders by some param
 	 *
-	 * @param $gameId int Game's ID attached to the gender
+	 * @param $paramName string Param's name to find by
+	 * @param $paramValue mixed Param's value
 	 * @return $genders array
 	 */
-	public function getGenders($gameId = null)
+	public function findBy($paramName = null, $paramValue = null)
 	{
 		$this->table = 'gender ge';
 
@@ -15,23 +16,29 @@ class Gender extends BaseModel
 		
 		$where = [];
 		$join  = [];
-		if ($gameId) {
-			$where = [
-				'ghg.game_idGame' => $gameId,
-			];
+		if ($paramName && $paramValue) {
+			if ($paramName == 'idGame') {
+				$where = [
+					'ghg.game_idGame' => $paramValue,
+				];
 
-			$join = [
-				[
-					'type'  => 'INNER JOIN',
-					'table' => 'game_has_gender ghg',
-					'on'    => 'ge.idGender = ghg.gender_idGender',
-				],
-				[
-					'type'  => 'INNER JOIN',
-					'table' => 'game ga',
-					'on'    => 'ga.idGame = ghg.game_idGame',
-				],
-			];
+				$join = [
+					[
+						'type'  => 'INNER JOIN',
+						'table' => 'game_has_gender ghg',
+						'on'    => 'ge.idGender = ghg.gender_idGender',
+					],
+					[
+						'type'  => 'INNER JOIN',
+						'table' => 'game ga',
+						'on'    => 'ga.idGame = ghg.game_idGame',
+					],
+				];
+			} else {
+				$where = [
+					'ge.' . $paramName => $paramValue,
+				];
+			}
 		}
 
 		$genders = $this->select($fields, $where, [], $join);
