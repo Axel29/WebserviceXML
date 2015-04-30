@@ -36,7 +36,7 @@ class Gender extends BaseModel
 				];
 			} else {
 				$where = [
-					'ge.' . $paramName => $paramValue,
+					$paramName => $paramValue,
 				];
 			}
 		}

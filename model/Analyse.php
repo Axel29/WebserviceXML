@@ -10,12 +10,12 @@ class Analyse extends BaseModel
 	 */
 	public function findBy($paramName = null, $paramValue = null)
 	{
-		$this->table = 'analyse a';
+		$this->table = 'analyse';
 		
 		$where = [];
 		if ($paramName && $paramValue) {
 			$where = [
-				'a.' . $paramName => $paramValue,
+				$paramName => $paramValue,
 			];
 		}
 

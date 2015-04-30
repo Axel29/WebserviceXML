@@ -10,7 +10,7 @@ class Comment extends BaseModel
 	 */
 	public function findBy($paramName = null, $paramValue = null)
 	{
-		$this->table = 'comment c';
+		$this->table = 'comment';
 		
 		$fields = [
 			'idComment',
@@ -26,7 +26,7 @@ class Comment extends BaseModel
 		$where = [];
 		if ($paramName && $paramValue) {
 			$where = [
-				'c.' . $paramName => $paramValue,
+				$paramName => $paramValue,
 			];
 		}
 
