@@ -8,7 +8,14 @@ class BaseModel
 
 	public function __construct()
 	{
-		$this->db = new PDO(DB, USER, PASSWORD);
+		try {
+			$this->db = new PDO(DB, USER, PASSWORD);
+			$this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+			$this->db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+		} catch (PDOException $e) {
+			echo 'Database connection error: ' . $e->getMessage();
+			exit();
+		}
 	}
 
 	public function select($fields = [], $where = [], $or = [], $joins = [], $order = [], $limit = null, $fetchAll = true)
