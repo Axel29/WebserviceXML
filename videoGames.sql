@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Client :  localhost:3306
--- Généré le :  Mer 29 Avril 2015 à 09:22
+-- Généré le :  Jeu 30 Avril 2015 à 09:22
 -- Version du serveur :  5.5.38
 -- Version de PHP :  5.6.2
 
@@ -30,7 +30,7 @@ USE `videoGames`;
 --
 
 DROP TABLE IF EXISTS `analyse`;
-CREATE TABLE `analyse` (
+CREATE TABLE IF NOT EXISTS `analyse` (
 `idAnalyse` int(11) NOT NULL,
   `analyse` longtext NOT NULL,
   `type` varchar(255) NOT NULL,
@@ -45,7 +45,7 @@ INSERT INTO `analyse` (`idAnalyse`, `analyse`, `type`, `test_idTest`) VALUES
 (1, 'Très bon jeu, graphismes époustouflants', 'positive', 1),
 (2, 'Répétitif', 'négative', 1),
 (3, 'Bon jeu, addictif\r\n', 'positive', 2),
-(4, 'Trop peu d''occupations', 'négative', 2);
+(4, 'Trop peu d''occupation', 'négative', 1);
 
 -- --------------------------------------------------------
 
@@ -54,7 +54,7 @@ INSERT INTO `analyse` (`idAnalyse`, `analyse`, `type`, `test_idTest`) VALUES
 --
 
 DROP TABLE IF EXISTS `article`;
-CREATE TABLE `article` (
+CREATE TABLE IF NOT EXISTS `article` (
 `idArticle` int(11) NOT NULL,
   `type` varchar(255) NOT NULL,
   `title` varchar(255) NOT NULL,
@@ -79,9 +79,9 @@ INSERT INTO `article` (`idArticle`, `type`, `title`, `user_name`, `date`, `conso
 --
 
 DROP TABLE IF EXISTS `comment`;
-CREATE TABLE `comment` (
+CREATE TABLE IF NOT EXISTS `comment` (
 `idComment` int(11) NOT NULL,
-  `date` datetime DEFAULT NULL,
+  `date` datetime NOT NULL,
   `user_name` varchar(255) NOT NULL,
   `note` int(11) NOT NULL,
   `like` int(11) NOT NULL,
@@ -105,7 +105,7 @@ INSERT INTO `comment` (`idComment`, `date`, `user_name`, `note`, `like`, `dislik
 --
 
 DROP TABLE IF EXISTS `config`;
-CREATE TABLE `config` (
+CREATE TABLE IF NOT EXISTS `config` (
 `idConfig` int(11) NOT NULL,
   `config` longtext NOT NULL,
   `type` varchar(255) NOT NULL,
@@ -128,7 +128,7 @@ INSERT INTO `config` (`idConfig`, `config`, `type`, `console_idConsole`) VALUES
 --
 
 DROP TABLE IF EXISTS `console`;
-CREATE TABLE `console` (
+CREATE TABLE IF NOT EXISTS `console` (
 `idConsole` int(11) NOT NULL,
   `business_model` varchar(255) NOT NULL,
   `pegi` varchar(255) NOT NULL,
@@ -155,7 +155,7 @@ INSERT INTO `console` (`idConsole`, `business_model`, `pegi`, `release`, `name`,
 --
 
 DROP TABLE IF EXISTS `console_has_config`;
-CREATE TABLE `console_has_config` (
+CREATE TABLE IF NOT EXISTS `console_has_config` (
   `console_idConsole` int(11) NOT NULL,
   `config_idConfig` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -176,7 +176,7 @@ INSERT INTO `console_has_config` (`console_idConsole`, `config_idConfig`) VALUES
 --
 
 DROP TABLE IF EXISTS `console_has_mode`;
-CREATE TABLE `console_has_mode` (
+CREATE TABLE IF NOT EXISTS `console_has_mode` (
   `console_idConsole` int(11) NOT NULL,
   `mode_idMode` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -198,7 +198,7 @@ INSERT INTO `console_has_mode` (`console_idConsole`, `mode_idMode`) VALUES
 --
 
 DROP TABLE IF EXISTS `console_has_support`;
-CREATE TABLE `console_has_support` (
+CREATE TABLE IF NOT EXISTS `console_has_support` (
   `console_idConsole` int(11) NOT NULL,
   `support_idSupport` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -219,7 +219,7 @@ INSERT INTO `console_has_support` (`console_idConsole`, `support_idSupport`) VAL
 --
 
 DROP TABLE IF EXISTS `dlc`;
-CREATE TABLE `dlc` (
+CREATE TABLE IF NOT EXISTS `dlc` (
 `idDlc` int(11) NOT NULL,
   `title` varchar(255) NOT NULL,
   `description` longtext NOT NULL,
@@ -243,7 +243,7 @@ INSERT INTO `dlc` (`idDlc`, `title`, `description`, `price`, `devise`, `console_
 --
 
 DROP TABLE IF EXISTS `edition`;
-CREATE TABLE `edition` (
+CREATE TABLE IF NOT EXISTS `edition` (
 `idEdition` int(11) NOT NULL,
   `name` varchar(255) NOT NULL,
   `content` longtext NOT NULL,
@@ -266,7 +266,7 @@ INSERT INTO `edition` (`idEdition`, `name`, `content`, `console_idConsole`) VALU
 --
 
 DROP TABLE IF EXISTS `editor`;
-CREATE TABLE `editor` (
+CREATE TABLE IF NOT EXISTS `editor` (
 `idEditor` int(11) NOT NULL,
   `editor` varchar(255) NOT NULL
 ) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
@@ -291,7 +291,7 @@ INSERT INTO `editor` (`idEditor`, `editor`) VALUES
 --
 
 DROP TABLE IF EXISTS `game`;
-CREATE TABLE `game` (
+CREATE TABLE IF NOT EXISTS `game` (
 `idGame` int(11) NOT NULL,
   `title` varchar(255) NOT NULL,
   `site` varchar(255) NOT NULL
@@ -312,7 +312,7 @@ INSERT INTO `game` (`idGame`, `title`, `site`) VALUES
 --
 
 DROP TABLE IF EXISTS `game_has_editor`;
-CREATE TABLE `game_has_editor` (
+CREATE TABLE IF NOT EXISTS `game_has_editor` (
   `game_idGame` int(11) NOT NULL,
   `editor_idEditor` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -332,7 +332,7 @@ INSERT INTO `game_has_editor` (`game_idGame`, `editor_idEditor`) VALUES
 --
 
 DROP TABLE IF EXISTS `game_has_gender`;
-CREATE TABLE `game_has_gender` (
+CREATE TABLE IF NOT EXISTS `game_has_gender` (
   `game_idGame` int(11) NOT NULL,
   `gender_idGender` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -353,7 +353,7 @@ INSERT INTO `game_has_gender` (`game_idGame`, `gender_idGender`) VALUES
 --
 
 DROP TABLE IF EXISTS `game_has_language`;
-CREATE TABLE `game_has_language` (
+CREATE TABLE IF NOT EXISTS `game_has_language` (
   `game_idGame` int(11) NOT NULL,
   `language_idLanguage` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -377,7 +377,7 @@ INSERT INTO `game_has_language` (`game_idGame`, `language_idLanguage`) VALUES
 --
 
 DROP TABLE IF EXISTS `game_has_theme`;
-CREATE TABLE `game_has_theme` (
+CREATE TABLE IF NOT EXISTS `game_has_theme` (
   `game_idGame` int(11) NOT NULL,
   `theme_idTheme` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -397,7 +397,7 @@ INSERT INTO `game_has_theme` (`game_idGame`, `theme_idTheme`) VALUES
 --
 
 DROP TABLE IF EXISTS `gender`;
-CREATE TABLE `gender` (
+CREATE TABLE IF NOT EXISTS `gender` (
 `idGender` int(11) NOT NULL,
   `gender` varchar(255) NOT NULL
 ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
@@ -421,7 +421,7 @@ INSERT INTO `gender` (`idGender`, `gender`) VALUES
 --
 
 DROP TABLE IF EXISTS `language`;
-CREATE TABLE `language` (
+CREATE TABLE IF NOT EXISTS `language` (
 `idLanguage` int(11) NOT NULL,
   `language` varchar(255) NOT NULL
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
@@ -443,7 +443,7 @@ INSERT INTO `language` (`idLanguage`, `language`) VALUES
 --
 
 DROP TABLE IF EXISTS `media`;
-CREATE TABLE `media` (
+CREATE TABLE IF NOT EXISTS `media` (
 `idMedia` int(11) NOT NULL,
   `type` varchar(255) NOT NULL,
   `url` varchar(255) NOT NULL,
@@ -469,7 +469,7 @@ INSERT INTO `media` (`idMedia`, `type`, `url`, `unit`, `width`, `height`, `conso
 --
 
 DROP TABLE IF EXISTS `mode`;
-CREATE TABLE `mode` (
+CREATE TABLE IF NOT EXISTS `mode` (
 `idMode` int(11) NOT NULL,
   `mode` varchar(255) NOT NULL
 ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
@@ -493,7 +493,7 @@ INSERT INTO `mode` (`idMode`, `mode`) VALUES
 --
 
 DROP TABLE IF EXISTS `shop`;
-CREATE TABLE `shop` (
+CREATE TABLE IF NOT EXISTS `shop` (
 `idShop` int(11) NOT NULL,
   `url` varchar(255) NOT NULL,
   `name` varchar(255) NOT NULL,
@@ -519,7 +519,7 @@ INSERT INTO `shop` (`idShop`, `url`, `name`, `price`, `devise`, `edition_idEditi
 --
 
 DROP TABLE IF EXISTS `support`;
-CREATE TABLE `support` (
+CREATE TABLE IF NOT EXISTS `support` (
 `idSupport` int(11) NOT NULL,
   `support` varchar(255) NOT NULL
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
@@ -540,7 +540,7 @@ INSERT INTO `support` (`idSupport`, `support`) VALUES
 --
 
 DROP TABLE IF EXISTS `test`;
-CREATE TABLE `test` (
+CREATE TABLE IF NOT EXISTS `test` (
 `idTest` int(11) NOT NULL,
   `report` longtext NOT NULL,
   `date` datetime NOT NULL,
@@ -564,7 +564,7 @@ INSERT INTO `test` (`idTest`, `report`, `date`, `user_name`, `note`, `console_id
 --
 
 DROP TABLE IF EXISTS `theme`;
-CREATE TABLE `theme` (
+CREATE TABLE IF NOT EXISTS `theme` (
 `idTheme` int(11) NOT NULL,
   `theme` varchar(255) NOT NULL
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
@@ -587,7 +587,7 @@ INSERT INTO `theme` (`idTheme`, `theme`) VALUES
 --
 
 DROP TABLE IF EXISTS `tip`;
-CREATE TABLE `tip` (
+CREATE TABLE IF NOT EXISTS `tip` (
 `idTip` int(11) NOT NULL,
   `content` longtext NOT NULL,
   `consoles_names` varchar(255) NOT NULL,
@@ -609,7 +609,7 @@ INSERT INTO `tip` (`idTip`, `content`, `consoles_names`, `game_idGame`) VALUES
 --
 
 DROP TABLE IF EXISTS `user`;
-CREATE TABLE `user` (
+CREATE TABLE IF NOT EXISTS `user` (
 `idUser` int(11) NOT NULL,
   `user_name` varchar(255) DEFAULT NULL,
   `password` varchar(255) DEFAULT NULL,
