@@ -197,21 +197,27 @@ class BaseController
 	 * @param $fields
 	 * @return bool
 	 */
-	public function checkRequiredFields($fields, $datas)
+	public function checkRequiredFields($fields, $datas, $dateFormat = 'Y-m-d H:i:s')
 	{
 		$hasError = false;
 		$i        = 0;
 		$error    = '';
+		
 		foreach ($fields as $field => $type) {
 			if (!isset($datas[$field]) 
 				|| ($type == 'string' && !is_string($datas[$field])) 
 				|| ($type == 'int' && !$this->isInt($datas[$field]))
 				|| ($type == 'float' && !$this->isFloat($datas[$field]))
-				|| ($type == 'date' && !$this->isDate($datas[$field]))
+				|| ($type == 'date' && !$this->isDate($datas[$field], $dateFormat))
 				|| ($type == 'bool' && $datas[$field])
 			) {
 				$hasError = true;
-				$error .= "'$field' is a required field and must be of type: $type";
+
+				if ($type == 'date') {
+					$error .= "'$field' is a required field and must be of type: $type with format: $dateFormat";
+				} else {
+					$error .= "'$field' is a required field and must be of type: $type";
+				}
 				$error .= ($i++ != count($fields)) ? "\r\n" : '';
 			}
 		}
