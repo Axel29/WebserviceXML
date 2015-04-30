@@ -50,7 +50,7 @@ class AnalyseController extends BaseController
 		$analyseModel = new Analyse();
 
 		// Show the full analyse list or a specific analyse by it's ID
-		$datas = $analyseModel->getAnalyses($this->getId());
+		$datas = $analyseModel->findBy('idAnalyse', $this->getId());
 
 		$this->xml = $this->generateXml($datas)->asXML();
 

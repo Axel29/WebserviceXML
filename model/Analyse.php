@@ -2,19 +2,20 @@
 class Analyse extends BaseModel
 {
 	/**
-	 * Retrieve every available analyses or analyses by test ID
+	 * Retrieve every available analyses or analyses by some param
 	 *
-	 * @param $testId int Test's ID attached to the analyse
+	 * @param $paramName string Param's name to find by
+	 * @param $paramValue mixed Param's value
 	 * @return $analyses array
 	 */
-	public function getAnalyses($testId = null)
+	public function findBy($paramName = null, $paramValue = null)
 	{
 		$this->table = 'analyse a';
 		
 		$where = [];
-		if ($testId) {
+		if ($paramName && $paramValue) {
 			$where = [
-				'a.test_idTest' => $testId,
+				'a.' . $paramName => $paramValue,
 			];
 		}
 
