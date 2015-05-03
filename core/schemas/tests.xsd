@@ -1,38 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
     <!-- Résumé du test -->
-    <xs:element name="report" type="xs:string"/>
+    <xs:element name="report" type="xs:string" />
 
     <!-- Date de publication -->
-    <xs:element name="date" type="xs:dateTime"/>
+    <xs:element name="date" type="xs:dateTime" />
 
     <!-- Nom du testeur -->
-    <xs:element name="userName" type="xs:string"/>
+    <xs:element name="userName" type="xs:string" />
 
     <!-- Note du testeur -->
-    <xs:element name="note" type="xs:integer"/>
+    <xs:element name="note" type="xs:integer" />
 
     <!-- Contenu du commentaire -->
-    <xs:element name="text" type="xs:string"/>
+    <xs:element name="text" type="xs:string" />
 
     <!-- Nombre de like du commentaire -->
-    <xs:element name="like" type="xs:integer"/> 
+    <xs:element name="like" type="xs:integer" /> 
     
     <!-- Nombre de dislike du commentaire -->
-    <xs:element name="dislike" type="xs:integer"/>
+    <xs:element name="dislike" type="xs:integer" />
 
     <!-- Commentaire utilisateur -->
     <xs:element name="comment">
         <xs:complexType>
             <xs:sequence>
-                <xs:element ref="text"/>
-                <xs:element ref="date"/>
-                <xs:element ref="userName"/>
-                <xs:element ref="note"/>
-                <xs:element ref="like"/>
-                <xs:element ref="dislike"/>
+                <xs:element ref="text" />
+                <xs:element ref="date" />
+                <xs:element ref="userName" />
+                <xs:element ref="note" />
+                <xs:element ref="like" />
+                <xs:element ref="dislike" />
             </xs:sequence>
-            <xs:attribute name="id" type="xs:positiveInteger" use="required"/>
+            <xs:attribute name="id" type="xs:positiveInteger" use="required" />
         </xs:complexType>
     </xs:element>
 
@@ -41,8 +41,8 @@
         <xs:complexType>
             <xs:simpleContent>
                 <xs:extension base="xs:string">
-                    <xs:attribute name="id" type="xs:positiveInteger" use="required"/>
-                    <xs:attribute name="type" type="xs:string" use="required"/>
+                    <xs:attribute name="id" type="xs:positiveInteger" use="required" />
+                    <xs:attribute name="type" type="xs:string" use="required" />
                 </xs:extension>
             </xs:simpleContent>
         </xs:complexType>
@@ -52,7 +52,7 @@
     <xs:element name="comments">
         <xs:complexType>
             <xs:sequence>
-                <xs:element ref="comment" minOccurs="0"/>
+                <xs:element ref="comment" minOccurs="0" />
             </xs:sequence>
         </xs:complexType>
     </xs:element>
@@ -61,29 +61,29 @@
     <xs:element name="analyses">
         <xs:complexType>
             <xs:sequence>
-                <xs:element ref="analyse" maxOccurs="unbounded" minOccurs="0"/>
+                <xs:element ref="analyse" minOccurs="0" maxOccurs="unbounded" />
             </xs:sequence>
         </xs:complexType>
     </xs:element>
 
      <xs:element name="test">
         <xs:complexType>
-            <xs:sequence>
-                <xs:element ref="report"/>
-                <xs:element ref="date"/>
-                <xs:element ref="userName"/>
-                <xs:element ref="note"/>
-                <xs:element ref="comments"/>
-                <xs:element ref="analyses"/>
+            <xs:sequence minOccurs="0" maxOccurs="unbounded">
+                <xs:element ref="report" />
+                <xs:element ref="date" />
+                <xs:element ref="userName" />
+                <xs:element ref="note" />
+                <xs:element ref="comments" />
+                <xs:element ref="analyses" />
             </xs:sequence>
+            <xs:attribute name="id" type="xs:positiveInteger" use="required" />
         </xs:complexType>
     </xs:element>
 
-
-    <xs:element name="analyses">
+     <xs:element name="tests">
         <xs:complexType>
             <xs:sequence>
-                <xs:element ref="analyse" minOccurs="0" maxOccurs="unbounded" />
+                <xs:element ref="test" minOccurs="0" maxOccurs="unbounded" />
             </xs:sequence>
         </xs:complexType>
     </xs:element>
