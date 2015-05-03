@@ -258,6 +258,7 @@
                 <xs:element ref="comments"/>
                 <xs:element ref="analyses"/>
             </xs:sequence>
+            <xs:attribute name="id" type="xs:positiveInteger" use="required"/>
         </xs:complexType>
     </xs:element>
 
