@@ -55,7 +55,7 @@
 						<config id="" type="minimale"></config>
 						<config id="" type="optimale"></config>
 					</configs>
-					<test>	
+					<test id="">	
 						<report></report>
 						<date>2015-01-22T11:33:33</date>
 						<userName></userName>
