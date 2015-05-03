@@ -26,15 +26,15 @@ $route   = $routing->parseUri();
 
 $controllerName = ucfirst($route['controller']) . 'Controller';
 $controllerFile = 'controllers/' . $controllerName . '.php';
+
 if (file_exists($controllerFile)) {
 	require_once($controllerFile);
 } else {
 	header("HTTP/1.0 404 Not Found");
-	exit;
+	exit('Oops an error has occured! Please try again later.');
 }
 
 $controller = new $controllerName;
-
 if (method_exists($controller, $route['action'])) {
 	$routing->call_user_func_named($controller, $route['action'], $route['args']);
 } else {
