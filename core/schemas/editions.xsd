@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <!-- Nom en général -->
+    <xs:element name="name" type="xs:string" />
+
+    <!-- Contenu de l'édition -->
+    <xs:element name="content" type="xs:string" />
+
+    <!-- Prix -->
+    <xs:element name="price">
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="xs:string">
+                    <xs:attribute name="devise" type="xs:string" use="required" />
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- Boutique où il est possible d'acheter le jeu-->
+    <xs:element name="shop">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="name"/>
+                <xs:element ref="price"/>
+            </xs:sequence>
+            <xs:attribute name="id" type="xs:positiveInteger" use="required" />
+            <xs:attribute name="url" type="xs:anyURI" use="required" />
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="shops">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="shop" minOccurs="0" maxOccurs="unbounded" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- Information relative à une édition -->
+    <xs:element name="edition">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="name" />
+                <xs:element ref="content" />
+                <xs:element ref="shops" />
+            </xs:sequence>
+            <xs:attribute name="id" type="xs:positiveInteger" use="required" />
+        </xs:complexType>
+    </xs:element>
+
+    <!-- Gestion de l'édition du jeu (collector, standard, ...) -->
+    <xs:element name="editions">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="edition" maxOccurs="unbounded" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>
