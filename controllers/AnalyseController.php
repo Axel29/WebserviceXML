@@ -11,7 +11,7 @@ class AnalyseController extends BaseController
 
 	/**
 	 * Redirect the request to the matching method regarding the request method
-	 * Route: /analyse/id/{id}
+	 * Route: /analyse/index/id/{id}
 	 *
 	 * @param $id int ID of the analyse. Used for POST, PUT and DELETE methods
 	 */
@@ -97,7 +97,7 @@ class AnalyseController extends BaseController
 
 	/**
 	 * Update analyse
-	 * Route: /analyse/id/{id}
+	 * Route: /analyse/index/id/{id}
 	 */
 	public function update()
 	{
@@ -135,7 +135,7 @@ class AnalyseController extends BaseController
 
 	/**
 	 * Delete analyse
-	 * Route: /analyse/delete/id/{id}
+	 * Route: /analyse/index/id/{id}
 	 *
 	 * @param $id int Analyse's ID to delete
 	 */

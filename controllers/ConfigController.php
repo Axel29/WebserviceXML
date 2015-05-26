@@ -20,7 +20,7 @@ class ConfigController extends BaseController
 
 	/**
 	 * Redirect the request to the matching method regarding the request method
-	 * Route: /config/id/{id}
+	 * Route: /config/index/id/{id}
 	 *
 	 * @param $id int ID of the config. Used for POST, PUT and DELETE methods
 	 */
@@ -100,7 +100,7 @@ class ConfigController extends BaseController
 
 	/**
 	 * Update config
-	 * Route: /config/id/{id}
+	 * Route: /config/index/id/{id}
 	 */
 	public function update()
 	{
@@ -132,7 +132,7 @@ class ConfigController extends BaseController
 
 	/**
 	 * Delete config
-	 * Route: /config/delete/id/{id}
+	 * Route: /config/index/id/{id}
 	 *
 	 * @param $id int Config's ID to delete
 	 */

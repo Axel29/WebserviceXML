@@ -22,7 +22,7 @@ class ShopController extends BaseController
 
 	/**
 	 * Redirect the request to the matching method regarding the request method
-	 * Route: /shop/id/{id}
+	 * Route: /shop/index/id/{id}
 	 *
 	 * @param $id int ID of the shop. Used for POST, PUT and DELETE methods
 	 */
@@ -102,7 +102,7 @@ class ShopController extends BaseController
 
 	/**
 	 * Update shop
-	 * Route: /shop/id/{id}
+	 * Route: /shop/index/id/{id}
 	 */
 	public function update()
 	{
@@ -134,7 +134,7 @@ class ShopController extends BaseController
 
 	/**
 	 * Delete shop
-	 * Route: /shop/delete/id/{id}
+	 * Route: /shop/index/id/{id}
 	 *
 	 * @param $id int Shop's ID to delete
 	 */

@@ -8,7 +8,7 @@ class GenderController extends BaseController
 
 	/**
 	 * Redirect the request to the matching method regarding the request method
-	 * Route: /gender/id/{id}
+	 * Route: /gender/index/id/{id}
 	 *
 	 * @param $id int ID of the gender. Used for POST, PUT and DELETE methods
 	 */
@@ -92,7 +92,7 @@ class GenderController extends BaseController
 
 	/**
 	 * Update gender
-	 * Route: /gender/id/{id}
+	 * Route: /gender/index/id/{id}
 	 */
 	public function update()
 	{
@@ -137,7 +137,7 @@ class GenderController extends BaseController
 
 	/**
 	 * Delete gender. Forbiddent action.
-	 * Route: /gender/delete/id/{id}
+	 * Route: /gender/index/id/{id}
 	 *
 	 * @param $id int Gender's ID to delete
 	 */

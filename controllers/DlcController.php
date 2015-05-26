@@ -22,7 +22,7 @@ class DlcController extends BaseController
 
 	/**
 	 * Redirect the request to the matching method regarding the request method
-	 * Route: /dlc/id/{id}
+	 * Route: /dlc/index/id/{id}
 	 *
 	 * @param $id int ID of the dlc. Used for POST, PUT and DELETE methods
 	 */
@@ -102,7 +102,7 @@ class DlcController extends BaseController
 
 	/**
 	 * Update dlc
-	 * Route: /dlc/id/{id}
+	 * Route: /dlc/index/id/{id}
 	 */
 	public function update()
 	{
@@ -134,7 +134,7 @@ class DlcController extends BaseController
 
 	/**
 	 * Delete dlc
-	 * Route: /dlc/delete/id/{id}
+	 * Route: /dlc/index/id/{id}
 	 *
 	 * @param $id int Dlc's ID to delete
 	 */

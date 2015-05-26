@@ -24,7 +24,7 @@ class CommentController extends BaseController
 
 	/**
 	 * Redirect the request to the matching method regarding the request method
-	 * Route: /comment/id/{id}
+	 * Route: /comment/index/id/{id}
 	 *
 	 * @param $id int ID of the comment. Used for POST, PUT and DELETE methods
 	 */
@@ -104,7 +104,7 @@ class CommentController extends BaseController
 
 	/**
 	 * Update comment
-	 * Route: /comment/id/{id}
+	 * Route: /comment/index/id/{id}
 	 */
 	public function update()
 	{
@@ -136,7 +136,7 @@ class CommentController extends BaseController
 
 	/**
 	 * Delete comment
-	 * Route: /comment/delete/id/{id}
+	 * Route: /comment/index/id/{id}
 	 *
 	 * @param $id int Comment's ID to delete
 	 */

@@ -100,7 +100,7 @@ class EditionController extends BaseController
 
 	/**
 	 * Update edition
-	 * Route: /edition/id/{id}
+	 * Route: /edition/index/id/{id}
 	 */
 	public function update()
 	{
@@ -132,7 +132,7 @@ class EditionController extends BaseController
 
 	/**
 	 * Delete edition
-	 * Route: /edition/delete/id/{id}
+	 * Route: /edition/index/id/{id}
 	 *
 	 * @param $id int Edition's ID to delete
 	 */

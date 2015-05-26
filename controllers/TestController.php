@@ -22,7 +22,7 @@ class TestController extends BaseController
 
 	/**
 	 * Redirect the request to the matching method regarding the request method
-	 * Route: /test/id/{id}
+	 * Route: /test/index/id/{id}
 	 *
 	 * @param $id int ID of the test. Used for POST, PUT and DELETE methods
 	 */
@@ -102,7 +102,7 @@ class TestController extends BaseController
 
 	/**
 	 * Update test
-	 * Route: /test/id/{id}
+	 * Route: /test/index/id/{id}
 	 */
 	public function update()
 	{
@@ -134,7 +134,7 @@ class TestController extends BaseController
 
 	/**
 	 * Delete test
-	 * Route: /test/delete/id/{id}
+	 * Route: /test/index/id/{id}
 	 *
 	 * @param $id int Test's ID to delete
 	 */
