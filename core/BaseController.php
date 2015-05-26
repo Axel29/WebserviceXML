@@ -194,7 +194,9 @@ class BaseController
 	/**
 	 * Check that every required field is filled and that they match the expected type.
 	 *
-	 * @param $fields
+	 * @param array $fields Fields to check with name and type
+	 * @param array $datas Datas to check
+	 * @param string $dateFormat Date format. Default : "Y-m-d H:i:s"
 	 * @return bool
 	 */
 	public function checkRequiredFields($fields, $datas, $dateFormat = 'Y-m-d H:i:s')
