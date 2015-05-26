@@ -13,7 +13,7 @@ class Test extends BaseModel
 		$this->table = 'test t';
 		
 		$fields = [
-			'idTest',
+			'`idTest`',
 			'`report`',
 			'DATE_FORMAT(`date`, "%Y-%m-%dT%H:%i:%s") as `date`',
 			'`user_name`',

@@ -33,6 +33,7 @@ class CommentController extends BaseController
 		if ($id) {
 			$this->setId($id);
 		}
+
 		switch ($this->getRequestMethod()) {
 			case 'GET':
 				$this->show();
@@ -207,25 +208,25 @@ class CommentController extends BaseController
 			$errors = libxml_get_errors();
 
 			foreach ($errors as $error) {
-				$result = "<br/>\n";
+				$result = "<br>\n";
 				switch ($error->level) {
 					case LIBXML_ERR_WARNING:
-						$result .= "<b>Warning $error->code</b>: ";
+						$result .= "<strong>Warning $error->code</strong>: ";
 					break;
 					case LIBXML_ERR_ERROR:
-						$result .= "<b>Error $error->code</b>: ";
+						$result .= "<strong>Error $error->code</strong>: ";
 					break;
 					case LIBXML_ERR_FATAL:
-						$result .= "<b>Fatal Error $error->code</b>: ";
+						$result .= "<strong>Fatal Error $error->code</strong>: ";
 					break;
 				}
 
 				$result .= trim($error->message);
 
 				if ($error->file) {
-					$result .= " in <b>$error->file</b>";
+					$result .= " in <strong>$error->file</strong>";
 				}
-				$result .= " on line <b>$error->line</b>\n";
+				$result .= " on line <strong>$error->line</strong>\n";
 			}
 			libxml_clear_errors();
 		}
