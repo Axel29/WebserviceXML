@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <!-- Titre du contenu -->
+    <xs:element name="title" type="xs:string" />
+
+    <!-- Description du contenu -->
+    <xs:element name="description" type="xs:string" />
+    
+    <!-- Prix -->
+    <xs:element name="price">
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="xs:string">
+                    <xs:attribute name="devise" type="xs:string" use="required" />
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="dlc">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="title" />
+                <xs:element ref="description" />
+                <xs:element ref="price" />
+            </xs:sequence>
+            <xs:attribute name="id" type="xs:positiveInteger" use="required" />
+        </xs:complexType>
+    </xs:element>
+
+    <!-- Liste les DLCs du jeu -->
+    <xs:element name="dlcs">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="dlc" minOccurs="0" maxOccurs="unbounded" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>
