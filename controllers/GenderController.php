@@ -48,7 +48,7 @@ class GenderController extends BaseController
 		$genderModel = new Gender();
 
 		// Show the full gender list or a specific gender by it's ID
-		$datas = $genderModel->findBY('idGender', $this->getId());
+		$datas = $genderModel->findBy('idGender', $this->getId());
 
 		$this->xml = $this->generateXml($datas)->asXML();
 
