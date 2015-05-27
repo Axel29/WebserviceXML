@@ -10,7 +10,7 @@ class Support extends BaseModel
 	 */
 	public function findBy($paramName = null, $paramValue = null)
 	{
-		$this->table = 'support';
+		$this->table = 'support s';
 		
 		$fields = [
 			'`idSupport`',
@@ -18,10 +18,30 @@ class Support extends BaseModel
 		];
 
 		$where = [];
+		$join  = [];
 		if ($paramName && $paramValue) {
-			$where = [
-				$paramName => $paramValue,
-			];
+			if ($paramName == 'idConsole') {
+				$join = [
+					[
+						'type'  => 'INNER JOIN',
+						'table' => 'console_has_support chs',
+						'on'    => 's.idSupport = chs.support_idSupport',
+					],
+					[
+						'type'  => 'INNER JOIN',
+						'table' => 'console c',
+						'on'    => 'c.idConsole = chs.console_idConsole',
+					],
+				];
+
+				$where = [
+					'chs.console_idConsole' => $paramValue,
+				];
+			} else {
+				$where = [
+					$paramName => $paramValue,
+				];
+			}
 		}
 
 		$supports = $this->select($fields, $where);

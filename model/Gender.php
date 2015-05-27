@@ -18,10 +18,6 @@ class Gender extends BaseModel
 		$join  = [];
 		if ($paramName && $paramValue) {
 			if ($paramName == 'idGame') {
-				$where = [
-					'ghg.game_idGame' => $paramValue,
-				];
-
 				$join = [
 					[
 						'type'  => 'INNER JOIN',
@@ -33,6 +29,10 @@ class Gender extends BaseModel
 						'table' => 'game ga',
 						'on'    => 'ga.idGame = ghg.game_idGame',
 					],
+				];
+
+				$where = [
+					'ghg.game_idGame' => $paramValue,
 				];
 			} else {
 				$where = [

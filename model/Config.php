@@ -23,10 +23,6 @@ class Config extends BaseModel
 		$join  = [];
 		if ($paramName && $paramValue) {
 			if ($paramName == 'idConsole') {
-				$where = [
-					'chc.console_idConsole' => $paramValue,
-				];
-
 				$join = [
 					[
 						'type'  => 'INNER JOIN',
@@ -38,6 +34,10 @@ class Config extends BaseModel
 						'table' => 'console c',
 						'on'    => 'c.idConsole = chc.console_idConsole',
 					],
+				];
+
+				$where = [
+					'chc.console_idConsole' => $paramValue,
 				];
 			} else {
 				$where = [
