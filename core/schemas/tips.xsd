@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <!-- Contenu de l'édition -->
+    <xs:element name="content" type="xs:string" />
+
+    <!-- Nom de console -->
+    <xs:element name="consoleName" type="xs:string" />
+
+    <!-- Liste des consoles concernées par le contenu -->
+    <xs:element name="consolesNames">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="consoleName" maxOccurs="unbounded" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- Astuce -->
+    <xs:element name="tip">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="consolesNames" />
+                <xs:element ref="content" />
+            </xs:sequence>
+            <xs:attribute name="id" type="xs:positiveInteger" use="required" />
+        </xs:complexType>
+    </xs:element>
+
+    <!-- Liste des astuces -->
+    <xs:element name="tips">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="tip" minOccurs="0" maxOccurs="unbounded" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>
