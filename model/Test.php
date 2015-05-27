@@ -47,7 +47,6 @@ class Test extends BaseModel
             $stmt = $pdo->prepare('SELECT COUNT(`t`.`idTest`) AS `nbrTests`
 								   FROM `test` `t`
 								   LEFT JOIN `console` `c` ON `t`.`console_idConsole` = `c`.`idConsole`
-								   LEFT JOIN `game` `g` ON `c`.`game_idGame` = `g`.`idGame`
 								   WHERE `c`.`idConsole` = (SELECT `t`.`console_idConsole`
                                                              FROM `test` `t`
                                                              WHERE `t`.`idTest` = :idTest

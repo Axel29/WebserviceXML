@@ -45,7 +45,6 @@ class Edition extends BaseModel
             $stmt = $pdo->prepare('SELECT COUNT(`e`.`idEdition`) AS `nbrEditions`
 								   FROM `edition` `e`
 								   LEFT JOIN `console` `c` ON `e`.`console_idConsole` = `c`.`idConsole`
-								   LEFT JOIN `game` `g` ON `c`.`game_idGame` = `g`.`idGame`
 								   WHERE `c`.`idConsole` = (SELECT `e`.`console_idConsole`
                                                              FROM `edition` `e`
                                                              WHERE `e`.`idEdition` = :idEdition
