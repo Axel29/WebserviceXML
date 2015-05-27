@@ -476,7 +476,7 @@
     <xs:element name="medias">
         <xs:complexType>
             <xs:sequence>
-                <xs:element ref="media" minOccurs="0"/>
+                <xs:element ref="media" minOccurs="0" maxOccurs="unbounded" />
             </xs:sequence>
         </xs:complexType>
     </xs:element>
