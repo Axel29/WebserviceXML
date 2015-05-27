@@ -143,7 +143,7 @@ class GenderController extends BaseController
 	 */
 	public function delete()
 	{		
-		$this->exitError(405, 'Genders deletion is not allowed.')
+		$this->exitError(405, 'Genders deletion is not allowed.');
 	}
 
 	/**
