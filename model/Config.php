@@ -31,6 +31,37 @@ class Config extends BaseModel
 		return $configs;
 	}
 
+    /**
+     * Retrieve number of available configs for a console by config ID.
+     * Used to check that there is at least one config left before deleting as they are required.
+     *
+     * @param $configId int Config's ID
+     * @return $result['nbrConfig'] int Number of existing configs
+     */
+    public function getNumberOfConfigsLeft($configId)
+    {
+        try {
+            $pdo  = $this->db;
+            $stmt = $pdo->prepare('SELECT COUNT(`config`.`idConfig`) AS `nbrConfigs`
+								   FROM `config`
+								   LEFT JOIN `console` `c` ON `config`.`console_idConsole` = `c`.`idConsole`
+								   WHERE `c`.`idConsole` = (SELECT `config`.`console_idConsole`
+                                                             FROM `config` `config`
+                                                             WHERE `config`.`idConfig` = :idConfig
+                                                            )
+                                  ');
+            $stmt->bindParam(':idConfig', $configId, PDO::PARAM_INT);
+            $stmt->execute();
+
+            $result = $stmt->fetch();
+            return $result['nbrConfigs'];
+        } catch (PDOException $e) {
+            return false;
+        } catch (Exception $e) {
+            return false;
+        }
+    }
+
 	/**
 	 * Insert a new config in database.
 	 *

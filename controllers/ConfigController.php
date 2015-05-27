@@ -148,14 +148,20 @@ class ConfigController extends BaseController
 			$this->exitError(400, "'id' must be specified.");
 		}
 
-		$configModel   = new Config();		
-		$deletedConfig = $configModel->deleteConfig($this->getId());
+		$configModel   = new Config();
 
-        if ($deletedConfig) {
-            $this->sendStatus(204);
-        } else {
-            $this->exitError(400, 'An error has occured. Please try again.');
-        }
+		// Check that there is at least one test left before deleting, otherwise, the XML would be broken.
+		if ($testModel->getNumberOfTestsLeft($this->getId()) > 1) {
+			$deletedConfig = $configModel->deleteConfig($this->getId());
+
+			if ($deletedConfig) {
+				$this->sendStatus(204);
+			} else {
+				$this->exitError(400, 'An error has occured. Please try again.');
+			}
+		} else {
+			$this->exitError(400, 'There must be at least one config per console.');
+		}
 	}
 
 	/**
