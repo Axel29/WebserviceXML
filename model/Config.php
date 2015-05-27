@@ -20,10 +20,30 @@ class Config extends BaseModel
 		];
 
 		$where = [];
+		$join  = [];
 		if ($paramName && $paramValue) {
-			$where = [
-				$paramName => $paramValue,
-			];
+			if ($paramName == 'idConsole') {
+				$where = [
+					'chc.console_idConsole' => $paramValue,
+				];
+
+				$join = [
+					[
+						'type'  => 'INNER JOIN',
+						'table' => 'console_has_config chc',
+						'on'    => 'config.idConfig = chc.config_idConfig',
+					],
+					[
+						'type'  => 'INNER JOIN',
+						'table' => 'console c',
+						'on'    => 'c.idConsole = chc.console_idConsole',
+					],
+				];
+			} else {
+				$where = [
+					$paramName => $paramValue,
+				];
+			}
 		}
 
 		$configs = $this->select($fields, $where);
