@@ -26,8 +26,8 @@ class Gender extends BaseModel
 					],
 					[
 						'type'  => 'INNER JOIN',
-						'table' => 'game ga',
-						'on'    => 'ga.idGame = ghg.game_idGame',
+						'table' => 'game g',
+						'on'    => 'g.idGame = ghg.game_idGame',
 					],
 				];
 
@@ -47,38 +47,6 @@ class Gender extends BaseModel
 	}
 
 	/**
-	 * Get gender by name
-	 *
-	 * @param $gender string Gender's name
-	 * @return $id int Gender's ID or -1 if doesn't exist
-	 */
-	public function getGenderByName($gender)
-	{
-		try {
-			$pdo  = $this->db;
-			$stmt = $pdo->prepare('SELECT `idGender` 
-								   FROM `gender` 
-								   WHERE `gender` = :gender');
-			$stmt->bindParam(':gender', $gender);
-			$stmt->execute();
-
-			$result = $stmt->fetch();
-
-			if ($result) {
-				return $result['idGender'];
-			} else {
-				return false;
-			}
-		} catch (PDOException $e) {
-			echo $e->getMessage();
-			exit();
-		} catch (Exception $e) {
-			echo $e->getMessage();
-			exit();
-		}
-	}
-
-	/**
 	 * Insert a new gender in database.
 	 * If the gender already exists, return the existing gender's ID.
 	 *
@@ -91,7 +59,7 @@ class Gender extends BaseModel
 		 * Check that the gender doesn't already exist.
 		 * If so, return this ID
 		 */
-		if ($existingGender = $this->getGenderByName($datas['gender'])) {
+		if ($existingGender = $this->findBy('gender', $datas['gender'])) {
 			return $existingGender;
 		} else {
 			try {

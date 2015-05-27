@@ -110,19 +110,10 @@ class GenderController extends BaseController
 
 		// Check every required field
 		$requiredFields = [
-			'analyse'     => 'string',
-			'type'        => 'string',
-			'test_idTest' => 'int',
+			'gender' => 'string',
 		];
 
 		$this->checkRequiredFields($requiredFields, $_PUT);
-
-		if (!isset($_PUT['gender'])) {
-			$this->exitError(400, "'gender' must be specified.");
-		}
-		if (!is_string($_PUT['gender'])) {
-			$this->exitError(400, "'gender' must be a valid string.");
-		}
 
 		$genderModel  = new Gender();
 		$updateGender = $genderModel->updateGender($this->getId(), $_PUT);
