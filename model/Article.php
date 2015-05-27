@@ -10,7 +10,7 @@ class Article extends BaseModel
 	 */
 	public function findBy($paramName = null, $paramValue = null)
 	{
-		$this->table = 'article l';
+		$this->table = 'article';
 
 		$fields = [
 			'`idArticle`', 

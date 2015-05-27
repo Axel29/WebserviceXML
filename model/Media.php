@@ -10,7 +10,7 @@ class Media extends BaseModel
 	 */
 	public function findBy($paramName = null, $paramValue = null)
 	{
-		$this->table = 'media m';
+		$this->table = 'media';
 
 		$fields = [
 			'`idMedia`', 
