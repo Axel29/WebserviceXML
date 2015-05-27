@@ -115,13 +115,6 @@ class ThemeController extends BaseController
 
 		$this->checkRequiredFields($requiredFields, $_PUT);
 
-		if (!isset($_PUT['theme'])) {
-			$this->exitError(400, "'theme' must be specified.");
-		}
-		if (!is_string($_PUT['theme'])) {
-			$this->exitError(400, "'theme' must be a valid string.");
-		}
-
 		$themeModel  = new Theme();
 		$updateTheme = $themeModel->updateTheme($this->getId(), $_PUT);
 
