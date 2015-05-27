@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <!-- Dimensions du média -->
+    <xs:element name="dimensions">
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="xs:string">
+                    <xs:attribute type="xs:string" name="unit" use="required" />
+                    <xs:attribute type="xs:string" name="width" use="required" />
+                    <xs:attribute type="xs:string" name="height" use="required" />
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- Nom de console -->
+    <xs:element name="consoleName" type="xs:string" />
+
+    <!-- Liste des consoles concernées par le contenu -->
+    <xs:element name="consolesNames">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="consoleName" maxOccurs="unbounded" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- Media -->
+    <xs:element name="media">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="consolesNames" />
+                <xs:element ref="dimensions" />
+            </xs:sequence>
+            <xs:attribute name="id" type="xs:positiveInteger" use="required" />
+            <xs:attribute name="type" type="xs:string" use="required" />
+            <xs:attribute name="url" type="xs:anyURI" use="required" />
+        </xs:complexType>
+    </xs:element>
+
+    <!-- Liste des médias -->
+    <xs:element name="medias">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="media" minOccurs="0" maxOccurs="unbounded" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>
