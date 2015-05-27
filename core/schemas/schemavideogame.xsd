@@ -467,7 +467,7 @@
     <xs:element name="articles">
         <xs:complexType>
             <xs:sequence>
-                <xs:element ref="article" minOccurs="0"/>
+                <xs:element ref="article" minOccurs="0" maxOccurs="unbounded" />
             </xs:sequence>
         </xs:complexType>
     </xs:element>
