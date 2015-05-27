@@ -1,4 +1,7 @@
 <?php
+/**
+ * @todo Vérifier que l'ID du jeu existe avant d'insérer ou de mettre à jour.
+ */
 class ArticleController extends BaseController
 {
 	/**
