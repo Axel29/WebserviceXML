@@ -76,7 +76,7 @@ class TestController extends BaseController
 
 	/**
 	 * Add new test
-	 * Route: /test/add
+	 * Route: /test
 	 */
 	public function add()
 	{

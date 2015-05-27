@@ -62,7 +62,7 @@ class GenderController extends BaseController
 
 	/**
 	 * Add new gender
-	 * Route: /gender/add
+	 * Route: /gender
 	 */
 	public function add()
 	{

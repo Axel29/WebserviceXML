@@ -74,7 +74,7 @@ class EditionController extends BaseController
 
 	/**
 	 * Add new edition
-	 * Route: /edition/add
+	 * Route: /edition
 	 */
 	public function add()
 	{

@@ -62,7 +62,7 @@ class ThemeController extends BaseController
 
 	/**
 	 * Add new theme
-	 * Route: /theme/add
+	 * Route: /theme
 	 */
 	public function add()
 	{

@@ -76,7 +76,7 @@ class ShopController extends BaseController
 
 	/**
 	 * Add new shop
-	 * Route: /shop/add
+	 * Route: /shop
 	 */
 	public function add()
 	{

@@ -76,7 +76,7 @@ class DlcController extends BaseController
 
 	/**
 	 * Add new dlc
-	 * Route: /dlc/add
+	 * Route: /dlc
 	 */
 	public function add()
 	{

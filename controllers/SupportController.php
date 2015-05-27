@@ -72,7 +72,7 @@ class SupportController extends BaseController
 
 	/**
 	 * Add new support
-	 * Route: /support/add
+	 * Route: /support
 	 */
 	public function add()
 	{

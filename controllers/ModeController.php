@@ -72,7 +72,7 @@ class ModeController extends BaseController
 
 	/**
 	 * Add new mode
-	 * Route: /mode/add
+	 * Route: /mode
 	 */
 	public function add()
 	{

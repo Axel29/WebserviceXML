@@ -74,7 +74,7 @@ class ConfigController extends BaseController
 
 	/**
 	 * Add new config
-	 * Route: /config/add
+	 * Route: /config
 	 */
 	public function add()
 	{

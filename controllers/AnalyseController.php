@@ -65,7 +65,7 @@ class AnalyseController extends BaseController
 
 	/**
 	 * Add new analyse
-	 * Route: /analyse/add
+	 * Route: /analyse
 	 */
 	public function add()
 	{

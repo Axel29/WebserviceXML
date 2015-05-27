@@ -78,7 +78,7 @@ class CommentController extends BaseController
 
 	/**
 	 * Add new comment
-	 * Route: /comment/add
+	 * Route: /comment
 	 */
 	public function add()
 	{
