@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <!-- Nom de console -->
+    <xs:element name="consoleName" type="xs:string"/>
+
+    <!-- Liste des consoles concernées par le contenu -->
+    <xs:element name="consolesNames">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="consoleName" maxOccurs="unbounded" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- Titre du contenu -->
+    <xs:element name="title" type="xs:string" />
+
+    <!-- Nom du testeur -->
+    <xs:element name="userName" type="xs:string" />
+
+    <!-- Date de publication -->
+    <xs:element name="date" type="xs:dateTime" />
+
+    <!-- Un article (news, article, ...) -->
+    <xs:element name="article">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="consolesNames" />
+                <xs:element ref="title" />
+                <xs:element ref="userName" />
+                <xs:element ref="date" />
+            </xs:sequence>
+            <xs:attribute name="id" type="xs:positiveInteger" use="required" />
+            <xs:attribute name="type" type="xs:string" use="required" />
+        </xs:complexType>
+    </xs:element>
+
+    <!-- Liste des articles -->
+    <xs:element name="articles">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="article" minOccurs="0"  maxOccurs="unbounded" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>
