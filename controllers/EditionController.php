@@ -87,6 +87,20 @@ class EditionController extends BaseController
 		// Check every required field
 		$this->checkRequiredFields($this->requiredFields, $_POST);
 
+		// Check every required fields for shops if neeeded
+		if (isset($_POST['shops'])) {
+			$requiredFields = [
+				'url'               => 'string',
+				'name'              => 'string',
+				'price'             => 'float',
+				'devise'            => 'string',
+				'edition_idEdition' => 'int',
+			]
+			foreach ($_POST['shops'] as $shop) {
+				$this->checkRequiredFields($requiredFields, $shop);
+			}
+		}
+
 		$editionModel    = new Edition();
 		$insertedEdition = $editionModel->insertEdition($_POST);
 
