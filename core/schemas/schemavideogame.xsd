@@ -319,7 +319,7 @@
                 <xs:element ref="description"/>
                 <xs:element ref="dlcs"/>
                 <xs:element ref="configs"/>
-                <xs:element ref="test"/>
+                <xs:element ref="test" minOccurs="0" />
             </xs:sequence>
             <xs:attribute name="id" type="xs:positiveInteger" use="required"/>
         </xs:complexType>
