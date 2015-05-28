@@ -34,6 +34,15 @@ class TestController extends BaseController
 	];
 
 	/**
+	 * @var $analysesRequiredFields array Required fields for analyses and their types for insert / update
+	 */
+	private $analysesRequiredFields = [
+		'analyse'     => 'string',
+		'type'        => 'string',
+		'test_idTest' => 'int',
+	];
+
+	/**
 	 * Redirect the request to the matching method regarding the request method
 	 * Route: /test/index/id/{id}
 	 *
@@ -109,6 +118,30 @@ class TestController extends BaseController
 			}
 		}
 
+
+
+		$_POST['analyses'] = [
+			[
+				'idAnalyse'   => '2',
+				'analyse'     => 'dfsdfsdfsf',
+				'type'        => 'dfsdfdff',
+				'test_idTest' => '1',
+			],
+			[
+				'idAnalyse'   => '3',
+				'analyse'     => 'oklhjfdsjgsqdq',
+				'type'        => 'zadziknsddn',
+				'test_idTest' => '2',
+			],
+		];
+
+		// Check every required fields for analyses if neeeded
+		if (isset($_POST['analyses'])) {
+			foreach ($_POST['analyses'] as $analyse) {
+				$this->checkRequiredFields($this->analysesRequiredFields, $analyse);
+			}
+		}
+
 		$testModel    = new Test();
 		$insertedTest = $testModel->insertTest($_POST);
 
@@ -143,25 +176,17 @@ class TestController extends BaseController
 
 
 
-		$_PUT['comments'] = [
+		$_PUT['analyses'] = [
 			[
-				'idComment'   => '3',
-				'date'        => '2015-05-24 10:11:12',
-				'user_name'   => 'dfsdfdf',
-				'note'        => '5',
-				'like'        => '1',
-				'dislike'     => '0',
-				'text'        => 'fdfsgdsgsdg',
+				'idAnalyse'   => '2',
+				'analyse'     => 'bouhhh',
+				'type'        => 'bouhhhhhh',
 				'test_idTest' => '1',
 			],
 			[
-				'idComment'   => '4',
-				'date'        => '2015-06-25 11:12:13',
-				'user_name'   => 'Axel2903dfdsff',
-				'note'        => '4',
-				'like'        => '2',
-				'dislike'     => '1',
-				'text'        => 'Lorem ipsum sidsfsdfsn dolor amet',
+				'idAnalyse'   => '3',
+				'analyse'     => 'toto',
+				'type'        => 'totooooo',
 				'test_idTest' => '2',
 			],
 		];
@@ -171,6 +196,14 @@ class TestController extends BaseController
 		if (isset($_PUT['comments'])) {
 			foreach ($_PUT['comments'] as $comment) {
 				$this->checkRequiredFields($this->commentsRequiredFields, $comment);
+			}
+		}
+
+		// Check every required fields for analyses if neeeded
+		$this->analysesRequiredFields['idAnalyse'] = 'int';
+		if (isset($_PUT['analyses'])) {
+			foreach ($_PUT['analyses'] as $analyse) {
+				$this->checkRequiredFields($this->analysesRequiredFields, $analyse);
 			}
 		}
 

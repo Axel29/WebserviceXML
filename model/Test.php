@@ -96,6 +96,14 @@ class Test extends BaseModel
 				}
 			}
 
+			// Insert analyses
+			if (isset($datas['analyses'])) {
+				$analyseModel = new Analyse();
+				foreach ($datas['analyses'] as $analyse) {
+					$analyseModel->directInsert($analyse);
+				}
+			}
+
 			// If everything went well, commit the transaction
 			$pdo->commit();
 
@@ -123,11 +131,11 @@ class Test extends BaseModel
 			$pdo->beginTransaction();
 
 			$stmt = $pdo->prepare('UPDATE `test`
-								   SET `report` = :report,
-								   	   `date` = :date,
-								       `user_name` = :user_name,
-								       `note` = :note,
-								       `console_idConsole` = :console_idConsole
+								   SET `report`            = :report,
+									   `date`              = :date,
+									   `user_name`         = :user_name,
+									   `note`              = :note,
+									   `console_idConsole` = :console_idConsole
 								   WHERE `idTest` =  :idTest');
 			$stmt->bindParam(':report', $datas['report'], PDO::PARAM_STR);
 			$stmt->bindParam(':date', $datas['date'], PDO::PARAM_STR);
@@ -145,20 +153,22 @@ class Test extends BaseModel
 				}
 			}
 
+			// Update analyses
+			if (isset($datas['analyses'])) {
+				$analyseModel = new Analyse();
+				foreach ($datas['analyses'] as $analyse) {
+					$analyseModel->directUpdate($analyse['idAnalyse'], $analyse);
+				}
+			}
+
 			// If everything went well, commit the transaction
 			$pdo->commit();
-
-			/*
-			 * Check that the update was performed on an existing test.
-			 * MySQL won't send any error as, regarding to him, the request is correct, so we have to handle it manually.
-			 */
 			return true;
 		} catch (PDOException $e) {
 			// Cancel the transaction
 		    $pdo->rollback();
 			return false;
 		} catch (Exception $e) {
-			echo $e->getMessage();
 			return false;
 		}
 	}

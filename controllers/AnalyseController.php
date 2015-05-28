@@ -10,6 +10,15 @@ class AnalyseController extends BaseController
 	private $id = null;
 
 	/**
+	 * @var $requiredFields array Required fields and their types for insert / update
+	 */
+	private $requiredFields = [
+		'analyse'     => 'string',
+		'type'        => 'string',
+		'test_idTest' => 'int',
+	];
+
+	/**
 	 * Redirect the request to the matching method regarding the request method
 	 * Route: /analyse/index/id/{id}
 	 *
@@ -76,13 +85,7 @@ class AnalyseController extends BaseController
 		}
 
 		// Check every required field
-		$requiredFields = [
-			'analyse'     => 'string',
-			'type'        => 'string',
-			'test_idTest' => 'int',
-		];
-
-		$this->checkRequiredFields($requiredFields, $_POST);
+		$this->checkRequiredFields($this->requiredFields, $_POST);
 
 		$analyseModel    = new Analyse();
 		$insertedAnalyse = $analyseModel->insertAnalyse($_POST);
@@ -114,13 +117,7 @@ class AnalyseController extends BaseController
 		}
 
 		// Check every required field
-		$requiredFields = [
-			'analyse'     => 'string',
-			'type'        => 'string',
-			'test_idTest' => 'int',
-		];
-
-		$this->checkRequiredFields($requiredFields, $_PUT);
+		$this->checkRequiredFields($this->requiredFields, $_PUT);
 
 		$analyseModel  = new Analyse();
 		$updatedAnalyse = $analyseModel->updateAnalyse($this->getId(), $_PUT);

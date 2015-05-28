@@ -33,20 +33,32 @@ class Analyse extends BaseModel
 	public function insertAnalyse($datas)
 	{
 		try {
-			$pdo  = $this->db;
-			$stmt = $pdo->prepare('INSERT INTO `analyse` (`analyse`, `type`, `test_idTest`) 
-								   VALUES (:analyse, :type, :test_idTest)');
-			$stmt->bindParam(':analyse', $datas['analyse'], PDO::PARAM_STR);
-			$stmt->bindParam(':type', $datas['type'], PDO::PARAM_STR);
-			$stmt->bindParam(':test_idTest', $datas['test_idTest'], PDO::PARAM_INT);
-			$stmt->execute();
-
-			return $pdo->lastInsertId();
+			return $this->directInsert($datas);
 		} catch (PDOException $e) {
 			return false;
 		} catch (Exception $e) {
 			return false;
 		}
+	}
+
+	/**
+	 * Insert a new analyse in database without any try / catch.
+	 * Used to make valid transactions for other models.
+	 *
+	 * @param array $datas Analyse's datas
+	 * @return int $id Inserted analyse's ID
+	 */
+	public function directInsert($datas)
+	{
+		$pdo  = $this->db;
+		$stmt = $pdo->prepare('INSERT INTO `analyse` (`analyse`, `type`, `test_idTest`) 
+							   VALUES (:analyse, :type, :test_idTest)');
+		$stmt->bindParam(':analyse', $datas['analyse'], PDO::PARAM_STR);
+		$stmt->bindParam(':type', $datas['type'], PDO::PARAM_STR);
+		$stmt->bindParam(':test_idTest', $datas['test_idTest'], PDO::PARAM_INT);
+		$stmt->execute();
+
+		return $pdo->lastInsertId();
 	}
 
 	/**
@@ -58,26 +70,35 @@ class Analyse extends BaseModel
 	public function updateAnalyse($idAnalyse, $datas)
 	{
 		try {
-			$pdo  = $this->db;
-			$stmt = $pdo->prepare('UPDATE `analyse` 
-								   SET `analyse` = :analyse, `type` = :type, `test_idTest` = :test_idTest 
-								   WHERE `idAnalyse` =  :idAnalyse');
-			$stmt->bindParam(':analyse', $datas['analyse'], PDO::PARAM_STR);
-			$stmt->bindParam(':type', $datas['type'], PDO::PARAM_STR);
-			$stmt->bindParam(':test_idTest', $datas['test_idTest'], PDO::PARAM_INT);
-			$stmt->bindParam(':idAnalyse', $idAnalyse, PDO::PARAM_INT);
-			$stmt->execute();
-
-			/*
-			 * Check that the update was performed on an existing analyse.
-			 * MySQL won't send any error as, regarding to him, the request is correct, so we have to handle it manually.
-			 */
-			return $stmt->rowCount();
+			return $this->directUpdate($idAnalyse, $datas);
 		} catch (PDOException $e) {
 			return false;
 		} catch (Exception $e) {
 			return false;
 		}
+	}
+
+	/**
+	 * Update a shop without any try / catch.
+	 * Used to make valid transactions for other models.
+	 *
+	 * @param array $datas Shop's datas
+	 * @return int $id Inserted shop's ID
+	 * @return bool
+	 */
+	public function directUpdate($idAnalyse, $datas)
+	{
+		$pdo  = $this->db;
+		$stmt = $pdo->prepare('UPDATE `analyse` 
+							   SET `analyse` = :analyse, `type` = :type, `test_idTest` = :test_idTest 
+							   WHERE `idAnalyse` =  :idAnalyse');
+		$stmt->bindParam(':analyse', $datas['analyse'], PDO::PARAM_STR);
+		$stmt->bindParam(':type', $datas['type'], PDO::PARAM_STR);
+		$stmt->bindParam(':test_idTest', $datas['test_idTest'], PDO::PARAM_INT);
+		$stmt->bindParam(':idAnalyse', $idAnalyse, PDO::PARAM_INT);
+		$stmt->execute();
+
+		return true;
 	}
 
 	/**
