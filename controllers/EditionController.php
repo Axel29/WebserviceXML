@@ -19,6 +19,17 @@ class EditionController extends BaseController
 	];
 
 	/**
+	 * @var $shopsRequiredFields array Required fields for shops and their types for insert / update
+	 */
+	private $shopsRequiredFields = [
+		'url'               => 'string',
+		'name'              => 'string',
+		'price'             => 'float',
+		'devise'            => 'string',
+		'edition_idEdition' => 'int',
+	];
+
+	/**
 	 * Redirect the request to the matching method regarding the request method
 	 * Route: /edition/index/id/{id}
 	 *
@@ -89,15 +100,8 @@ class EditionController extends BaseController
 
 		// Check every required fields for shops if neeeded
 		if (isset($_POST['shops'])) {
-			$requiredFields = [
-				'url'               => 'string',
-				'name'              => 'string',
-				'price'             => 'float',
-				'devise'            => 'string',
-				'edition_idEdition' => 'int',
-			]
 			foreach ($_POST['shops'] as $shop) {
-				$this->checkRequiredFields($requiredFields, $shop);
+				$this->checkRequiredFields($this->shopsRequiredFields, $shop);
 			}
 		}
 
@@ -133,7 +137,15 @@ class EditionController extends BaseController
 		// Check every required field
 		$this->checkRequiredFields($this->requiredFields, $_PUT);
 
-		$editionModel  = new Edition();
+		// Check every required fields for shops if neeeded
+		$this->shopsRequiredFields['idShop'] = 'int';
+		if (isset($_PUT['shops'])) {
+			foreach ($_PUT['shops'] as $shop) {
+				$this->checkRequiredFields($this->shopsRequiredFields, $shop);
+			}
+		}
+
+		$editionModel   = new Edition();
 		$updatedEdition = $editionModel->updateEdition($this->getId(), $_PUT);
 
 		if ($updatedEdition) {

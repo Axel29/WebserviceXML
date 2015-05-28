@@ -217,7 +217,7 @@ class BaseController
 
 				if ($type == 'date') {
 					$error .= "'$field' is a required field and must be of type: $type with format: $dateFormat";
-				} elseif($type ='float') {
+				} elseif ($type == 'float') {
 					$error .= "'$field' is a required field and must be of type: $type (decimal separator: '.')";
 				} else {
 					$error .= "'$field' is a required field and must be of type: $type";

@@ -72,7 +72,6 @@ class Edition extends BaseModel
 	{
 		$pdo  = $this->db;
 		try {
-
 			// Begin transaction to avoid inserting wrong or partial datas
 			$pdo->beginTransaction();
 
@@ -84,7 +83,22 @@ class Edition extends BaseModel
 			$stmt->execute();
 
 			$editionId = $pdo->lastInsertId();
-
+$datas['shops'] = [
+	[
+		'url' => 'Title shop 1',
+		'name' => 'Price shop 1',
+		'price' => '10',
+		'devise' => '€',
+		'edition_idEdition' => '1',
+	],
+	[
+		'url' => 'Title shop 2',
+		'name' => 'Price shop 2',
+		'price' => '20',
+		'devise' => '$',
+		'edition_idEdition' => '2',
+	],
+];
 			// Insert shops
 			if (isset($datas['shops'])) {
 				$shopModel = new Shop();
@@ -114,8 +128,11 @@ class Edition extends BaseModel
 	 */
 	public function updateEdition($idEdition, $datas)
 	{
+		$pdo  = $this->db;
 		try {
-			$pdo  = $this->db;
+			// Begin transaction to avoid inserting wrong or partial datas
+			$pdo->beginTransaction();
+
 			$stmt = $pdo->prepare('UPDATE `edition`
 								   SET `name`              = :name,
 									   `content`           = :content,
@@ -126,16 +143,28 @@ class Edition extends BaseModel
 			$stmt->bindParam(':console_idConsole', $datas['console_idConsole'], PDO::PARAM_INT);
 			$stmt->bindParam(':idEdition', $idEdition, PDO::PARAM_INT);
 			$stmt->execute();
+
+			// Update shops
+			if (isset($datas['shops'])) {
+				$shopModel = new Shop();
+				foreach ($datas['shops'] as $shop) {
+					$shopModel->directUpdate($shop['idShop'], $shop);
+				}
+			}
+
+			// If everything went well, commit the transaction
+			$pdo->commit();
+
 			/*
 			 * Check that the update was performed on an existing edition.
 			 * MySQL won't send any error as, regarding to him, the request is correct, so we have to handle it manually.
 			 */
-			return $stmt->rowCount();
+			return true;
 		} catch (PDOException $e) {
-			echo $e->getMessage();
+			// Cancel the transaction
+			$pdo->rollback();
 			return false;
 		} catch (Exception $e) {
-			echo $e->getMessage();
 			return false;
 		}
 	}

@@ -77,27 +77,12 @@ class Shop extends BaseModel
 	 *
 	 * @param $idShop int Shop's ID
 	 * @param $datas array Datas to update
+	 * @return Number of updated rows
 	 */
 	public function updateShop($idShop, $datas)
 	{
 		try {
-			$pdo  = $this->db;
-			$stmt = $pdo->prepare('UPDATE `shop`
-									SET `url`               = :url,
-										`name`              = :name,
-										`price`             = :price,
-										`devise`            = :devise,
-										`edition_idEdition` = :edition_idEdition
-								   WHERE `idShop` =  :idShop');
-			$stmt->bindParam(':url', $datas['url'], PDO::PARAM_STR);
-			$stmt->bindParam(':name', $datas['name'], PDO::PARAM_STR);
-			$stmt->bindParam(':price', $datas['price'], PDO::PARAM_STR);
-			$stmt->bindParam(':devise', $datas['devise'], PDO::PARAM_STR);
-			$stmt->bindParam(':edition_idEdition', $datas['edition_idEdition'], PDO::PARAM_INT);
-			$stmt->bindParam(':idShop', $idShop, PDO::PARAM_INT);
-			$stmt->execute();
-
-			return $stmt->rowCount();
+			return $this->directUpdate($idShop, $datas);
 		} catch (PDOException $e) {
 			echo $e->getMessage();
 			return false;
@@ -105,6 +90,35 @@ class Shop extends BaseModel
 			echo $e->getMessage();
 			return false;
 		}
+	}
+
+	/**
+	 * Update a shop without any try / catch.
+	 * Used to make valid transactions for other models.
+	 *
+	 * @param array $datas Shop's datas
+	 * @return int $id Inserted shop's ID
+	 * @return Number of updated rows
+	 */
+	public function directUpdate($idShop, $datas)
+	{
+		$pdo  = $this->db;
+		$stmt = $pdo->prepare('UPDATE `shop`
+								SET `url`               = :url,
+									`name`              = :name,
+									`price`             = :price,
+									`devise`            = :devise,
+									`edition_idEdition` = :edition_idEdition
+							   WHERE `idShop` =  :idShop');
+		$stmt->bindParam(':url', $datas['url'], PDO::PARAM_STR);
+		$stmt->bindParam(':name', $datas['name'], PDO::PARAM_STR);
+		$stmt->bindParam(':price', $datas['price'], PDO::PARAM_STR);
+		$stmt->bindParam(':devise', $datas['devise'], PDO::PARAM_STR);
+		$stmt->bindParam(':edition_idEdition', $datas['edition_idEdition'], PDO::PARAM_INT);
+		$stmt->bindParam(':idShop', $idShop, PDO::PARAM_INT);
+		$stmt->execute();
+
+		return $stmt->rowCount();
 	}
 
 	/**
