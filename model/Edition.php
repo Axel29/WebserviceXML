@@ -70,8 +70,12 @@ class Edition extends BaseModel
 	 */
 	public function insertEdition($datas)
 	{
+		$pdo  = $this->db;
 		try {
-			$pdo  = $this->db;
+
+			// Begin transaction to avoid inserting wrong or partial datas
+			$pdo->beginTransaction();
+
 			$stmt = $pdo->prepare('INSERT INTO `edition` (`name`, `content`, `console_idConsole`) 
 								   VALUES (:name, :content, :console_idConsole)');
 			$stmt->bindParam(':name', $datas['name'], PDO::PARAM_STR);
@@ -79,9 +83,23 @@ class Edition extends BaseModel
 			$stmt->bindParam(':console_idConsole', $datas['console_idConsole'], PDO::PARAM_INT);
 			$stmt->execute();
 
-			return $pdo->lastInsertId();
+			$editionId = $pdo->lastInsertId();
+
+			// Insert shops
+			if (isset($datas['shops'])) {
+				$shopModel = new Shop();
+				foreach ($datas['shops'] as $shop) {
+					$shopModel->directInsert($shop);
+				}
+			}
+
+			// If everything went well, commit the transaction
+			$pdo->commit();
+
+			return $editionId;
 		} catch (PDOException $e) {
-			echo $e->getMessage();
+			// Cancel the transaction
+		    $pdo->rollback();
 			return false;
 		} catch (Exception $e) {
 			return false;

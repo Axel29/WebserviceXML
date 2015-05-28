@@ -36,29 +36,40 @@ class Shop extends BaseModel
 	/**
 	 * Insert a new shop in database.
 	 *
-	 * @param $datas array Shop's name
+	 * @param $datas array Shop's datas
 	 * @return $id int Shop's ID
 	 */
 	public function insertShop($datas)
 	{
 		try {
-			$pdo  = $this->db;
-			$stmt = $pdo->prepare('INSERT INTO `shop` (`url`, `name`, `price`, `devise`, `edition_idEdition`) 
-								   VALUES (:url, :name, :price, :devise, :edition_idEdition)');
-			$stmt->bindParam(':url', $datas['url'], PDO::PARAM_STR);
-			$stmt->bindParam(':name', $datas['name'], PDO::PARAM_STR);
-			$stmt->bindParam(':price', $datas['price'], PDO::PARAM_STR);
-			$stmt->bindParam(':devise', $datas['devise'], PDO::PARAM_STR);
-			$stmt->bindParam(':edition_idEdition', $datas['edition_idEdition'], PDO::PARAM_INT);
-			$stmt->execute();
-
-			return $pdo->lastInsertId();
+			return $this->directInsert($datas);
 		} catch (PDOException $e) {
-			echo $e->getMessage();
 			return false;
 		} catch (Exception $e) {
 			return false;
 		}
+	}
+
+	/**
+	 * Insert a new shop in database without any try / catch.
+	 * Used to make valid transactions for other models.
+	 *
+	 * @param array $datas Shop's datas
+	 * @return int $id Inserted shop's ID
+	 */
+	public function directInsert($datas)
+	{
+		$pdo  = $this->db;
+		$stmt = $pdo->prepare('INSERT INTO `shop` (`url`, `name`, `price`, `devise`, `edition_idEdition`) 
+							   VALUES (:url, :name, :price, :devise, :edition_idEdition)');
+		$stmt->bindParam(':url', $datas['url'], PDO::PARAM_STR);
+		$stmt->bindParam(':name', $datas['name'], PDO::PARAM_STR);
+		$stmt->bindParam(':price', $datas['price'], PDO::PARAM_STR);
+		$stmt->bindParam(':devise', $datas['devise'], PDO::PARAM_STR);
+		$stmt->bindParam(':edition_idEdition', $datas['edition_idEdition'], PDO::PARAM_INT);
+		$stmt->execute();
+
+		return $pdo->lastInsertId();
 	}
 
 	/**
