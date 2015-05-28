@@ -84,10 +84,8 @@ class Shop extends BaseModel
 		try {
 			return $this->directUpdate($idShop, $datas);
 		} catch (PDOException $e) {
-			echo $e->getMessage();
 			return false;
 		} catch (Exception $e) {
-			echo $e->getMessage();
 			return false;
 		}
 	}
@@ -118,7 +116,7 @@ class Shop extends BaseModel
 		$stmt->bindParam(':idShop', $idShop, PDO::PARAM_INT);
 		$stmt->execute();
 
-		return $stmt->rowCount();
+		return true;
 	}
 
 	/**
