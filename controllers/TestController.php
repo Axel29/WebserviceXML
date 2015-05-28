@@ -125,13 +125,13 @@ class TestController extends BaseController
 				'idAnalyse'   => '2',
 				'analyse'     => 'dfsdfsdfsf',
 				'type'        => 'dfsdfdff',
-				'test_idTest' => '1',
+				'test_idTest' => '5',
 			],
 			[
 				'idAnalyse'   => '3',
 				'analyse'     => 'oklhjfdsjgsqdq',
 				'type'        => 'zadziknsddn',
-				'test_idTest' => '2',
+				'test_idTest' => '5',
 			],
 		];
 
@@ -178,16 +178,16 @@ class TestController extends BaseController
 
 		$_PUT['analyses'] = [
 			[
-				'idAnalyse'   => '2',
+				'idAnalyse'   => '6',
 				'analyse'     => 'bouhhh',
 				'type'        => 'bouhhhhhh',
-				'test_idTest' => '1',
+				'test_idTest' => '5',
 			],
 			[
-				'idAnalyse'   => '3',
+				'idAnalyse'   => '7',
 				'analyse'     => 'toto',
 				'type'        => 'totooooo',
-				'test_idTest' => '2',
+				'test_idTest' => '5',
 			],
 		];
 

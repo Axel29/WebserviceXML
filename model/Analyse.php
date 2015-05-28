@@ -82,7 +82,7 @@ class Analyse extends BaseModel
 	 * Update a shop without any try / catch.
 	 * Used to make valid transactions for other models.
 	 *
-	 * @param array $datas Shop's datas
+	 * @param array $datas Analyse's datas
 	 * @return int $id Inserted shop's ID
 	 * @return bool
 	 */
@@ -97,6 +97,8 @@ class Analyse extends BaseModel
 		$stmt->bindParam(':test_idTest', $datas['test_idTest'], PDO::PARAM_INT);
 		$stmt->bindParam(':idAnalyse', $idAnalyse, PDO::PARAM_INT);
 		$stmt->execute();
+
+		$pdo = null;
 
 		return true;
 	}

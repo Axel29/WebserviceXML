@@ -75,22 +75,7 @@ class Edition extends BaseModel
 			// Begin transaction to avoid inserting wrong or partial datas
 			$pdo->beginTransaction();
 
-			$stmt = $pdo->prepare('INSERT INTO `edition` (`name`, `content`, `console_idConsole`) 
-								   VALUES (:name, :content, :console_idConsole)');
-			$stmt->bindParam(':name', $datas['name'], PDO::PARAM_STR);
-			$stmt->bindParam(':content', $datas['content'], PDO::PARAM_STR);
-			$stmt->bindParam(':console_idConsole', $datas['console_idConsole'], PDO::PARAM_INT);
-			$stmt->execute();
-
-			$editionId = $pdo->lastInsertId();
-
-			// Insert shops
-			if (isset($datas['shops'])) {
-				$shopModel = new Shop();
-				foreach ($datas['shops'] as $shop) {
-					$shopModel->directInsert($shop);
-				}
-			}
+			$editionId = $this->directInsert($datas);
 
 			// If everything went well, commit the transaction
 			$pdo->commit();
@@ -106,6 +91,36 @@ class Edition extends BaseModel
 	}
 
 	/**
+	 * Insert a new edition in database without any try / catch.
+	 * Used to make valid transactions for other models.
+	 *
+	 * @param array $datas Support's datas
+	 * @return int $id Inserted mode's ID
+	 */
+	public function directInsert($datas)
+	{
+		$pdo  = $this->db;
+		$stmt = $pdo->prepare('INSERT INTO `edition` (`name`, `content`, `console_idConsole`) 
+							   VALUES (:name, :content, :console_idConsole)');
+		$stmt->bindParam(':name', $datas['name'], PDO::PARAM_STR);
+		$stmt->bindParam(':content', $datas['content'], PDO::PARAM_STR);
+		$stmt->bindParam(':console_idConsole', $datas['console_idConsole'], PDO::PARAM_INT);
+		$stmt->execute();
+
+		$editionId = $pdo->lastInsertId();
+
+		// Insert shops
+		if (isset($datas['shops'])) {
+			$shopModel = new Shop();
+			foreach ($datas['shops'] as $shop) {
+				$insertedShop = $shopModel->directInsert($shop);
+			}
+		}
+
+		return $editionId;
+	}
+
+	/**
 	 * Update edition
 	 *
 	 * @param $idEdition int Edition's ID
@@ -118,24 +133,7 @@ class Edition extends BaseModel
 			// Begin transaction to avoid inserting wrong or partial datas
 			$pdo->beginTransaction();
 
-			$stmt = $pdo->prepare('UPDATE `edition`
-								   SET `name`              = :name,
-									   `content`           = :content,
-									   `console_idConsole` = :console_idConsole
-								   WHERE `idEdition` =  :idEdition');
-			$stmt->bindParam(':name', $datas['name'], PDO::PARAM_STR);
-			$stmt->bindParam(':content', $datas['content'], PDO::PARAM_STR);
-			$stmt->bindParam(':console_idConsole', $datas['console_idConsole'], PDO::PARAM_INT);
-			$stmt->bindParam(':idEdition', $idEdition, PDO::PARAM_INT);
-			$stmt->execute();
-
-			// Update shops
-			if (isset($datas['shops'])) {
-				$shopModel = new Shop();
-				foreach ($datas['shops'] as $shop) {
-					$shopModel->directUpdate($shop['idShop'], $shop);
-				}
-			}
+			$update = $this->directUpdate($idEdition, $datas);
 
 			// If everything went well, commit the transaction
 			$pdo->commit();
@@ -152,6 +150,39 @@ class Edition extends BaseModel
 		} catch (Exception $e) {
 			return false;
 		}
+	}
+
+	/**
+	 * Update an edition without any try / catch.
+	 * Used to make valid transactions for other models.
+	 *
+	 * @param array $datas Edition's datas
+	 * @return int $id Inserted edition's ID
+	 * @return bool
+	 */
+	public function directUpdate($idEdition, $datas)
+	{
+		$pdo  = $this->db;
+		$stmt = $pdo->prepare('UPDATE `edition`
+							   SET `name`              = :name,
+								   `content`           = :content,
+								   `console_idConsole` = :console_idConsole
+							   WHERE `idEdition` =  :idEdition');
+		$stmt->bindParam(':name', $datas['name'], PDO::PARAM_STR);
+		$stmt->bindParam(':content', $datas['content'], PDO::PARAM_STR);
+		$stmt->bindParam(':console_idConsole', $datas['console_idConsole'], PDO::PARAM_INT);
+		$stmt->bindParam(':idEdition', $idEdition, PDO::PARAM_INT);
+		$stmt->execute();
+
+		// Update shops
+		if (isset($datas['shops'])) {
+			$shopModel = new Shop();
+			foreach ($datas['shops'] as $shop) {
+				$updatedShop = $shopModel->directUpdate($shop['idShop'], $shop);
+			}
+		}
+
+		return true;
 	}
 
 	/**

@@ -541,9 +541,9 @@ class Game extends BaseModel
 	 */
 	public function addGame($post)
 	{
-		$pdo = $this->db;
-
 		try {
+			$pdo = $this->db;
+			
 		    // Begin transaction to avoid inserting wrong partial datas
 		    $pdo->beginTransaction();
 

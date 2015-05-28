@@ -58,19 +58,30 @@ class Mode extends BaseModel
 	public function insertMode($datas)
 	{
 		try {
-			$pdo  = $this->db;
-			$stmt = $pdo->prepare('INSERT INTO `mode` (`mode`) 
-								   VALUES (:mode)');
-			$stmt->bindParam(':mode', $datas['mode'], PDO::PARAM_STR);
-			$stmt->execute();
-
-			return $pdo->lastInsertId();
+			return $this->directInsert($datas);
 		} catch (PDOException $e) {
-			echo $e->getMessage();
 			return false;
 		} catch (Exception $e) {
 			return false;
 		}
+	}
+
+	/**
+	 * Insert a new mode in database without any try / catch.
+	 * Used to make valid transactions for other models.
+	 *
+	 * @param array $datas Mode's datas
+	 * @return int $id Inserted mode's ID
+	 */
+	public function directInsert($datas)
+	{
+		$pdo  = $this->db;
+		$stmt = $pdo->prepare('INSERT INTO `mode` (`mode`) 
+							   VALUES (:mode)');
+		$stmt->bindParam(':mode', $datas['mode'], PDO::PARAM_STR);
+		$stmt->execute();
+
+		return $pdo->lastInsertId();
 	}
 
 	/**
@@ -82,22 +93,33 @@ class Mode extends BaseModel
 	public function updateMode($idMode, $datas)
 	{
 		try {
-			$pdo  = $this->db;
-			$stmt = $pdo->prepare('UPDATE `mode`
-								   SET `mode`             = :mode
-								   WHERE `idMode` =  :idMode');
-			$stmt->bindParam(':mode', $datas['mode'], PDO::PARAM_STR);
-			$stmt->bindParam(':idMode', $idMode, PDO::PARAM_INT);
-			$stmt->execute();
-
-			return $stmt->rowCount();
+			return $this->directUpdate($idMode, $datas);
 		} catch (PDOException $e) {
-			echo $e->getMessage();
 			return false;
 		} catch (Exception $e) {
-			echo $e->getMessage();
 			return false;
 		}
+	}
+
+	/**
+	 * Update a mode without any try / catch.
+	 * Used to make valid transactions for other models.
+	 *
+	 * @param array $datas Mode's datas
+	 * @return int $id Inserted mode's ID
+	 * @return bool
+	 */
+	public function directUpdate($idMode, $datas)
+	{
+		$pdo  = $this->db;
+		$stmt = $pdo->prepare('UPDATE `mode`
+							   SET `mode`             = :mode
+							   WHERE `idMode` =  :idMode');
+		$stmt->bindParam(':mode', $datas['mode'], PDO::PARAM_STR);
+		$stmt->bindParam(':idMode', $idMode, PDO::PARAM_INT);
+		$stmt->execute();
+
+		return true;
 	}
 
 	/**

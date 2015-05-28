@@ -77,32 +77,7 @@ class Test extends BaseModel
 			// Begin transaction to avoid inserting wrong or partial datas
 			$pdo->beginTransaction();
 
-			$stmt = $pdo->prepare('INSERT INTO `test` (`report`, `date`, `user_name`, `note`, `console_idConsole`) 
-								   VALUES (:report, :date, :user_name, :note, :console_idConsole)');
-			$stmt->bindParam(':report', $datas['report'], PDO::PARAM_STR);
-			$stmt->bindParam(':date', $datas['date'], PDO::PARAM_STR);
-			$stmt->bindParam(':user_name', $datas['user_name'], PDO::PARAM_STR);
-			$stmt->bindParam(':note', $datas['note'], PDO::PARAM_INT);
-			$stmt->bindParam(':console_idConsole', $datas['console_idConsole'], PDO::PARAM_INT);
-			$stmt->execute();
-
-			$testId = $pdo->lastInsertId();
-
-			// Insert comments
-			if (isset($datas['comments'])) {
-				$commentModel = new Comment();
-				foreach ($datas['comments'] as $comment) {
-					$commentModel->directInsert($comment);
-				}
-			}
-
-			// Insert analyses
-			if (isset($datas['analyses'])) {
-				$analyseModel = new Analyse();
-				foreach ($datas['analyses'] as $analyse) {
-					$analyseModel->directInsert($analyse);
-				}
-			}
+			$testId = $this->directInsert($datas);
 
 			// If everything went well, commit the transaction
 			$pdo->commit();
@@ -118,6 +93,45 @@ class Test extends BaseModel
 	}
 
 	/**
+	 * Insert a new edition in database without any try / catch.
+	 * Used to make valid transactions for other models.
+	 *
+	 * @param array $datas Support's datas
+	 * @return int $id Inserted mode's ID
+	 */
+	public function directInsert($datas)
+	{
+		$pdo  = $this->db;
+		$stmt = $pdo->prepare('INSERT INTO `test` (`report`, `date`, `user_name`, `note`, `console_idConsole`) 
+							   VALUES (:report, :date, :user_name, :note, :console_idConsole)');
+		$stmt->bindParam(':report', $datas['report'], PDO::PARAM_STR);
+		$stmt->bindParam(':date', $datas['date'], PDO::PARAM_STR);
+		$stmt->bindParam(':user_name', $datas['user_name'], PDO::PARAM_STR);
+		$stmt->bindParam(':note', $datas['note'], PDO::PARAM_INT);
+		$stmt->bindParam(':console_idConsole', $datas['console_idConsole'], PDO::PARAM_INT);
+		$stmt->execute();
+
+		$testId = $pdo->lastInsertId();
+
+		// Insert comments
+		if (isset($datas['comments'])) {
+			$commentModel = new Comment();
+			foreach ($datas['comments'] as $comment) {
+				$insertedComment = $commentModel->directInsert($comment);
+			}
+		}
+
+		// Insert analyses
+		if (isset($datas['analyses'])) {
+			$analyseModel = new Analyse();
+			foreach ($datas['analyses'] as $analyse) {
+				$insertedAnalyse = $analyseModel->directInsert($analyse);
+			}
+		}
+		return $testId;
+	}
+
+	/**
 	 * Update test
 	 *
 	 * @param $idTest int Test's ID
@@ -130,36 +144,7 @@ class Test extends BaseModel
 			// Begin transaction to avoid inserting wrong or partial datas
 			$pdo->beginTransaction();
 
-			$stmt = $pdo->prepare('UPDATE `test`
-								   SET `report`            = :report,
-									   `date`              = :date,
-									   `user_name`         = :user_name,
-									   `note`              = :note,
-									   `console_idConsole` = :console_idConsole
-								   WHERE `idTest` =  :idTest');
-			$stmt->bindParam(':report', $datas['report'], PDO::PARAM_STR);
-			$stmt->bindParam(':date', $datas['date'], PDO::PARAM_STR);
-			$stmt->bindParam(':user_name', $datas['user_name'], PDO::PARAM_STR);
-			$stmt->bindParam(':note', $datas['note'], PDO::PARAM_INT);
-			$stmt->bindParam(':console_idConsole', $datas['console_idConsole'], PDO::PARAM_INT);
-			$stmt->bindParam(':idTest', $idTest, PDO::PARAM_INT);
-			$stmt->execute();
-
-			// Update comments
-			if (isset($datas['comments'])) {
-				$commentModel = new Comment();
-				foreach ($datas['comments'] as $comment) {
-					$commentModel->directUpdate($comment['idComment'], $comment);
-				}
-			}
-
-			// Update analyses
-			if (isset($datas['analyses'])) {
-				$analyseModel = new Analyse();
-				foreach ($datas['analyses'] as $analyse) {
-					$analyseModel->directUpdate($analyse['idAnalyse'], $analyse);
-				}
-			}
+			$update = $this->directUpdate($idTest, $datas);
 
 			// If everything went well, commit the transaction
 			$pdo->commit();
@@ -171,6 +156,55 @@ class Test extends BaseModel
 		} catch (Exception $e) {
 			return false;
 		}
+	}
+
+	/**
+	 * Update an edition without any try / catch.
+	 * Used to make valid transactions for other models.
+	 *
+	 * @param array $datas Edition's datas
+	 * @return int $id Inserted edition's ID
+	 * @return bool
+	 */
+	public function directUpdate($idTest, $datas)
+	{
+		$pdo  = $this->db;
+		$stmt = $pdo->prepare('UPDATE `test`
+							   SET `report`            = :report,
+								   `date`              = :date,
+								   `user_name`         = :user_name,
+								   `note`              = :note,
+								   `console_idConsole` = :console_idConsole
+							   WHERE `idTest` =  :idTest');
+		$stmt->bindParam(':report', $datas['report'], PDO::PARAM_STR);
+		$stmt->bindParam(':date', $datas['date'], PDO::PARAM_STR);
+		$stmt->bindParam(':user_name', $datas['user_name'], PDO::PARAM_STR);
+		$stmt->bindParam(':note', $datas['note'], PDO::PARAM_INT);
+		$stmt->bindParam(':console_idConsole', $datas['console_idConsole'], PDO::PARAM_INT);
+		$stmt->bindParam(':idTest', $idTest, PDO::PARAM_INT);
+		$stmt->execute();
+
+		// Update comments
+		if (isset($datas['comments'])) {
+			$commentModel = new Comment();
+			foreach ($datas['comments'] as $comment) {
+				$commentModel->directUpdate($comment['idComment'], $comment);
+			}
+		}
+
+		// Update analyses
+		if (isset($datas['analyses'])) {
+			$analyseModel = new Analyse();
+			foreach ($datas['analyses'] as $analyse) {
+				// Stock the update into a variable otherwise the transaction will be blocked forever !
+				$updatedAnalyse = $analyseModel->directUpdate($analyse['idAnalyse'], $analyse);
+			}
+		}
+
+		// Close PDO connection
+		$pdo = null;
+
+		return true;
 	}
 
 	/**

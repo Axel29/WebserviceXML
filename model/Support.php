@@ -58,19 +58,30 @@ class Support extends BaseModel
 	public function insertSupport($datas)
 	{
 		try {
-			$pdo  = $this->db;
-			$stmt = $pdo->prepare('INSERT INTO `support` (`support`) 
-								   VALUES (:support)');
-			$stmt->bindParam(':support', $datas['support'], PDO::PARAM_STR);
-			$stmt->execute();
-
-			return $pdo->lastInsertId();
+			return $this->directInser($datas);
 		} catch (PDOException $e) {
-			echo $e->getMessage();
 			return false;
 		} catch (Exception $e) {
 			return false;
 		}
+	}
+
+	/**
+	 * Insert a new support in database without any try / catch.
+	 * Used to make valid transactions for other models.
+	 *
+	 * @param array $datas Support's datas
+	 * @return int $id Inserted mode's ID
+	 */
+	public function directInsert($datas)
+	{
+		$pdo  = $this->db;
+		$stmt = $pdo->prepare('INSERT INTO `support` (`support`) 
+							   VALUES (:support)');
+		$stmt->bindParam(':support', $datas['support'], PDO::PARAM_STR);
+		$stmt->execute();
+
+		return $pdo->lastInsertId();
 	}
 
 	/**
@@ -82,22 +93,33 @@ class Support extends BaseModel
 	public function updateSupport($idSupport, $datas)
 	{
 		try {
-			$pdo  = $this->db;
-			$stmt = $pdo->prepare('UPDATE `support`
-								   SET `support` = :support
-								   WHERE `idSupport` =  :idSupport');
-			$stmt->bindParam(':support', $datas['support'], PDO::PARAM_STR);
-			$stmt->bindParam(':idSupport', $idSupport, PDO::PARAM_INT);
-			$stmt->execute();
-
-			return $stmt->rowCount();
+			return $this->directUpdate($idSupport, $datas);
 		} catch (PDOException $e) {
-			echo $e->getMessage();
 			return false;
 		} catch (Exception $e) {
-			echo $e->getMessage();
 			return false;
 		}
+	}
+
+	/**
+	 * Update a support without any try / catch.
+	 * Used to make valid transactions for other models.
+	 *
+	 * @param array $datas Support's datas
+	 * @return int $id Inserted support's ID
+	 * @return bool
+	 */
+	public function directUpdate($idSupport, $datas)
+	{
+		$pdo  = $this->db;
+		$stmt = $pdo->prepare('UPDATE `support`
+							   SET `support` = :support
+							   WHERE `idSupport` =  :idSupport');
+		$stmt->bindParam(':support', $datas['support'], PDO::PARAM_STR);
+		$stmt->bindParam(':idSupport', $idSupport, PDO::PARAM_INT);
+		$stmt->execute();
+
+		return true;
 	}
 
 	/**

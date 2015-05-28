@@ -71,21 +71,32 @@ class Config extends BaseModel
 	public function insertConfig($datas)
 	{
 		try {
-			$pdo  = $this->db;
-			$stmt = $pdo->prepare('INSERT INTO `config` (`config`, `type`, `console_idConsole`) 
-								   VALUES (:config, :type, :console_idConsole)');
-			$stmt->bindParam(':config', $datas['config'], PDO::PARAM_STR);
-			$stmt->bindParam(':type', $datas['type'], PDO::PARAM_STR);
-			$stmt->bindParam(':console_idConsole', $datas['console_idConsole'], PDO::PARAM_INT);
-			$stmt->execute();
-
-			return $pdo->lastInsertId();
+			return $this->directInsert($datas);
 		} catch (PDOException $e) {
-			echo $e->getMessage();
 			return false;
 		} catch (Exception $e) {
 			return false;
 		}
+	}
+
+	/**
+	 * Insert a new config in database without any try / catch.
+	 * Used to make valid transactions for other models.
+	 *
+	 * @param array $datas Config's datas
+	 * @return int $id Inserted mode's ID
+	 */
+	public function directInsert($datas)
+	{
+		$pdo  = $this->db;
+		$stmt = $pdo->prepare('INSERT INTO `config` (`config`, `type`, `console_idConsole`) 
+							   VALUES (:config, :type, :console_idConsole)');
+		$stmt->bindParam(':config', $datas['config'], PDO::PARAM_STR);
+		$stmt->bindParam(':type', $datas['type'], PDO::PARAM_STR);
+		$stmt->bindParam(':console_idConsole', $datas['console_idConsole'], PDO::PARAM_INT);
+		$stmt->execute();
+
+		return $pdo->lastInsertId();
 	}
 
 	/**
@@ -97,26 +108,37 @@ class Config extends BaseModel
 	public function updateConfig($idConfig, $datas)
 	{
 		try {
-			$pdo  = $this->db;
-			$stmt = $pdo->prepare('UPDATE `config`
-								   SET `config` = :config,
-								       `type` = :type,
-								       `console_idConsole` = :console_idConsole
-								   WHERE `idConfig` =  :idConfig');
-			$stmt->bindParam(':config', $datas['config'], PDO::PARAM_STR);
-			$stmt->bindParam(':type', $datas['type'], PDO::PARAM_STR);
-			$stmt->bindParam(':console_idConsole', $datas['console_idConsole'], PDO::PARAM_INT);
-			$stmt->bindParam(':idConfig', $idConfig, PDO::PARAM_INT);
-			$stmt->execute();
-
-			return $stmt->rowCount();
+			return $this->directUpdate($idConfig, $datas);
 		} catch (PDOException $e) {
-			echo $e->getMessage();
 			return false;
 		} catch (Exception $e) {
-			echo $e->getMessage();
 			return false;
 		}
+	}
+
+	/**
+	 * Update an config without any try / catch.
+	 * Used to make valid transactions for other models.
+	 *
+	 * @param array $datas Config's datas
+	 * @return int $id Inserted config's ID
+	 * @return bool
+	 */
+	public function directUpdate($idConfig, $datas)
+	{
+		$pdo  = $this->db;
+		$stmt = $pdo->prepare('UPDATE `config`
+							   SET `config` = :config,
+							       `type` = :type,
+							       `console_idConsole` = :console_idConsole
+							   WHERE `idConfig` =  :idConfig');
+		$stmt->bindParam(':config', $datas['config'], PDO::PARAM_STR);
+		$stmt->bindParam(':type', $datas['type'], PDO::PARAM_STR);
+		$stmt->bindParam(':console_idConsole', $datas['console_idConsole'], PDO::PARAM_INT);
+		$stmt->bindParam(':idConfig', $idConfig, PDO::PARAM_INT);
+		$stmt->execute();
+
+		return true;
 	}
 
 	/**
