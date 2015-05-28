@@ -96,7 +96,7 @@ class Shop extends BaseModel
 	 *
 	 * @param array $datas Shop's datas
 	 * @return int $id Inserted shop's ID
-	 * @return Number of updated rows
+	 * @return bool
 	 */
 	public function directUpdate($idShop, $datas)
 	{

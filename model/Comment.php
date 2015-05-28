@@ -44,24 +44,36 @@ class Comment extends BaseModel
 	public function insertComment($datas)
 	{
 		try {
-			$pdo  = $this->db;
-			$stmt = $pdo->prepare('INSERT INTO `comment` (`date`, `user_name`, `note`, `like`, `dislike`, `text`, `test_idTest`) 
-								   VALUES (:date, :user_name, :note, :like, :dislike, :text, :test_idTest)');
-			$stmt->bindParam(':date', $datas['date'], PDO::PARAM_STR);
-			$stmt->bindParam(':user_name', $datas['user_name'], PDO::PARAM_STR);
-			$stmt->bindParam(':note', $datas['note'], PDO::PARAM_INT);
-			$stmt->bindParam(':like', $datas['like'], PDO::PARAM_INT);
-			$stmt->bindParam(':dislike', $datas['dislike'], PDO::PARAM_INT);
-			$stmt->bindParam(':text', $datas['text'], PDO::PARAM_STR);
-			$stmt->bindParam(':test_idTest', $datas['test_idTest'], PDO::PARAM_INT);
-			$stmt->execute();
-
-			return $pdo->lastInsertId();
+			return $this->directInsert($datas);
 		} catch (PDOException $e) {
 			return false;
 		} catch (Exception $e) {
 			return false;
 		}
+	}
+
+	/**
+	 * Insert a new comment in database without any try / catch.
+	 * Used to make valid transactions for other models.
+	 *
+	 * @param array $datas Shop's datas
+	 * @return int $id Inserted comment's ID
+	 */
+	public function directInsert($datas)
+	{
+		$pdo  = $this->db;
+		$stmt = $pdo->prepare('INSERT INTO `comment` (`date`, `user_name`, `note`, `like`, `dislike`, `text`, `test_idTest`) 
+							   VALUES (:date, :user_name, :note, :like, :dislike, :text, :test_idTest)');
+		$stmt->bindParam(':date', $datas['date'], PDO::PARAM_STR);
+		$stmt->bindParam(':user_name', $datas['user_name'], PDO::PARAM_STR);
+		$stmt->bindParam(':note', $datas['note'], PDO::PARAM_INT);
+		$stmt->bindParam(':like', $datas['like'], PDO::PARAM_INT);
+		$stmt->bindParam(':dislike', $datas['dislike'], PDO::PARAM_INT);
+		$stmt->bindParam(':text', $datas['text'], PDO::PARAM_STR);
+		$stmt->bindParam(':test_idTest', $datas['test_idTest'], PDO::PARAM_INT);
+		$stmt->execute();
+
+		return $pdo->lastInsertId();
 	}
 
 	/**
@@ -73,30 +85,7 @@ class Comment extends BaseModel
 	public function updateComment($idComment, $datas)
 	{
 		try {
-			$pdo  = $this->db;
-			$stmt = $pdo->prepare('UPDATE `comment` 
-								   SET `date` = :date,
-								       `user_name` = :user_name,
-								       `note` = :note,
-								       `like` = :like,
-								       `dislike` = :dislike,
-								       `text` = :text,
-								       `test_idTest` = :test_idTest
-								   WHERE `idComment` =  :idComment');
-			$stmt->bindParam(':date', $datas['date'], PDO::PARAM_STR);
-			$stmt->bindParam(':user_name', $datas['user_name'], PDO::PARAM_STR);
-			$stmt->bindParam(':note', $datas['note'], PDO::PARAM_INT);
-			$stmt->bindParam(':like', $datas['like'], PDO::PARAM_INT);
-			$stmt->bindParam(':dislike', $datas['dislike'], PDO::PARAM_INT);
-			$stmt->bindParam(':text', $datas['text'], PDO::PARAM_STR);
-			$stmt->bindParam(':test_idTest', $datas['test_idTest'], PDO::PARAM_INT);
-			$stmt->bindParam(':idComment', $idComment, PDO::PARAM_INT);
-			$stmt->execute();
-			/*
-			 * Check that the update was performed on an existing comment.
-			 * MySQL won't send any error as, regarding to him, the request is correct, so we have to handle it manually.
-			 */
-			return $stmt->rowCount();
+			return $this->directUpdate($idShop, $datas);
 		} catch (PDOException $e) {
 			echo $e->getMessage();
 			return false;
@@ -104,6 +93,39 @@ class Comment extends BaseModel
 			echo $e->getMessage();
 			return false;
 		}
+	}
+
+	/**
+	 * Update a comment without any try / catch.
+	 * Used to make valid transactions for other models.
+	 *
+	 * @param array $datas Shop's datas
+	 * @return int $id Inserted comment's ID
+	 * @return bool
+	 */
+	public function directUpdate($idComment, $datas)
+	{
+		$pdo  = $this->db;
+		$stmt = $pdo->prepare('UPDATE `comment` 
+							   SET `date` = :date,
+							       `user_name` = :user_name,
+							       `note` = :note,
+							       `like` = :like,
+							       `dislike` = :dislike,
+							       `text` = :text,
+							       `test_idTest` = :test_idTest
+							   WHERE `idComment` =  :idComment');
+		$stmt->bindParam(':date', $datas['date'], PDO::PARAM_STR);
+		$stmt->bindParam(':user_name', $datas['user_name'], PDO::PARAM_STR);
+		$stmt->bindParam(':note', $datas['note'], PDO::PARAM_INT);
+		$stmt->bindParam(':like', $datas['like'], PDO::PARAM_INT);
+		$stmt->bindParam(':dislike', $datas['dislike'], PDO::PARAM_INT);
+		$stmt->bindParam(':text', $datas['text'], PDO::PARAM_STR);
+		$stmt->bindParam(':test_idTest', $datas['test_idTest'], PDO::PARAM_INT);
+		$stmt->bindParam(':idComment', $idComment, PDO::PARAM_INT);
+		$stmt->execute();
+
+		return true;
 	}
 
 	/**

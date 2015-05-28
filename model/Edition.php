@@ -83,22 +83,7 @@ class Edition extends BaseModel
 			$stmt->execute();
 
 			$editionId = $pdo->lastInsertId();
-$datas['shops'] = [
-	[
-		'url' => 'Title shop 1',
-		'name' => 'Price shop 1',
-		'price' => '10',
-		'devise' => '€',
-		'edition_idEdition' => '1',
-	],
-	[
-		'url' => 'Title shop 2',
-		'name' => 'Price shop 2',
-		'price' => '20',
-		'devise' => '$',
-		'edition_idEdition' => '2',
-	],
-];
+
 			// Insert shops
 			if (isset($datas['shops'])) {
 				$shopModel = new Shop();

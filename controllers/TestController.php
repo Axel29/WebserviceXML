@@ -14,10 +14,23 @@ class TestController extends BaseController
 	 */
 	private $requiredFields = [
 		'report'            => 'string',
-		'date'              => 'string',
+		'date'              => 'date',
 		'user_name'         => 'string',
 		'note'              => 'int',
 		'console_idConsole' => 'int',
+	];
+
+	/**
+	 * @var $shopsRequiredFields array Required fields for shops and their types for insert / update
+	 */
+	private $commentsRequiredFields = [
+		'date'        => 'date',
+		'user_name'   => 'string',
+		'note'        => 'int',
+		'like'        => 'int',
+		'dislike'     => 'int',
+		'text'        => 'string',
+		'test_idTest' => 'int',
 	];
 
 	/**
@@ -89,6 +102,13 @@ class TestController extends BaseController
 		// Check every required field
 		$this->checkRequiredFields($this->requiredFields, $_POST);
 
+		// Check every required fields for comments if neeeded
+		if (isset($_POST['comments'])) {
+			foreach ($_POST['comments'] as $comment) {
+				$this->checkRequiredFields($this->commentsRequiredFields, $comment);
+			}
+		}
+
 		$testModel    = new Test();
 		$insertedTest = $testModel->insertTest($_POST);
 
@@ -120,6 +140,39 @@ class TestController extends BaseController
 
 		// Check every required field
 		$this->checkRequiredFields($this->requiredFields, $_PUT);
+
+
+
+		$_PUT['comments'] = [
+			[
+				'idComment'   => '3',
+				'date'        => '2015-05-24 10:11:12',
+				'user_name'   => 'dfsdfdf',
+				'note'        => '5',
+				'like'        => '1',
+				'dislike'     => '0',
+				'text'        => 'fdfsgdsgsdg',
+				'test_idTest' => '1',
+			],
+			[
+				'idComment'   => '4',
+				'date'        => '2015-06-25 11:12:13',
+				'user_name'   => 'Axel2903dfdsff',
+				'note'        => '4',
+				'like'        => '2',
+				'dislike'     => '1',
+				'text'        => 'Lorem ipsum sidsfsdfsn dolor amet',
+				'test_idTest' => '2',
+			],
+		];
+
+		// Check every required fields for comments if neeeded
+		$this->commentsRequiredFields['idComment'] = 'int';
+		if (isset($_PUT['comments'])) {
+			foreach ($_PUT['comments'] as $comment) {
+				$this->checkRequiredFields($this->commentsRequiredFields, $comment);
+			}
+		}
 
 		$testModel  = new Test();
 		$updatedTest = $testModel->updateTest($this->getId(), $_PUT);

@@ -10,7 +10,7 @@ class Test extends BaseModel
 	 */
 	public function findBy($paramName = null, $paramValue = null)
 	{
-		$this->table = 'test t';
+		$this->table = 'test';
 		
 		$fields = [
 			'`idTest`',
@@ -72,8 +72,11 @@ class Test extends BaseModel
 	 */
 	public function insertTest($datas)
 	{
+		$pdo  = $this->db;
 		try {
-			$pdo  = $this->db;
+			// Begin transaction to avoid inserting wrong or partial datas
+			$pdo->beginTransaction();
+
 			$stmt = $pdo->prepare('INSERT INTO `test` (`report`, `date`, `user_name`, `note`, `console_idConsole`) 
 								   VALUES (:report, :date, :user_name, :note, :console_idConsole)');
 			$stmt->bindParam(':report', $datas['report'], PDO::PARAM_STR);
@@ -83,9 +86,23 @@ class Test extends BaseModel
 			$stmt->bindParam(':console_idConsole', $datas['console_idConsole'], PDO::PARAM_INT);
 			$stmt->execute();
 
-			return $pdo->lastInsertId();
+			$testId = $pdo->lastInsertId();
+
+			// Insert comments
+			if (isset($datas['comments'])) {
+				$commentModel = new Comment();
+				foreach ($datas['comments'] as $comment) {
+					$commentModel->directInsert($comment);
+				}
+			}
+
+			// If everything went well, commit the transaction
+			$pdo->commit();
+
+			return $testId;
 		} catch (PDOException $e) {
-			echo $e->getMessage();
+			// Cancel the transaction
+		    $pdo->rollback();
 			return false;
 		} catch (Exception $e) {
 			return false;
@@ -100,8 +117,11 @@ class Test extends BaseModel
 	 */
 	public function updateTest($idTest, $datas)
 	{
+		$pdo  = $this->db;
 		try {
-			$pdo  = $this->db;
+			// Begin transaction to avoid inserting wrong or partial datas
+			$pdo->beginTransaction();
+
 			$stmt = $pdo->prepare('UPDATE `test`
 								   SET `report` = :report,
 								   	   `date` = :date,
@@ -116,13 +136,26 @@ class Test extends BaseModel
 			$stmt->bindParam(':console_idConsole', $datas['console_idConsole'], PDO::PARAM_INT);
 			$stmt->bindParam(':idTest', $idTest, PDO::PARAM_INT);
 			$stmt->execute();
+
+			// Update comments
+			if (isset($datas['comments'])) {
+				$commentModel = new Comment();
+				foreach ($datas['comments'] as $comment) {
+					$commentModel->directUpdate($comment['idComment'], $comment);
+				}
+			}
+
+			// If everything went well, commit the transaction
+			$pdo->commit();
+
 			/*
 			 * Check that the update was performed on an existing test.
 			 * MySQL won't send any error as, regarding to him, the request is correct, so we have to handle it manually.
 			 */
-			return $stmt->rowCount();
+			return true;
 		} catch (PDOException $e) {
-			echo $e->getMessage();
+			// Cancel the transaction
+		    $pdo->rollback();
 			return false;
 		} catch (Exception $e) {
 			echo $e->getMessage();
