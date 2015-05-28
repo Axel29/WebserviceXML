@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <!-- Modèle économique du jeu (Free to play, ...) -->
+    <xs:element name="businessModel" type="xs:string" />
+
+    <!-- Age minimum requis -->
+    <xs:element name="pegi" type="xs:string" />
+
+    <!-- Description du contenu -->
+    <xs:element name="description" type="xs:string" />
+
+    <!-- Date de sortie du jeu -->
+    <xs:element name="release" type="xs:date" />
+
+    <!-- Nom en général -->
+    <xs:element name="name" type="xs:string" />
+
+    <!-- Contenu de l'édition -->
+    <xs:element name="content" type="xs:string" />
+
+    <!-- Prix -->
+    <xs:element name="price">
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="xs:string">
+                    <xs:attribute name="devise" type="xs:string" use="required" />
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- Jaquette avant / arrière -->
+    <xs:element name="front">
+        <xs:complexType>
+            <xs:attribute name="url" type="xs:anyURI"/>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="back">
+        <xs:complexType>
+            <xs:attribute name="url" type="xs:anyURI"/>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- Mode de jeu (solo, multi-joueurs, ...) -->
+    <xs:element name="mode">
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="xs:string">
+                    <xs:attribute name="id" type="xs:positiveInteger" use="required"/>
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="modes">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="mode" maxOccurs="unbounded" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- Jaquette du jeu -->
+    <xs:element name="cover">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="front" />
+                <xs:element ref="back" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- Type de support (physique, dématérialisé, ...) -->
+    <xs:element name="support">
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="xs:string">
+                    <xs:attribute name="id" type="xs:positiveInteger" use="required" />
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="supports">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="support" maxOccurs="unbounded" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- Boutique où il est possible d'acheter le jeu-->
+    <xs:element name="shop">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="name"/>
+                <xs:element ref="price"/>
+            </xs:sequence>
+            <xs:attribute name="id" type="xs:positiveInteger" use="required" />
+            <xs:attribute name="url" type="xs:anyURI" use="required" />
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="shops">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="shop" minOccurs="0" maxOccurs="unbounded" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- Information relative à une édition -->
+    <xs:element name="edition">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="name" />
+                <xs:element ref="content" />
+                <xs:element ref="shops" />
+            </xs:sequence>
+            <xs:attribute name="id" type="xs:positiveInteger" use="required" />
+        </xs:complexType>
+    </xs:element>
+
+    <!-- Gestion de l'édition du jeu (collector, standard, ...) -->
+    <xs:element name="editions">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="edition" maxOccurs="unbounded" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="dlc">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="title" />
+                <xs:element ref="description" />
+                <xs:element ref="price" />
+            </xs:sequence>
+            <xs:attribute name="id" type="xs:positiveInteger" use="required" />
+        </xs:complexType>
+    </xs:element>
+
+    <!-- Liste les DLCs du jeu -->
+    <xs:element name="dlcs">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="dlc" minOccurs="0" maxOccurs="unbounded" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- Détail de la configuration -->
+    <xs:element name="config">
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="xs:string">
+                    <xs:attribute name="id" type="xs:positiveInteger" use="required"/>
+                    <xs:attribute name="type" type="xs:string" use="required"/>
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- Recommandations sur la configuration matérielle pour lancer le jeu --> 
+    <xs:element name="configs">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="config" maxOccurs="2" minOccurs="0"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+
+    <!-- Commentaire utilisateur -->
+    <xs:element name="comment">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="text" />
+                <xs:element ref="date" />
+                <xs:element ref="userName" />
+                <xs:element ref="note" />
+                <xs:element ref="like" />
+                <xs:element ref="dislike" />
+            </xs:sequence>
+            <xs:attribute name="id" type="xs:positiveInteger" use="required" />
+        </xs:complexType>
+    </xs:element>
+
+    <!-- Point positif/négatif -->
+    <xs:element name="analyse">
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="xs:string">
+                    <xs:attribute name="id" type="xs:positiveInteger" use="required" />
+                    <xs:attribute name="type" type="xs:string" use="required" />
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- Commentaires des utilisateurs -->
+    <xs:element name="comments">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="comment" minOccurs="0" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- Liste des points positifs/négatifs -->
+    <xs:element name="analyses">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="analyse" minOccurs="0" maxOccurs="unbounded" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="test">
+        <xs:complexType>
+            <xs:sequence minOccurs="0" maxOccurs="unbounded">
+                <xs:element ref="report" />
+                <xs:element ref="date" />
+                <xs:element ref="userName" />
+                <xs:element ref="note" />
+                <xs:element ref="comments" />
+                <xs:element ref="analyses" />
+            </xs:sequence>
+            <xs:attribute name="id" type="xs:positiveInteger" use="required" />
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="tests">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="test" minOccurs="0" maxOccurs="unbounded" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- Eléments dépendants pour chaque console -->
+    <xs:element name="console">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="businessModel" />
+                <xs:element ref="pegi" />
+                <xs:element ref="modes" />
+                <xs:element ref="cover" />
+                <xs:element ref="supports" />
+                <xs:element ref="release" />
+                <xs:element ref="editions" />
+                <xs:element ref="name" />
+                <xs:element ref="description" />
+                <xs:element ref="dlcs" />
+                <xs:element ref="configs" />
+                <xs:element ref="test" />
+            </xs:sequence>
+            <xs:attribute name="id" type="xs:positiveInteger" use="required"/>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="consoles">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="console" maxOccurs="unbounded" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>
