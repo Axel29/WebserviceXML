@@ -25,7 +25,7 @@ class Mode extends BaseModel
 					[
 						'type'  => 'INNER JOIN',
 						'table' => 'console_has_mode chm',
-						'on'    => 'm.idMode = chm.support_idMode',
+						'on'    => 'm.idMode = chm.mode_idMode',
 					],
 					[
 						'type'  => 'INNER JOIN',
@@ -44,7 +44,7 @@ class Mode extends BaseModel
 			}
 		}
 
-		$modes = $this->select($fields, $where);
+		$modes = $this->select($fields, $where, [], $join);
 
 		return $modes;
 	}

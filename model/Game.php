@@ -152,7 +152,7 @@ class Game extends BaseModel
 	{
 		$this->table = 'article a';
 		
-		$fields = ['`idArticle`', '`type`', '`title`', '`user_name`', 'DATE_FORMAT(`date`, "%Y-%m-%dT%H:%i:%s") as `date`', '`consoles_names`', '`game_idGame`'];
+		$fields = ['`idArticle`', '`type`', '`title`', '`user_name`', 'DATE_FORMAT(`date`, "%Y-%m-%dT%H:%i:%s") as `date`', '`console_names`', '`game_idGame`'];
 		$where  = [];
 		if ($gameId) {
 			$where = [
@@ -520,7 +520,7 @@ class Game extends BaseModel
 	{
 		$this->table = 'tip t';
 
-		$fields = ['`idTip`', '`content`', '`consoles_names`'];
+		$fields = ['`idTip`', '`content`', '`console_names`'];
 		
 		$where = [];
 		if ($gameId) {
@@ -756,7 +756,7 @@ class Game extends BaseModel
 															'title' => $post['articles']['title'],
 															'user_name' => $post['articles']['user_name'],
 															'date' => $post['articles']['date'],
-															'consoles_names' => $post['articles']['consoles_names'],
+															'console_names' => $post['articles']['console_names'],
 															'game_idGame' => $insertedGame,
 														];
 
@@ -770,7 +770,7 @@ class Game extends BaseModel
 																			'unit' => $post['medias']['unit'],
 																			'width' => $post['medias']['width'],
 																			'height' => $post['medias']['height'],
-																			'consoles_names' => $post['medias']['consoles_names'],
+																			'console_names' => $post['medias']['console_names'],
 																			'game_idGame' => $insertedGame,
 																		];
 
@@ -781,7 +781,7 @@ class Game extends BaseModel
 																				$this->table    = 'tip';
 																				$fields = [
 																					'content'     => $post['tips']['content'],																		
-																					'consoles_names' => $post['tips']['consoles_names'],
+																					'console_names' => $post['tips']['console_names'],
 																					'game_idGame' => $insertedGame,
 																				];
 

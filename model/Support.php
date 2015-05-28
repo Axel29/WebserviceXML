@@ -44,7 +44,7 @@ class Support extends BaseModel
 			}
 		}
 
-		$supports = $this->select($fields, $where);
+		$supports = $this->select($fields, $where, [], $join);
 
 		return $supports;
 	}
