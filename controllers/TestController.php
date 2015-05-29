@@ -118,23 +118,6 @@ class TestController extends BaseController
 			}
 		}
 
-
-
-		$_POST['analyses'] = [
-			[
-				'idAnalyse'   => '2',
-				'analyse'     => 'dfsdfsdfsf',
-				'type'        => 'dfsdfdff',
-				'test_idTest' => '5',
-			],
-			[
-				'idAnalyse'   => '3',
-				'analyse'     => 'oklhjfdsjgsqdq',
-				'type'        => 'zadziknsddn',
-				'test_idTest' => '5',
-			],
-		];
-
 		// Check every required fields for analyses if neeeded
 		if (isset($_POST['analyses'])) {
 			foreach ($_POST['analyses'] as $analyse) {
@@ -173,23 +156,6 @@ class TestController extends BaseController
 
 		// Check every required field
 		$this->checkRequiredFields($this->requiredFields, $_PUT);
-
-
-
-		$_PUT['analyses'] = [
-			[
-				'idAnalyse'   => '6',
-				'analyse'     => 'bouhhh',
-				'type'        => 'bouhhhhhh',
-				'test_idTest' => '5',
-			],
-			[
-				'idAnalyse'   => '7',
-				'analyse'     => 'toto',
-				'type'        => 'totooooo',
-				'test_idTest' => '5',
-			],
-		];
 
 		// Check every required fields for comments if neeeded
 		$this->commentsRequiredFields['idComment'] = 'int';
