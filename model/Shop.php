@@ -34,6 +34,24 @@ class Shop extends BaseModel
 	}
 
 	/**
+	 * Get list of required fields and their types
+	 *
+	 * @return array $requiredFields List of required fields as array
+	 */
+	public static function getRequiredFields()
+	{
+		$requiredFields = [
+			'url'               => 'string',
+			'name'              => 'string',
+			'price'             => 'float',
+			'devise'            => 'string',
+			'edition_idEdition' => 'int',
+		];
+
+		return $requiredFields;
+	}
+
+	/**
 	 * Insert a new shop in database.
 	 *
 	 * @param $datas array Shop's datas

@@ -76,16 +76,7 @@ class ArticleController extends BaseController
 		}
 
 		// Check every required field
-		$requiredFields = [
-			'type'          => 'string',
-			'title'         => 'string',
-			'user_name'     => 'string',
-			'date'          => 'date',
-			'console_names' => 'string',
-			'game_idGame'   => 'int',
-		];
-
-		$this->checkRequiredFields($requiredFields, $_POST);
+		$this->checkRequiredFields(Article::getRequiredFields(), $_POST);
 
 		$articleModel    = new Article();
 		$insertedArticle = $articleModel->insertArticle($_POST);
@@ -117,15 +108,7 @@ class ArticleController extends BaseController
 		}
 
 		// Check every required field
-		$requiredFields = [
-			'type'          => 'string',
-			'title'         => 'string',
-			'user_name'     => 'string',
-			'date'          => 'date',
-			'console_names' => 'string',
-		];
-
-		$this->checkRequiredFields($requiredFields, $_PUT);
+		$this->checkRequiredFields(Article::getRequiredFields(), $_PUT);
 
 		$articleModel  = new Article();
 		$updateArticle = $articleModel->updateArticle($this->getId(), $_PUT);

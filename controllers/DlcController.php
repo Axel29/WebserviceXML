@@ -10,17 +10,6 @@ class DlcController extends BaseController
 	private $id = null;
 
 	/**
-	 * @var $requiredFields array Required fields and their types for insert / update
-	 */
-	private $requiredFields = [
-		'title'             => 'string',
-		'description'       => 'string',
-		'price'             => 'float',
-		'devise'            => 'string',
-		'console_idConsole' => 'int',
-	];
-
-	/**
 	 * Redirect the request to the matching method regarding the request method
 	 * Route: /dlc/index/id/{id}
 	 *
@@ -87,7 +76,7 @@ class DlcController extends BaseController
 		}
 
 		// Check every required field
-		$this->checkRequiredFields($this->requiredFields, $_POST);
+		$this->checkRequiredFields(Dlc::getRequiredFields(), $_POST);
 
 		$dlcModel    = new Dlc();
 		$insertedDlc = $dlcModel->insertDlc($_POST);
@@ -119,7 +108,7 @@ class DlcController extends BaseController
 		}
 
 		// Check every required field
-		$this->checkRequiredFields($this->requiredFields, $_PUT);
+		$this->checkRequiredFields(Dlc::getRequiredFields(), $_PUT);
 
 		$dlcModel  = new Dlc();
 		$updatedDlc = $dlcModel->updateDlc($this->getId(), $_PUT);

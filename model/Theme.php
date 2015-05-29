@@ -47,6 +47,20 @@ class Theme extends BaseModel
 	}
 
 	/**
+	 * Get list of required fields and their types
+	 *
+	 * @return array $requiredFields List of required fields as array
+	 */
+	public static function getRequiredFields()
+	{
+		$requiredFields = [
+			'theme' => 'string',
+		];
+
+		return $requiredFields;
+	}
+
+	/**
 	 * Insert a new theme in database.
 	 * If the theme already exists, return the existing theme's ID.
 	 *

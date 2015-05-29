@@ -10,17 +10,6 @@ class ShopController extends BaseController
 	private $id = null;
 
 	/**
-	 * @var $requiredFields array Required fields and their types for insert / update
-	 */
-	private $requiredFields = [
-		'url'               => 'string',
-		'name'              => 'string',
-		'price'             => 'float',
-		'devise'            => 'string',
-		'edition_idEdition' => 'int',
-	];
-
-	/**
 	 * Redirect the request to the matching method regarding the request method
 	 * Route: /shop/index/id/{id}
 	 *
@@ -87,7 +76,7 @@ class ShopController extends BaseController
 		}
 
 		// Check every required field
-		$this->checkRequiredFields($this->requiredFields, $_POST);
+		$this->checkRequiredFields(Shop::getRequiredFields(), $_POST);
 
 		$shopModel    = new Shop();
 		$insertedShop = $shopModel->insertShop($_POST);
@@ -119,7 +108,7 @@ class ShopController extends BaseController
 		}
 
 		// Check every required field
-		$this->checkRequiredFields($this->requiredFields, $_PUT);
+		$this->checkRequiredFields(Shop::getRequiredFields(), $_PUT);
 
 		$shopModel  = new Shop();
 		$updatedShop = $shopModel->updateShop($this->getId(), $_PUT);

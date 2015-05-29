@@ -63,6 +63,22 @@ class Edition extends BaseModel
     }
 
 	/**
+	 * Get list of required fields and their types
+	 *
+	 * @return array $requiredFields List of required fields as array
+	 */
+	public static function getRequiredFields()
+	{
+		$requiredFields = [
+			'name'              => 'string',
+			'content'           => 'string',
+			'console_idConsole' => 'int',
+		];
+
+		return $requiredFields;
+	}
+
+	/**
 	 * Insert a new edition in database.
 	 *
 	 * @param $datas array Edition's name

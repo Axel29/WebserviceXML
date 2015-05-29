@@ -10,39 +10,6 @@ class TestController extends BaseController
 	private $id = null;
 
 	/**
-	 * @var $requiredFields array Required fields and their types for insert / update
-	 */
-	private $requiredFields = [
-		'report'            => 'string',
-		'date'              => 'date',
-		'user_name'         => 'string',
-		'note'              => 'int',
-		'console_idConsole' => 'int',
-	];
-
-	/**
-	 * @var $shopsRequiredFields array Required fields for shops and their types for insert / update
-	 */
-	private $commentsRequiredFields = [
-		'date'        => 'date',
-		'user_name'   => 'string',
-		'note'        => 'int',
-		'like'        => 'int',
-		'dislike'     => 'int',
-		'text'        => 'string',
-		'test_idTest' => 'int',
-	];
-
-	/**
-	 * @var $analysesRequiredFields array Required fields for analyses and their types for insert / update
-	 */
-	private $analysesRequiredFields = [
-		'analyse'     => 'string',
-		'type'        => 'string',
-		'test_idTest' => 'int',
-	];
-
-	/**
 	 * Redirect the request to the matching method regarding the request method
 	 * Route: /test/index/id/{id}
 	 *
@@ -109,19 +76,19 @@ class TestController extends BaseController
 		}
 
 		// Check every required field
-		$this->checkRequiredFields($this->requiredFields, $_POST);
+		$this->checkRequiredFields(Test::getRequiredFields(), $_POST);
 
 		// Check every required fields for comments if neeeded
 		if (isset($_POST['comments'])) {
 			foreach ($_POST['comments'] as $comment) {
-				$this->checkRequiredFields($this->commentsRequiredFields, $comment);
+				$this->checkRequiredFields(Comment::getRequiredFields(), $comment);
 			}
 		}
 
 		// Check every required fields for analyses if neeeded
 		if (isset($_POST['analyses'])) {
 			foreach ($_POST['analyses'] as $analyse) {
-				$this->checkRequiredFields($this->analysesRequiredFields, $analyse);
+				$this->checkRequiredFields(Analyse::getRequiredFields(), $analyse);
 			}
 		}
 
@@ -155,13 +122,13 @@ class TestController extends BaseController
 		}
 
 		// Check every required field
-		$this->checkRequiredFields($this->requiredFields, $_PUT);
+		$this->checkRequiredFields(Test::getRequiredFields(), $_PUT);
 
 		// Check every required fields for comments if neeeded
 		$this->commentsRequiredFields['idComment'] = 'int';
 		if (isset($_PUT['comments'])) {
 			foreach ($_PUT['comments'] as $comment) {
-				$this->checkRequiredFields($this->commentsRequiredFields, $comment);
+				$this->checkRequiredFields(Comment::getRequiredFields(), $comment);
 			}
 		}
 
@@ -169,7 +136,7 @@ class TestController extends BaseController
 		$this->analysesRequiredFields['idAnalyse'] = 'int';
 		if (isset($_PUT['analyses'])) {
 			foreach ($_PUT['analyses'] as $analyse) {
-				$this->checkRequiredFields($this->analysesRequiredFields, $analyse);
+				$this->checkRequiredFields(Analyse::getRequiredFields(), $analyse);
 			}
 		}
 

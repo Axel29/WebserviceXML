@@ -10,13 +10,6 @@ class ModeController extends BaseController
 	private $id = null;
 
 	/**
-	 * @var $requiredFields array Required fields and their types for insert / update
-	 */
-	private $requiredFields = [
-		'mode' => 'string',
-	];
-
-	/**
 	 * Redirect the request to the matching method regarding the request method
 	 * Route: /mode/index/id/{id}
 	 *
@@ -83,7 +76,7 @@ class ModeController extends BaseController
 		}
 
 		// Check every required field
-		$this->checkRequiredFields($this->requiredFields, $_POST);
+		$this->checkRequiredFields(Mode::getRequiredFields(), $_POST);
 
 		$modeModel    = new Mode();
 		$insertedMode = $modeModel->insertMode($_POST);
@@ -115,7 +108,7 @@ class ModeController extends BaseController
 		}
 
 		// Check every required field
-		$this->checkRequiredFields($this->requiredFields, $_PUT);
+		$this->checkRequiredFields(Mode::getRequiredFields(), $_PUT);
 
 		$modeModel  = new Mode();
 		$updatedMode = $modeModel->updateMode($this->getId(), $_PUT);

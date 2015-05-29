@@ -65,6 +65,24 @@ class Test extends BaseModel
     }
 
 	/**
+	 * Get list of required fields and their types
+	 *
+	 * @return array $requiredFields List of required fields as array
+	 */
+	public static function getRequiredFields()
+	{
+		$requiredFields = [
+			'report'            => 'string',
+			'date'              => 'date',
+			'user_name'         => 'string',
+			'note'              => 'int',
+			'console_idConsole' => 'int',
+		];
+
+		return $requiredFields;
+	}
+
+	/**
 	 * Insert a new test in database.
 	 *
 	 * @param $datas array Test's name

@@ -63,6 +63,22 @@ class Config extends BaseModel
     }
 
 	/**
+	 * Get list of required fields and their types
+	 *
+	 * @return array $requiredFields List of required fields as array
+	 */
+	public static function getRequiredFields()
+	{
+		$requiredFields = [
+			'config'            => 'string',
+			'type'              => 'string',
+			'console_idConsole' => 'int',
+		];
+
+		return $requiredFields;
+	}
+
+	/**
 	 * Insert a new config in database.
 	 *
 	 * @param $datas array Config's name

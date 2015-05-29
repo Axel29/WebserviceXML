@@ -47,6 +47,20 @@ class Gender extends BaseModel
 	}
 
 	/**
+	 * Get list of required fields and their types
+	 *
+	 * @return array $requiredFields List of required fields as array
+	 */
+	public static function getRequiredFields()
+	{
+		$requiredFields = [
+			'gender' => 'string',
+		];
+
+		return $requiredFields;
+	}
+
+	/**
 	 * Insert a new gender in database.
 	 * If the gender already exists, return the existing gender's ID.
 	 *

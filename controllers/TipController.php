@@ -76,13 +76,7 @@ class TipController extends BaseController
 		}
 
 		// Check every required field
-		$requiredFields = [
-			'content'       => 'string',
-			'console_names' => 'string',
-			'game_idGame'   => 'int',
-		];
-
-		$this->checkRequiredFields($requiredFields, $_POST);
+		$this->checkRequiredFields(Tip::getRequiredFields(), $_POST);
 
 		$tipModel    = new Tip();
 		$insertedTip = $tipModel->insertTip($_POST);
@@ -114,13 +108,7 @@ class TipController extends BaseController
 		}
 
 		// Check every required field
-		$requiredFields = [
-			'content'       => 'string',
-			'console_names' => 'string',
-			'game_idGame'   => 'int',
-		];
-
-		$this->checkRequiredFields($requiredFields, $_PUT);
+		$this->checkRequiredFields(Tip::getRequiredFields(), $_PUT);
 
 		$tipModel  = new Tip();
 		$updateTip = $tipModel->updateTip($this->getId(), $_PUT);

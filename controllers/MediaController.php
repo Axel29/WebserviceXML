@@ -76,17 +76,7 @@ class MediaController extends BaseController
 		}
 
 		// Check every required field
-		$requiredFields = [
-			'type'          => 'string',
-			'url'           => 'string',
-			'unit'          => 'string',
-			'width'         => 'float',
-			'height'        => 'float',
-			'console_names' => 'string',
-			'game_idGame'   => 'int',
-		];
-
-		$this->checkRequiredFields($requiredFields, $_POST);
+		$this->checkRequiredFields(Media::getRequiredFields(), $_POST);
 
 		$mediaModel    = new Media();
 		$insertedMedia = $mediaModel->insertMedia($_POST);
@@ -118,16 +108,7 @@ class MediaController extends BaseController
 		}
 
 		// Check every required field
-		$requiredFields = [
-			'type'          => 'string',
-			'url'           => 'string',
-			'unit'          => 'string',
-			'width'         => 'float',
-			'height'        => 'float',
-			'console_names' => 'string',
-		];
-
-		$this->checkRequiredFields($requiredFields, $_PUT);
+		$this->checkRequiredFields(Media::getRequiredFields(), $_PUT);
 
 		$mediaModel  = new Media();
 		$updateMedia = $mediaModel->updateMedia($this->getId(), $_PUT);

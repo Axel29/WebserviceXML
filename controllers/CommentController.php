@@ -10,19 +10,6 @@ class CommentController extends BaseController
 	private $id = null;
 
 	/**
-	 * @var $requiredFields array Required fields and their types for insert / update
-	 */
-	private $requiredFields = [
-		'date'        => 'date',
-		'user_name'   => 'string',
-		'note'        => 'int',
-		'like'        => 'int',
-		'dislike'     => 'int',
-		'text'        => 'string',
-		'test_idTest' => 'int',
-	];
-
-	/**
 	 * Redirect the request to the matching method regarding the request method
 	 * Route: /comment/index/id/{id}
 	 *
@@ -89,7 +76,7 @@ class CommentController extends BaseController
 		}
 
 		// Check every required field
-		$this->checkRequiredFields($this->requiredFields, $_POST, 'Y-m-d');
+		$this->checkRequiredFields(Comment::getRequiredFields(), $_POST, 'Y-m-d');
 
 		$commentModel    = new Comment();
 		$insertedComment = $commentModel->insertComment($_POST);
@@ -121,7 +108,7 @@ class CommentController extends BaseController
 		}
 
 		// Check every required field
-		$this->checkRequiredFields($this->requiredFields, $_PUT, 'Y-m-d');
+		$this->checkRequiredFields(Comment::getRequiredFields(), $_PUT, 'Y-m-d');
 
 		$commentModel  = new Comment();
 		$updatedComment = $commentModel->updateComment($this->getId(), $_PUT);

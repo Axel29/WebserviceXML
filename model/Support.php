@@ -50,6 +50,20 @@ class Support extends BaseModel
 	}
 
 	/**
+	 * Get list of required fields and their types
+	 *
+	 * @return array $requiredFields List of required fields as array
+	 */
+	public static function getRequiredFields()
+	{
+		$requiredFields = [
+			'support' => 'string',
+		];
+
+		return $requiredFields;
+	}
+
+	/**
 	 * Insert a new support in database.
 	 * If the support already exists, return the existing support's ID.
 	 *
@@ -59,7 +73,7 @@ class Support extends BaseModel
 	public function insertSupport($datas)
 	{
 		try {
-			return $this->directInser($datas);
+			return $this->directInsert($datas);
 		} catch (PDOException $e) {
 			return false;
 		} catch (Exception $e) {

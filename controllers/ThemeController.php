@@ -76,11 +76,7 @@ class ThemeController extends BaseController
 		}
 
 		// Check every required field
-		$requiredFields = [
-			'theme' => 'string',
-		];
-
-		$this->checkRequiredFields($requiredFields, $_POST);
+		$this->checkRequiredFields(Theme::getRequiredFields(), $_POST);
 
 		$themeModel    = new Theme();
 		$insertedTheme = $themeModel->insertTheme($_POST);
@@ -116,7 +112,7 @@ class ThemeController extends BaseController
 			'theme' => 'string',
 		];
 
-		$this->checkRequiredFields($requiredFields, $_PUT);
+		$this->checkRequiredFields(Theme::getRequiredFields(), $_PUT);
 
 		$themeModel  = new Theme();
 		$updateTheme = $themeModel->updateTheme($this->getId(), $_PUT);

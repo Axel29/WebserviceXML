@@ -33,6 +33,22 @@ class Tip extends BaseModel
 	}
 
 	/**
+	 * Get list of required fields and their types
+	 *
+	 * @return array $requiredFields List of required fields as array
+	 */
+	public static function getRequiredFields()
+	{
+		$requiredFields = [
+			'content'       => 'string',
+			'console_names' => 'string',
+			'game_idGame'   => 'int',
+		];
+
+		return $requiredFields;
+	}
+
+	/**
 	 * Insert a new tip in database.
 	 *
 	 * @param $datas string Tip's name

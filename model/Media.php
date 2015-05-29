@@ -37,6 +37,26 @@ class Media extends BaseModel
 	}
 
 	/**
+	 * Get list of required fields and their types
+	 *
+	 * @return array $requiredFields List of required fields as array
+	 */
+	public static function getRequiredFields()
+	{
+		$requiredFields = [
+			'type'          => 'string',
+			'url'           => 'string',
+			'unit'          => 'string',
+			'width'         => 'float',
+			'height'        => 'float',
+			'console_names' => 'string',
+			'game_idGame'   => 'int',
+		];
+
+		return $requiredFields;
+	}
+
+	/**
 	 * Insert a new media in database.
 	 *
 	 * @param $datas string Media's name

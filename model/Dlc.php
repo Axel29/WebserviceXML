@@ -34,6 +34,24 @@ class Dlc extends BaseModel
 	}
 
 	/**
+	 * Get list of required fields and their types
+	 *
+	 * @return array $requiredFields List of required fields as array
+	 */
+	public static function getRequiredFields()
+	{
+		$requiredFields = [
+			'title'             => 'string',
+			'description'       => 'string',
+			'price'             => 'float',
+			'devise'            => 'string',
+			'console_idConsole' => 'int',
+		];
+
+		return $requiredFields;
+	}
+
+	/**
 	 * Insert a new dlc in database.
 	 *
 	 * @param $datas array Dlc's name

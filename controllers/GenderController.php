@@ -76,11 +76,7 @@ class GenderController extends BaseController
 		}
 
 		// Check every required field
-		$requiredFields = [
-			'gender' => 'string',
-		];
-
-		$this->checkRequiredFields($requiredFields, $_POST);
+		$this->checkRequiredFields(Gender::getRequiredFields(), $_POST);
 
 		$genderModel    = new Gender();
 		$insertedGender = $genderModel->insertGender($_POST);
@@ -116,7 +112,7 @@ class GenderController extends BaseController
 			'gender' => 'string',
 		];
 
-		$this->checkRequiredFields($requiredFields, $_PUT);
+		$this->checkRequiredFields(Gender::getRequiredFields(), $_PUT);
 
 		$genderModel  = new Gender();
 		$updateGender = $genderModel->updateGender($this->getId(), $_PUT);

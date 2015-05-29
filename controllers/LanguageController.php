@@ -76,11 +76,7 @@ class LanguageController extends BaseController
 		}
 
 		// Check every required field
-		$requiredFields = [
-			'language' => 'string',
-		];
-
-		$this->checkRequiredFields($requiredFields, $_POST);
+		$this->checkRequiredFields(Language::getRequiredFields(), $_POST);
 
 		$languageModel    = new Language();
 		$insertedLanguage = $languageModel->insertLanguage($_POST);
@@ -116,7 +112,7 @@ class LanguageController extends BaseController
 			'language' => 'string',
 		];
 
-		$this->checkRequiredFields($requiredFields, $_PUT);
+		$this->checkRequiredFields(Language::getRequiredFields(), $_PUT);
 
 		$languageModel  = new Language();
 		$updateLanguage = $languageModel->updateLanguage($this->getId(), $_PUT);

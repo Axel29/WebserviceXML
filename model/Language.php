@@ -47,6 +47,20 @@ class Language extends BaseModel
 	}
 
 	/**
+	 * Get list of required fields and their types
+	 *
+	 * @return array $requiredFields List of required fields as array
+	 */
+	public static function getRequiredFields()
+	{
+		$requiredFields = [
+			'language' => 'string',
+		];
+
+		return $requiredFields;
+	}
+
+	/**
 	 * Insert a new language in database.
 	 * If the language already exists, return the existing language's ID.
 	 *

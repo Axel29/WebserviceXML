@@ -76,11 +76,7 @@ class EditorController extends BaseController
 		}
 
 		// Check every required field
-		$requiredFields = [
-			'editor' => 'string',
-		];
-
-		$this->checkRequiredFields($requiredFields, $_POST);
+		$this->checkRequiredFields(Editor::getRequiredFields(), $_POST);
 
 		$editorModel    = new Editor();
 		$insertedEditor = $editorModel->insertEditor($_POST);
@@ -112,11 +108,7 @@ class EditorController extends BaseController
 		}
 
 		// Check every required field
-		$requiredFields = [
-			'editor' => 'string',
-		];
-
-		$this->checkRequiredFields($requiredFields, $_PUT);
+		$this->checkRequiredFields(Editor::getRequiredFields(), $_PUT);
 
 		$editorModel  = new Editor();
 		$updateEditor = $editorModel->updateEditor($this->getId(), $_PUT);

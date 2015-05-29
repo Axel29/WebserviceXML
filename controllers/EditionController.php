@@ -10,26 +10,6 @@ class EditionController extends BaseController
 	private $id = null;
 
 	/**
-	 * @var $requiredFields array Required fields and their types for insert / update
-	 */
-	private $requiredFields = [
-		'name'              => 'string',
-		'content'           => 'string',
-		'console_idConsole' => 'int',
-	];
-
-	/**
-	 * @var $shopsRequiredFields array Required fields for shops and their types for insert / update
-	 */
-	private $shopsRequiredFields = [
-		'url'               => 'string',
-		'name'              => 'string',
-		'price'             => 'float',
-		'devise'            => 'string',
-		'edition_idEdition' => 'int',
-	];
-
-	/**
 	 * Redirect the request to the matching method regarding the request method
 	 * Route: /edition/index/id/{id}
 	 *
@@ -96,12 +76,12 @@ class EditionController extends BaseController
 		}
 
 		// Check every required field
-		$this->checkRequiredFields($this->requiredFields, $_POST);
+		$this->checkRequiredFields(Edition::getRequiredFields(), $_POST);
 
 		// Check every required fields for shops if neeeded
 		if (isset($_POST['shops'])) {
 			foreach ($_POST['shops'] as $shop) {
-				$this->checkRequiredFields($this->shopsRequiredFields, $shop);
+				$this->checkRequiredFields(Shop::getRequiredFields(), $shop);
 			}
 		}
 
@@ -135,13 +115,13 @@ class EditionController extends BaseController
 		}
 
 		// Check every required field
-		$this->checkRequiredFields($this->requiredFields, $_PUT);
+		$this->checkRequiredFields(Edtion::getRequiredFields(), $_PUT);
 
 		// Check every required fields for shops if neeeded
 		$this->shopsRequiredFields['idShop'] = 'int';
 		if (isset($_PUT['shops'])) {
 			foreach ($_PUT['shops'] as $shop) {
-				$this->checkRequiredFields($this->shopsRequiredFields, $shop);
+				$this->checkRequiredFields(Shop::getRequiredFields(), $shop);
 			}
 		}
 

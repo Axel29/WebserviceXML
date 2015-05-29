@@ -10,13 +10,6 @@ class SupportController extends BaseController
 	private $id = null;
 
 	/**
-	 * @var $requiredFields array Required fields and their types for insert / update
-	 */
-	private $requiredFields = [
-		'support' => 'string',
-	];
-
-	/**
 	 * Redirect the request to the matching method regarding the request method
 	 * Route: /support/index/id/{id}
 	 *
@@ -83,7 +76,7 @@ class SupportController extends BaseController
 		}
 
 		// Check every required field
-		$this->checkRequiredFields($this->requiredFields, $_POST);
+		$this->checkRequiredFields(Support::getRequiredFields(), $_POST);
 
 		$supportModel    = new Support();
 		$insertedSupport = $supportModel->insertSupport($_POST);
@@ -115,7 +108,7 @@ class SupportController extends BaseController
 		}
 
 		// Check every required field
-		$this->checkRequiredFields($this->requiredFields, $_PUT);
+		$this->checkRequiredFields(Support::getRequiredFields(), $_PUT);
 
 		$supportModel   = new Support();
 		$updatedSupport = $supportModel->updateSupport($this->getId(), $_PUT);

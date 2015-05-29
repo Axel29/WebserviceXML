@@ -50,6 +50,20 @@ class Mode extends BaseModel
 	}
 
 	/**
+	 * Get list of required fields and their types
+	 *
+	 * @return array $requiredFields List of required fields as array
+	 */
+	public static function getRequiredFields()
+	{
+		$requiredFields = [
+			'mode' => 'string',
+		];
+
+		return $requiredFields;
+	}
+
+	/**
 	 * Insert a new mode in database.
 	 * If the mode already exists, return the existing mode's ID.
 	 *

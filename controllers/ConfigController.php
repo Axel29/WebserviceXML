@@ -10,15 +10,6 @@ class ConfigController extends BaseController
 	private $id = null;
 
 	/**
-	 * @var $requiredFields array Required fields and their types for insert / update
-	 */
-	private $requiredFields = [
-		'config'            => 'string',
-		'type'              => 'string',
-		'console_idConsole' => 'int',
-	];
-
-	/**
 	 * Redirect the request to the matching method regarding the request method
 	 * Route: /config/index/id/{id}
 	 *
@@ -85,7 +76,7 @@ class ConfigController extends BaseController
 		}
 
 		// Check every required field
-		$this->checkRequiredFields($this->requiredFields, $_POST);
+		$this->checkRequiredFields(Config::getRequiredFields(), $_POST);
 
 		$configModel    = new Config();
 		$insertedConfig = $configModel->insertConfig($_POST);
@@ -117,7 +108,7 @@ class ConfigController extends BaseController
 		}
 
 		// Check every required field
-		$this->checkRequiredFields($this->requiredFields, $_PUT);
+		$this->checkRequiredFields(Config::getRequiredFields(), $_PUT);
 
 		$configModel  = new Config();
 		$updatedConfig = $configModel->updateConfig($this->getId(), $_PUT);

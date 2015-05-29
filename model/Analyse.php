@@ -25,6 +25,22 @@ class Analyse extends BaseModel
 	}
 
 	/**
+	 * Get list of required fields and their types
+	 *
+	 * @return array $requiredFields List of required fields as array
+	 */
+	public static function getRequiredFields()
+	{
+		$requiredFields = [
+			'analyse'     => 'string',
+			'type'        => 'string',
+			'test_idTest' => 'int',
+		];
+
+		return $requiredFields;
+	}
+
+	/**
 	 * Insert a new analyse in database.
 	 *
 	 * @param $datas array Analyse's name

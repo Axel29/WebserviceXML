@@ -36,6 +36,25 @@ class Article extends BaseModel
 	}
 
 	/**
+	 * Get list of required fields and their types
+	 *
+	 * @return array $requiredFields List of required fields as array
+	 */
+	public static function getRequiredFields()
+	{
+		$requiredFields = [
+			'type'          => 'string',
+			'title'         => 'string',
+			'user_name'     => 'string',
+			'date'          => 'date',
+			'console_names' => 'string',
+			'game_idGame'   => 'int',
+		];
+
+		return $requiredFields;
+	}
+
+	/**
 	 * Insert a new article in database.
 	 *
 	 * @param $datas string Article's name

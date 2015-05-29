@@ -36,6 +36,26 @@ class Comment extends BaseModel
 	}
 
 	/**
+	 * Get list of required fields and their types
+	 *
+	 * @return array $requiredFields List of required fields as array
+	 */
+	public static function getRequiredFields()
+	{
+		$requiredFields = [
+			'date'        => 'date',
+			'user_name'   => 'string',
+			'note'        => 'int',
+			'like'        => 'int',
+			'dislike'     => 'int',
+			'text'        => 'string',
+			'test_idTest' => 'int',
+		];
+
+		return $requiredFields;
+	}
+
+	/**
 	 * Insert a new comment in database.
 	 *
 	 * @param $datas array Comment's name
