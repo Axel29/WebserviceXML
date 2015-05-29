@@ -51,6 +51,7 @@ class Support extends BaseModel
 
 	/**
 	 * Insert a new support in database.
+	 * If the support already exists, return the existing support's ID.
 	 *
 	 * @param $datas array Support's name
 	 * @return $id int Support's ID
@@ -71,17 +72,25 @@ class Support extends BaseModel
 	 * Used to make valid transactions for other models.
 	 *
 	 * @param array $datas Support's datas
-	 * @return int $id Inserted mode's ID
+	 * @return int $id Inserted support's ID
 	 */
 	public function directInsert($datas)
 	{
-		$pdo  = $this->db;
-		$stmt = $pdo->prepare('INSERT INTO `support` (`support`) 
-							   VALUES (:support)');
-		$stmt->bindParam(':support', $datas['support'], PDO::PARAM_STR);
-		$stmt->execute();
+		/*
+		 * Check that the support doesn't already exist.
+		 * If so, return this ID
+		 */
+		if ($existingMode = $this->findBy('support', $datas['support'])) {
+			return $existingMode;
+		} else {
+			$pdo  = $this->db;
+			$stmt = $pdo->prepare('INSERT INTO `support` (`support`) 
+								   VALUES (:support)');
+			$stmt->bindParam(':support', $datas['support'], PDO::PARAM_STR);
+			$stmt->execute();
 
-		return $pdo->lastInsertId();
+			return $pdo->lastInsertId();
+		}
 	}
 
 	/**

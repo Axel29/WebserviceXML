@@ -51,6 +51,7 @@ class Mode extends BaseModel
 
 	/**
 	 * Insert a new mode in database.
+	 * If the mode already exists, return the existing mode's ID.
 	 *
 	 * @param $datas array Mode's name
 	 * @return $id int Mode's ID
@@ -75,13 +76,21 @@ class Mode extends BaseModel
 	 */
 	public function directInsert($datas)
 	{
-		$pdo  = $this->db;
-		$stmt = $pdo->prepare('INSERT INTO `mode` (`mode`) 
-							   VALUES (:mode)');
-		$stmt->bindParam(':mode', $datas['mode'], PDO::PARAM_STR);
-		$stmt->execute();
+		/*
+		 * Check that the mode doesn't already exist.
+		 * If so, return this ID
+		 */
+		if ($existingMode = $this->findBy('mode', $datas['mode'])) {
+			return $existingMode;
+		} else {
+			$pdo  = $this->db;
+			$stmt = $pdo->prepare('INSERT INTO `mode` (`mode`) 
+								   VALUES (:mode)');
+			$stmt->bindParam(':mode', $datas['mode'], PDO::PARAM_STR);
+			$stmt->execute();
 
-		return $pdo->lastInsertId();
+			return $pdo->lastInsertId();
+		}
 	}
 
 	/**
