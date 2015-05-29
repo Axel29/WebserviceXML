@@ -38,7 +38,6 @@ class Media extends BaseModel
 
 	/**
 	 * Insert a new media in database.
-	 * If the media already exists, return the existing media's ID.
 	 *
 	 * @param $datas string Media's name
 	 * @return $id int Media's ID

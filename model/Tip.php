@@ -34,7 +34,6 @@ class Tip extends BaseModel
 
 	/**
 	 * Insert a new tip in database.
-	 * If the tip already exists, return the existing tip's ID.
 	 *
 	 * @param $datas string Tip's name
 	 * @return $id int Tip's ID

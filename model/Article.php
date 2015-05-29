@@ -37,7 +37,6 @@ class Article extends BaseModel
 
 	/**
 	 * Insert a new article in database.
-	 * If the article already exists, return the existing article's ID.
 	 *
 	 * @param $datas string Article's name
 	 * @return $id int Article's ID
