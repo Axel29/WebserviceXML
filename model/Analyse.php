@@ -86,13 +86,12 @@ class Analyse extends BaseModel
 	 *
 	 * @param int $idAnalyse Analyse's ID
 	 * @param array $datas Datas to update
-	 * @return int|bool $updatedAnalyse Updated analyse's ID or false if an error has occurred
+	 * @return bool true or false if an error has occurred
 	 */
 	public function updateAnalyse($idAnalyse, $datas)
 	{
 		try {
-			$updatedAnalyse = $this->directUpdate($idAnalyse, $datas);
-			return $updatedAnalyse;
+			return $this->directUpdate($idAnalyse, $datas);
 		} catch (PDOException $e) {
 			return false;
 		} catch (Exception $e) {

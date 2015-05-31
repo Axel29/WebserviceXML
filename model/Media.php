@@ -65,25 +65,41 @@ class Media extends BaseModel
 	public function insertMedia($datas)
 	{
 		try {
-			$pdo  = $this->db;
-			$stmt = $pdo->prepare('INSERT INTO `media` (`type`, `url`, `unit`, `width`, `height`, `console_names`, `game_idGame`) 
-								   VALUES (:type, :url, :unit, :width, :height, :console_names, :game_idGame);');
-			$stmt->bindParam(':type', $datas['type'], PDO::PARAM_STR);
-			$stmt->bindParam(':url', $datas['url'], PDO::PARAM_STR);
-			$stmt->bindParam(':unit', $datas['unit'], PDO::PARAM_STR);
-			$stmt->bindParam(':width', $datas['width'], PDO::PARAM_STR);
-			$stmt->bindParam(':height', $datas['height'], PDO::PARAM_STR);
-			$stmt->bindParam(':console_names', $datas['console_names'], PDO::PARAM_STR);
-			$stmt->bindParam(':game_idGame', $datas['game_idGame'], PDO::PARAM_INT);
-			$stmt->execute();
-
-			$insertedMedia = $pdo->lastInsertId();
+			$insertedMedia = $this->directInsert($datas);
 			return $insertedMedia;
 		} catch (PDOException $e) {
 			return false;
 		} catch (Exception $e) {
 			return false;
 		}
+	}
+
+	/**
+	 * Insert a new media in database without any try / catch.
+	 * Used to make valid transactions for other models.
+	 *
+	 * @param array $datas Media's datas
+	 * @param PDO $pdo Current's PDO object
+	 * @return int $insertedMedia Inserted media's ID
+	 */
+	public function directInsert($datas, $pdo = null)
+	{
+		if (!$pdo) {
+			$pdo = $this->db;
+		}
+		$stmt = $pdo->prepare('INSERT INTO `media` (`type`, `url`, `unit`, `width`, `height`, `console_names`, `game_idGame`) 
+							   VALUES (:type, :url, :unit, :width, :height, :console_names, :game_idGame);');
+		$stmt->bindParam(':type', $datas['type'], PDO::PARAM_STR);
+		$stmt->bindParam(':url', $datas['url'], PDO::PARAM_STR);
+		$stmt->bindParam(':unit', $datas['unit'], PDO::PARAM_STR);
+		$stmt->bindParam(':width', $datas['width'], PDO::PARAM_STR);
+		$stmt->bindParam(':height', $datas['height'], PDO::PARAM_STR);
+		$stmt->bindParam(':console_names', $datas['console_names'], PDO::PARAM_STR);
+		$stmt->bindParam(':game_idGame', $datas['game_idGame'], PDO::PARAM_INT);
+		$stmt->execute();
+
+		$insertedMedia = $pdo->lastInsertId();
+		return $insertedMedia;
 	}
 
 	/**
@@ -96,36 +112,48 @@ class Media extends BaseModel
 	public function updateMedia($idMedia, $datas)
 	{
 		try {
-			$pdo  = $this->db;
-			$stmt = $pdo->prepare('UPDATE `media` 
-								   SET `type`      = :type,
-									   `url`           = :url,
-									   `unit`          = :unit,
-									   `width`         = :width,
-									   `height`        = :height,
-									   `console_names` = :console_names,
-									   `game_idGame`   = :game_idGame
-								   WHERE `idMedia` =  :idMedia;');
-			$stmt->bindParam(':type', $datas['type'], PDO::PARAM_STR);
-			$stmt->bindParam(':url', $datas['url'], PDO::PARAM_STR);
-			$stmt->bindParam(':unit', $datas['unit'], PDO::PARAM_STR);
-			$stmt->bindParam(':width', $datas['width'], PDO::PARAM_STR);
-			$stmt->bindParam(':height', $datas['height'], PDO::PARAM_STR);
-			$stmt->bindParam(':console_names', $datas['console_names'], PDO::PARAM_STR);
-			$stmt->bindParam(':game_idGame', $datas['game_idGame'], PDO::PARAM_INT);
-			$stmt->bindParam(':idMedia', $idMedia, PDO::PARAM_INT);
-			$stmt->execute();
-
-			/*
-			 * Check that the update was performed on an existing media.
-			 * MySQL won't send any error as, regarding to him, the request is correct, so we have to handle it manually.
-			 */
-			return $stmt->rowCount();
+			return $this->directInsert($idMedia, $datas);
 		} catch (PDOException $e) {
 			return false;
 		} catch (Exception $e) {
 			return false;
 		}
+	}
+
+	/**
+	 * Update an media without any try / catch.
+	 * Used to make valid transactions for other models.
+	 *
+	 * @param int $idMedia Media's ID
+	 * @param array $datas Media's datas
+	 * @param PDO $pdo Current's PDO object
+	 * @return bool
+	 */
+	public function directUpdate($idMedia, $datas, $pdo = null)
+	{
+		if (!$pdo) {
+			$pdo  = $this->db;
+		}
+		$stmt = $pdo->prepare('UPDATE `media` 
+							   SET `type`      = :type,
+								   `url`           = :url,
+								   `unit`          = :unit,
+								   `width`         = :width,
+								   `height`        = :height,
+								   `console_names` = :console_names,
+								   `game_idGame`   = :game_idGame
+							   WHERE `idMedia` =  :idMedia;');
+		$stmt->bindParam(':type', $datas['type'], PDO::PARAM_STR);
+		$stmt->bindParam(':url', $datas['url'], PDO::PARAM_STR);
+		$stmt->bindParam(':unit', $datas['unit'], PDO::PARAM_STR);
+		$stmt->bindParam(':width', $datas['width'], PDO::PARAM_STR);
+		$stmt->bindParam(':height', $datas['height'], PDO::PARAM_STR);
+		$stmt->bindParam(':console_names', $datas['console_names'], PDO::PARAM_STR);
+		$stmt->bindParam(':game_idGame', $datas['game_idGame'], PDO::PARAM_INT);
+		$stmt->bindParam(':idMedia', $idMedia, PDO::PARAM_INT);
+		$stmt->execute();
+
+		return true;
 	}
 
 	/**

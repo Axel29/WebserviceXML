@@ -185,8 +185,6 @@ class Console extends BaseModel
 			// Cancel the transaction
 		    $pdo->rollback();
 
-		    echo $e->getMessage();
-
 			return false;
 		} catch (Exception $e) {
 			return false;
@@ -223,10 +221,8 @@ class Console extends BaseModel
 			 */
 			return $stmt->rowCount();
 		} catch (PDOException $e) {
-			echo $e->getMessage();
 			return false;
 		} catch (Exception $e) {
-			echo $e->getMessage();
 			return false;
 		}
 	}

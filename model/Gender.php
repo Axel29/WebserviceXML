@@ -78,13 +78,7 @@ class Gender extends BaseModel
 			return $insertedGender;
 		} else {
 			try {
-				$pdo  = $this->db;
-				$stmt = $pdo->prepare('INSERT INTO `gender` (`gender`) 
-									   VALUES (:gender);');
-				$stmt->bindParam(':gender', $datas['gender'], PDO::PARAM_STR);
-				$stmt->execute();
-
-				$insertedGender = $pdo->lastInsertId();
+				$insertedGender = $this->directInsert($datas);
 				return $insertedGender;
 			} catch (PDOException $e) {
 				return false;
@@ -95,32 +89,75 @@ class Gender extends BaseModel
 	}
 
 	/**
+	 * Insert a new gender in database without any try / catch.
+	 * Used to make valid transactions for other models.
+	 *
+	 * @param array $datas Gender's datas
+	 * @param PDO $pdo Current's PDO object
+	 * @return int $insertedGender Inserted gender's ID
+	 */
+	public function directInsert($datas, $pdo = null)
+	{
+		/*
+		 * Check that the gender doesn't already exist.
+		 * If so, return this ID
+		 */
+		if ($existingGender = $this->findBy('gender', $datas['gender'])) {
+			$insertedGender = $existingGender[0]['idGender'];
+			return $insertedGender;
+		} else {
+			if (!$pdo) {
+				$pdo  = $this->db;
+			}
+			$stmt = $pdo->prepare('INSERT INTO `gender` (`gender`) 
+								   VALUES (:gender);');
+			$stmt->bindParam(':gender', $datas['gender'], PDO::PARAM_STR);
+			$stmt->execute();
+
+			$insertedGender = $pdo->lastInsertId();
+			return $insertedGender;
+		}
+	}
+
+	/**
 	 * Update gender
 	 *
 	 * @param int $idGender Gender's ID
 	 * @param array $datas Gender's datas
-	 * @return int|bool Number of affected rows or false if an error has occurred
+	 * @return bool true or false if an error has occurred
 	 */
 	public function updateGender($idGender, $datas)
 	{
 		try {
-			$pdo  = $this->db;
-			$stmt = $pdo->prepare('UPDATE `gender` 
-								   SET `gender` = :gender 
-								   WHERE `idGender` =  :idGender;');
-			$stmt->bindParam(':idGender', $idGender, PDO::PARAM_INT);
-			$stmt->bindParam(':gender', $datas['gender'], PDO::PARAM_STR);
-			$stmt->execute();
-
-			/*
-			 * Check that the update was performed on an existing gender.
-			 * MySQL won't send any error as, regarding to him, the request is correct, so we have to handle it manually.
-			 */
-			return $stmt->rowCount();
+			return $this->directUpdate($idGender, $datas);
 		} catch (PDOException $e) {
 			return false;
 		} catch (Exception $e) {
 			return false;
 		}
+	}
+
+	/**
+	 * Update an gender without any try / catch.
+	 * Used to make valid transactions for other models.
+	 *
+	 * @param int $idGender Gender's ID
+	 * @param array $datas Gender's datas
+	 * @param PDO $pdo Current's PDO object
+	 * @return bool
+	 */
+	public function directUpdate($idGender, $datas, $pdo = null)
+	{
+		if (!$pdo) {
+			$pdo  = $this->db;
+		}
+		$stmt = $pdo->prepare('UPDATE `gender` 
+							   SET `gender` = :gender 
+							   WHERE `idGender` =  :idGender;');
+		$stmt->bindParam(':idGender', $idGender, PDO::PARAM_INT);
+		$stmt->bindParam(':gender', $datas['gender'], PDO::PARAM_STR);
+		$stmt->execute();
+
+		return true;
 	}
 }

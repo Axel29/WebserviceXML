@@ -77,13 +77,7 @@ class Language extends BaseModel
 			return $existingLanguage[0]['idLanguage'];
 		} else {
 			try {
-				$pdo  = $this->db;
-				$stmt = $pdo->prepare('INSERT INTO `language` (`language`) 
-									   VALUES (:language);');
-				$stmt->bindParam(':language', $datas['language'], PDO::PARAM_STR);
-				$stmt->execute();
-
-				$insertedLanguage = $pdo->lastInsertId();
+				$insertedLanguage = $this->directInsert($datas);
 				return $insertedLanguage;
 			} catch (PDOException $e) {
 				return false;
@@ -94,32 +88,75 @@ class Language extends BaseModel
 	}
 
 	/**
+	 * Insert a new language in database without any try / catch.
+	 * Used to make valid transactions for other models.
+	 *
+	 * @param array $datas Language's datas
+	 * @param PDO $pdo Current's PDO object
+	 * @return int $insertedLanguage Inserted language's ID
+	 */
+	public function directInsert($datas, $pdo = null)
+	{
+		/*
+		 * Check that the language doesn't already exist.
+		 * If so, return this ID
+		 */
+		if ($existingLanguage = $this->findBy('language', $datas['language'])) {
+			$insertedLanguage = $existingLanguage[0]['idLanguage'];
+			return $insertedLanguage;
+		} else {
+			if (!$pdo) {
+				$pdo  = $this->db;
+			}
+			$stmt = $pdo->prepare('INSERT INTO `language` (`language`) 
+								   VALUES (:language);');
+			$stmt->bindParam(':language', $datas['language'], PDO::PARAM_STR);
+			$stmt->execute();
+
+			$insertedLanguage = $pdo->lastInsertId();
+			return $insertedLanguage;
+		}
+	}
+
+	/**
 	 * Update language
 	 *
 	 * @param int $idLanguage int Language's ID
 	 * @param array $datas Language's datas
-	 * @return int|bool Number of affected rows or false if an error has occurred
+	 * @return bool true or false if an error has occurrred
 	 */
 	public function updateLanguage($idLanguage, $datas)
 	{
 		try {
-			$pdo  = $this->db;
-			$stmt = $pdo->prepare('UPDATE `language` 
-								   SET `language` = :language 
-								   WHERE `idLanguage` =  :idLanguage;');
-			$stmt->bindParam(':language', $datas['language'], PDO::PARAM_STR);
-			$stmt->bindParam(':idLanguage', $idLanguage, PDO::PARAM_INT);
-			$stmt->execute();
-
-			/*
-			 * Check that the update was performed on an existing language.
-			 * MySQL won't send any error as, regarding to him, the request is correct, so we have to handle it manually.
-			 */
-			return $stmt->rowCount();
+			return $this->directUpdate($idLanguage, $datas);
 		} catch (PDOException $e) {
 			return false;
 		} catch (Exception $e) {
 			return false;
 		}
+	}
+
+	/**
+	 * Update an language without any try / catch.
+	 * Used to make valid transactions for other models.
+	 *
+	 * @param int $idLanguage Language's ID
+	 * @param array $datas Language's datas
+	 * @param PDO $pdo Current's PDO object
+	 * @return bool
+	 */
+	public function directUpdate($idLanguage, $datas, $pdo = null)
+	{
+		if (!$pdo) {
+			$pdo  = $this->db;
+		}
+		$stmt = $pdo->prepare('UPDATE `language` 
+							   SET `language` = :language 
+							   WHERE `idLanguage` =  :idLanguage;');
+		$stmt->bindParam(':language', $datas['language'], PDO::PARAM_STR);
+		$stmt->bindParam(':idLanguage', $idLanguage, PDO::PARAM_INT);
+		$stmt->execute();
+
+		return true;
 	}
 }

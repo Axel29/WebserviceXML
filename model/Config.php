@@ -126,13 +126,12 @@ class Config extends BaseModel
 	 *
 	 * @param int $idConfig Config's ID
 	 * @param array $datas Datas to update
-	 * @return int|bool $updatedConfig Updated config's ID or false if an error has occurred
+	 * @return bool true or false if an error has occurred
 	 */
 	public function updateConfig($idConfig, $datas)
 	{
 		try {
-			$updatedConfig = $this->directUpdate($idConfig, $datas);
-			return $updatedConfig;
+			return $this->directUpdate($idConfig, $datas);;
 		} catch (PDOException $e) {
 			return false;
 		} catch (Exception $e) {

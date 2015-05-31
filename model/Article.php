@@ -63,24 +63,40 @@ class Article extends BaseModel
 	public function insertArticle($datas)
 	{
 		try {
-			$pdo  = $this->db;
-			$stmt = $pdo->prepare('INSERT INTO `article` (`type`, `title`, `user_name`, `date`, `console_names`, `game_idGame`) 
-								   VALUES (:type, :title, :user_name, :date, :console_names, :game_idGame);');
-			$stmt->bindParam(':type', $datas['type'], PDO::PARAM_STR);
-			$stmt->bindParam(':title', $datas['title'], PDO::PARAM_STR);
-			$stmt->bindParam(':user_name', $datas['user_name'], PDO::PARAM_STR);
-			$stmt->bindParam(':date', $datas['date'], PDO::PARAM_STR);
-			$stmt->bindParam(':console_names', $datas['console_names'], PDO::PARAM_STR);
-			$stmt->bindParam(':game_idGame', $datas['game_idGame'], PDO::PARAM_INT);
-			$stmt->execute();
-
-			$insertedArticle = $pdo->lastInsertId();
+			$insertedArticle = $this->directInsert($datas);
 			return $insertedArticle;
 		} catch (PDOException $e) {
 			return false;
 		} catch (Exception $e) {
 			return false;
 		}
+	}
+
+	/**
+	 * Insert a new article in database without any try / catch.
+	 * Used to make valid transactions for other models.
+	 *
+	 * @param array $datas Article's datas
+	 * @param PDO $pdo Current's PDO object
+	 * @return int $insertedArticle Inserted article's ID
+	 */
+	public function directInsert($datas, $pdo = null)
+	{
+		if (!$pdo) {
+			$pdo  = $this->db;
+		}
+		$stmt = $pdo->prepare('INSERT INTO `article` (`type`, `title`, `user_name`, `date`, `console_names`, `game_idGame`) 
+							   VALUES (:type, :title, :user_name, :date, :console_names, :game_idGame);');
+		$stmt->bindParam(':type', $datas['type'], PDO::PARAM_STR);
+		$stmt->bindParam(':title', $datas['title'], PDO::PARAM_STR);
+		$stmt->bindParam(':user_name', $datas['user_name'], PDO::PARAM_STR);
+		$stmt->bindParam(':date', $datas['date'], PDO::PARAM_STR);
+		$stmt->bindParam(':console_names', $datas['console_names'], PDO::PARAM_STR);
+		$stmt->bindParam(':game_idGame', $datas['game_idGame'], PDO::PARAM_INT);
+		$stmt->execute();
+
+		$insertedArticle = $pdo->lastInsertId();
+		return $insertedArticle;
 	}
 
 	/**
@@ -93,34 +109,46 @@ class Article extends BaseModel
 	public function updateArticle($idArticle, $datas)
 	{
 		try {
-			$pdo  = $this->db;
-			$stmt = $pdo->prepare('UPDATE `article` 
-								   SET `type`          = :type,
-									   `title`         = :title,
-									   `user_name`     = :user_name,
-									   `date`          = :date,
-									   `console_names` = :console_names,
-									   `game_idGame`   = :game_idGame
-								   WHERE `idArticle` =  :idArticle;');
-			$stmt->bindParam(':type', $datas['type'], PDO::PARAM_STR);
-			$stmt->bindParam(':title', $datas['title'], PDO::PARAM_STR);
-			$stmt->bindParam(':user_name', $datas['user_name'], PDO::PARAM_STR);
-			$stmt->bindParam(':date', $datas['date'], PDO::PARAM_STR);
-			$stmt->bindParam(':console_names', $datas['console_names'], PDO::PARAM_STR);
-			$stmt->bindParam(':game_idGame', $datas['game_idGame'], PDO::PARAM_INT);
-			$stmt->bindParam(':idArticle', $idArticle, PDO::PARAM_INT);
-			$stmt->execute();
-
-			/*
-			 * Check that the update was performed on an existing article.
-			 * MySQL won't send any error as, regarding to him, the request is correct, so we have to handle it manually.
-			 */
-			return $stmt->rowCount();
+			return $this->directUpdate($idArticle, $datas);
 		} catch (PDOException $e) {
 			return false;
 		} catch (Exception $e) {
 			return false;
 		}
+	}
+
+	/**
+	 * Update an article without any try / catch.
+	 * Used to make valid transactions for other models.
+	 *
+	 * @param int $idArticle Article's ID
+	 * @param array $datas Article's datas
+	 * @param PDO $pdo Current's PDO object
+	 * @return bool
+	 */
+	public function directUpdate($idArticle, $datas, $pdo = null)
+	{
+		if (!$pdo) {
+			$pdo  = $this->db;
+		}
+		$stmt = $pdo->prepare('UPDATE `article` 
+							   SET `type`          = :type,
+								   `title`         = :title,
+								   `user_name`     = :user_name,
+								   `date`          = :date,
+								   `console_names` = :console_names,
+								   `game_idGame`   = :game_idGame
+							   WHERE `idArticle` =  :idArticle;');
+		$stmt->bindParam(':type', $datas['type'], PDO::PARAM_STR);
+		$stmt->bindParam(':title', $datas['title'], PDO::PARAM_STR);
+		$stmt->bindParam(':user_name', $datas['user_name'], PDO::PARAM_STR);
+		$stmt->bindParam(':date', $datas['date'], PDO::PARAM_STR);
+		$stmt->bindParam(':console_names', $datas['console_names'], PDO::PARAM_STR);
+		$stmt->bindParam(':game_idGame', $datas['game_idGame'], PDO::PARAM_INT);
+		$stmt->bindParam(':idArticle', $idArticle, PDO::PARAM_INT);
+		$stmt->execute();
+
+		return true;
 	}
 
 	/**

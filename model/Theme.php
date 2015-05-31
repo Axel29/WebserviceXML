@@ -77,19 +77,44 @@ class Theme extends BaseModel
 			return $existingTheme[0]['idTheme'];
 		} else {
 			try {
-				$pdo  = $this->db;
-				$stmt = $pdo->prepare('INSERT INTO `theme` (`theme`) 
-									   VALUES (:theme)');
-				$stmt->bindParam(':theme', $datas['theme'], PDO::PARAM_STR);
-				$stmt->execute();
-
-				$insertedTheme = $pdo->lastInsertId();
+				$insertedTheme = $this->directInsert($datas);
 				return $insertedTheme;
 			} catch (PDOException $e) {
 				return false;
 			} catch (Exception $e) {
 				return false;
 			}
+		}
+	}
+
+	/**
+	 * Insert a new theme in database without any try / catch.
+	 * Used to make valid transactions for other models.
+	 *
+	 * @param array $datas Theme's datas
+	 * @param PDO $pdo Current's PDO object
+	 * @return int $insertedTheme Inserted theme's ID
+	 */
+	public function directInsert($datas, $pdo = null)
+	{
+		/*
+		 * Check that the theme doesn't already exist.
+		 * If so, return this ID
+		 */
+		if ($existingTheme = $this->findBy('theme', $datas['theme'])) {
+			$insertedTheme = $existingTheme[0]['idTheme'];
+			return $insertedTheme;
+		} else {
+			if (!$pdo) {
+				$pdo  = $this->db;
+			}
+			$stmt = $pdo->prepare('INSERT INTO `theme` (`theme`) 
+								   VALUES (:theme)');
+			$stmt->bindParam(':theme', $datas['theme'], PDO::PARAM_STR);
+			$stmt->execute();
+
+			$insertedTheme = $pdo->lastInsertId();
+			return $insertedTheme;
 		}
 	}
 
@@ -103,23 +128,35 @@ class Theme extends BaseModel
 	public function updateTheme($idTheme, $datas)
 	{
 		try {
-			$pdo  = $this->db;
-			$stmt = $pdo->prepare('UPDATE `theme` 
-								   SET `theme` = :theme 
-								   WHERE `idTheme` =  :idTheme');
-			$stmt->bindParam(':theme', $datas['theme'], PDO::PARAM_STR);
-			$stmt->bindParam(':idTheme', $idTheme, PDO::PARAM_INT);
-			$stmt->execute();
-
-			/*
-			 * Check that the update was performed on an existing theme.
-			 * MySQL won't send any error as, regarding to him, the request is correct, so we have to handle it manually.
-			 */
-			return $stmt->rowCount();
+			return $this->directUpdate($idTheme, $datas);
 		} catch (PDOException $e) {
 			return false;
 		} catch (Exception $e) {
 			return false;
 		}
+	}
+
+	/**
+	 * Update an theme without any try / catch.
+	 * Used to make valid transactions for other models.
+	 *
+	 * @param int $idTheme Theme's ID
+	 * @param array $datas Theme's datas
+	 * @param PDO $pdo Current's PDO object
+	 * @return bool
+	 */
+	public function directUpdate($idTheme, $datas, $pdo = null)
+	{
+		if (!$pdo) {
+			$pdo  = $this->db;
+		}
+		$stmt = $pdo->prepare('UPDATE `theme` 
+							   SET `theme` = :theme 
+							   WHERE `idTheme` =  :idTheme');
+		$stmt->bindParam(':theme', $datas['theme'], PDO::PARAM_STR);
+		$stmt->bindParam(':idTheme', $idTheme, PDO::PARAM_INT);
+		$stmt->execute();
+
+		return true;
 	}
 }

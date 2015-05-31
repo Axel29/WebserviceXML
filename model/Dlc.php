@@ -99,13 +99,12 @@ class Dlc extends BaseModel
 	 *
 	 * @param int $idDlc Dlc's ID
 	 * @param array $datas Datas to update
-	 * @return int|bool $updatedDlc Updated Dlc's ID or false if an error has occurred
+	 * @return bool true or false if an error has occurred
 	 */
 	public function updateDlc($idDlc, $datas)
 	{
 		try {
-			$insertedDlc = $this->directUpdate($idDlc, $datas);
-			return $insertedDlc;
+			return $this->directUpdate($idDlc, $datas);
 		} catch (PDOException $e) {
 			return false;
 		} catch (Exception $e) {

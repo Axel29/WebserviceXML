@@ -65,7 +65,7 @@ class Editor extends BaseModel
 	 * If the editor already exists, return the existing editor's ID.
 	 *
 	 * @param array $datas Editor's datas
-	 * @return int Editor's ID
+	 * @return int|bool $insertedEditor Editor's ID or false if an error has occurred
 	 */
 	public function insertEditor($datas)
 	{
@@ -74,16 +74,12 @@ class Editor extends BaseModel
 		 * If so, return this ID
 		 */
 		if ($existingEditor = $this->findBy('editor', $datas['editor'])) {
-			return $existingEditor[0]['idEditor'];
+			$insertedEditor = $existingEditor[0]['idEditor'];
+			return $insertedEditor;
 		} else {
 			try {
-				$pdo  = $this->db;
-				$stmt = $pdo->prepare('INSERT INTO `editor` (`editor`) 
-									   VALUES (:editor);');
-				$stmt->bindParam(':editor', $datas['editor'], PDO::PARAM_STR);
-				$stmt->execute();
-
-				return $pdo->lastInsertId();
+				$insertedEditor = $this->directInsert($datas);
+				return $insertedEditor;
 			} catch (PDOException $e) {
 				return false;
 			} catch (Exception $e) {
@@ -93,32 +89,75 @@ class Editor extends BaseModel
 	}
 
 	/**
+	 * Insert a new editor in database without any try / catch.
+	 * Used to make valid transactions for other models.
+	 *
+	 * @param array $datas Editor's datas
+	 * @param PDO $pdo Current's PDO object
+	 * @return int $insertedEditor Inserted editor's ID
+	 */
+	public function directInsert($datas, $pdo = null)
+	{
+		/*
+		 * Check that the editor doesn't already exist.
+		 * If so, return this ID
+		 */
+		if ($existingEditor = $this->findBy('editor', $datas['editor'])) {
+			$insertedEditor = $existingEditor[0]['idEditor'];
+			return $insertedEditor;
+		} else {
+			if (!$pdo) {
+				$pdo  = $this->db;
+			}
+			$stmt = $pdo->prepare('INSERT INTO `editor` (`editor`) 
+								   VALUES (:editor);');
+			$stmt->bindParam(':editor', $datas['editor'], PDO::PARAM_STR);
+			$stmt->execute();
+
+			$insertedEditor = $pdo->lastInsertId();
+			return $insertedEditor;
+		}
+	}
+
+	/**
 	 * Update editor
 	 *
 	 * @param int $idEditor Editor's ID
 	 * @param array $datas Editor's datas
-	 * @return int|bool Number of affected rows or false if an error has occurred
+	 * @return bool true or false if an error has occurred
 	 */
 	public function updateEditor($idEditor, $datas)
 	{
 		try {
-			$pdo  = $this->db;
-			$stmt = $pdo->prepare('UPDATE `editor` 
-								   SET `editor` = :editor 
-								   WHERE `idEditor` =  :idEditor;');
-			$stmt->bindParam(':editor', $datas['editor'], PDO::PARAM_STR);
-			$stmt->bindParam(':idEditor', $idEditor, PDO::PARAM_INT);
-			$stmt->execute();
-
-			/*
-			 * Check that the update was performed on an existing editor.
-			 * MySQL won't send any error as, regarding to him, the request is correct, so we have to handle it manually.
-			 */
-			return $stmt->rowCount();
+			return $this->directUpdate($idEditor, $datas);
 		} catch (PDOException $e) {
 			return false;
 		} catch (Exception $e) {
 			return false;
 		}
+	}
+
+	/**
+	 * Update an editor without any try / catch.
+	 * Used to make valid transactions for other models.
+	 *
+	 * @param int $idEditor Editor's ID
+	 * @param array $datas Editor's datas
+	 * @param PDO $pdo Current's PDO object
+	 * @return bool
+	 */
+	public function directUpdate($idEditor, $datas, $pdo = null)
+	{
+		if (!$pdo) {
+			$pdo  = $this->db;
+		}
+		$stmt = $pdo->prepare('UPDATE `editor` 
+							   SET `editor` = :editor 
+							   WHERE `idEditor` =  :idEditor;');
+		$stmt->bindParam(':editor', $datas['editor'], PDO::PARAM_STR);
+		$stmt->bindParam(':idEditor', $idEditor, PDO::PARAM_INT);
+		$stmt->execute();
+
+		return true;
 	}
 }

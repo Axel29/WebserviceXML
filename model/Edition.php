@@ -111,9 +111,9 @@ class Edition extends BaseModel
 	 * Insert a new edition in database without any try / catch.
 	 * Used to make valid transactions for other models.
 	 *
-	 * @param array $datas Support's datas
+	 * @param array $datas Edition's datas
 	 * @param PDO $pdo Current's PDO object
-	 * @return int $id Inserted mode's ID
+	 * @return int $insertedEdition Inserted edition's ID
 	 */
 	public function directInsert($datas, $pdo = null)
 	{
@@ -127,26 +127,26 @@ class Edition extends BaseModel
 		$stmt->bindParam(':console_idConsole', $datas['console_idConsole'], PDO::PARAM_INT);
 		$stmt->execute();
 
-		$editionId = $pdo->lastInsertId();
+		$insertedEdition = $pdo->lastInsertId();
 
 		// Insert shops
 		if (isset($datas['shops'])) {
 			$shopModel = new Shop();
 			foreach ($datas['shops'] as $shop) {
 				// Adding inserted edition's ID to shop's datas
-				$shop['edition_idEdition'] = $editionId;
+				$shop['edition_idEdition'] = $insertedEdition;
 				$insertedShop = $shopModel->directInsert($shop, $pdo);
 			}
 		}
 
-		return $editionId;
+		return $insertedEdition;
 	}
 
 	/**
 	 * Update edition
 	 *
 	 * @param int $idEdition Edition's ID
-	 * @param array $datas Datas to update
+	 * @param array $datas Edition's datas
 	 * @return bool
 	 */
 	public function updateEdition($idEdition, $datas)
