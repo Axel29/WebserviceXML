@@ -50,13 +50,17 @@ class GameController extends BaseController
 		// Show the full games list or a specific game by it's ID
 		$datas = $gameModel->getGames($this->getId());
 
-		$this->xml = $this->generateXml($datas)->asXML();
+		if ($datas) {
+			$this->xml = $this->generateXml($datas)->asXML();
 
-		if ($errors = $this->validateXML($this->xml)) {
-			$this->exitError(400, $errors);
+			if ($errors = $this->validateXML($this->xml)) {
+				$this->exitError(400, $errors);
+			} else {
+				$this->loadLayout('xml');
+				echo $this->xml;
+			}
 		} else {
-			$this->loadLayout('xml');
-			echo $this->xml;
+			$this->exitError(400, "This game doesn't exist.");
 		}
 	}
 

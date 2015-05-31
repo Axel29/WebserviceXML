@@ -50,13 +50,17 @@ class EditionController extends BaseController
 		// Show the full edition list or a specific edition by it's ID
 		$datas = $editionModel->findBy('idEdition', $this->getId());
 
-		$this->xml = $this->generateXml($datas)->asXML();
+		if ($datas) {
+			$this->xml = $this->generateXml($datas)->asXML();
 
-		if ($errors = $this->validateXML($this->xml)) {
-			$this->exitError(400, $errors);
+			if ($errors = $this->validateXML($this->xml)) {
+				$this->exitError(400, $errors);
+			} else {
+				$this->loadLayout('xml');
+				echo $this->xml;
+			}
 		} else {
-			$this->loadLayout('xml');
-			echo $this->xml;
+			$this->exitError(400, "This edition doesn't exist.");
 		}
 	}
 

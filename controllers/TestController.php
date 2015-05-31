@@ -50,13 +50,17 @@ class TestController extends BaseController
 		// Show the full test list or a specific test by it's ID
 		$datas = $testModel->findBy('idTest', $this->getId());
 
-		$this->xml = $this->generateXml($datas)->asXML();
+		if ($datas) {
+			$this->xml = $this->generateXml($datas)->asXML();
 
-		if ($errors = $this->validateXML($this->xml)) {
-			$this->exitError(400, $errors);
+			if ($errors = $this->validateXML($this->xml)) {
+				$this->exitError(400, $errors);
+			} else {
+				$this->loadLayout('xml');
+				echo $this->xml;
+			}
 		} else {
-			$this->loadLayout('xml');
-			echo $this->xml;
+			$this->exitError(400, "This test doesn't exist.");
 		}
 	}
 

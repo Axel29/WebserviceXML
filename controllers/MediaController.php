@@ -53,13 +53,17 @@ class MediaController extends BaseController
 		// Show the full media list or a specific media by it's ID
 		$datas = $mediaModel->findBy('idMedia', $this->getId());
 
-		$this->xml = $this->generateXml($datas)->asXML();
+		if ($datas) {
+			$this->xml = $this->generateXml($datas)->asXML();
 
-		if ($errors = $this->validateXML($this->xml)) {
-			$this->exitError(400, $errors);
+			if ($errors = $this->validateXML($this->xml)) {
+				$this->exitError(400, $errors);
+			} else {
+				$this->loadLayout('xml');
+				echo $this->xml;
+			}
 		} else {
-			$this->loadLayout('xml');
-			echo $this->xml;
+			$this->exitError(400, "This media doesn't exist.");
 		}
 	}
 

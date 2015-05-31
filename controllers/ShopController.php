@@ -50,13 +50,17 @@ class ShopController extends BaseController
 		// Show the full shop list or a specific shop by it's ID
 		$datas = $shopModel->findBy('idShop', $this->getId());
 
-		$this->xml = $this->generateXml($datas)->asXML();
+		if ($datas) {
+			$this->xml = $this->generateXml($datas)->asXML();
 
-		if ($errors = $this->validateXML($this->xml)) {
-			$this->exitError(400, $errors);
+			if ($errors = $this->validateXML($this->xml)) {
+				$this->exitError(400, $errors);
+			} else {
+				$this->loadLayout('xml');
+				echo $this->xml;
+			}
 		} else {
-			$this->loadLayout('xml');
-			echo $this->xml;
+			$this->exitError(400, "This shop doesn't exist.");
 		}
 	}
 
