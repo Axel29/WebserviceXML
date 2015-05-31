@@ -412,7 +412,7 @@ class GameController extends BaseController
 	 */
 	public function generateXml($games = [])
 	{
-		$list = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><games/>');
+		$list = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><list/>');
 		foreach ($games as $game) {
 			// Check that every datas exist, otherwise we skip this console.
 			$idGame = $game['idGame'];
@@ -438,6 +438,7 @@ class GameController extends BaseController
 
 			// If everything is okay, we can process
 			$gameNode         = $list->addChild('game');
+			$gameNode->addAttribute('id', $idGame);
 			$presentationNode = $gameNode->addChild('presentation');
 
 			// Genders: REQUIRED
@@ -448,6 +449,13 @@ class GameController extends BaseController
 			}
 
 			$presentationNode->addChild('title', $game['title']);
+
+			// Editors: REQUIRED
+			$editorsNode = $presentationNode->addChild('editors');
+			foreach ($editors as $editor) {
+				$editorNode = $editorsNode->addChild('editor', $editor['editor']);
+				$editorNode->addAttribute('id', $editor['idEditor']);
+			}
 
 			// Themes: REQUIRED
 			$themesNode = $presentationNode->addChild('themes');
@@ -611,7 +619,7 @@ class GameController extends BaseController
 			// Articles: OPTIONAL
 			$articlesModel = new Article();
 			if ($articles = $articlesModel->findBy('game_idGame', $idGame)) {
-				$articlesNode = $list->addChild('articles');
+				$articlesNode = $gameNode->addChild('articles');
 				foreach ($articles as $article) {
 					$articleNode = $articlesNode->addChild('article');
 					$articleNode->addAttribute('id', $article['idArticle']);
@@ -631,7 +639,7 @@ class GameController extends BaseController
 			// Media: OPTIONAL
 			$mediasModel = new Media();
 			if ($medias = $mediasModel->findBy('game_idGame', $idGame)) {
-				$mediasNode = $list->addChild('medias');
+				$mediasNode = $gameNode->addChild('medias');
 				foreach ($medias as $media) {
 					$mediaNode = $mediasNode->addChild('media');
 					$mediaNode->addAttribute('id', $media['idMedia']);
@@ -653,7 +661,7 @@ class GameController extends BaseController
 			// Tips: OPTIONAL
 			$tipsModel = new Tip();
 			if ($tips = $tipsModel->findBy('game_idGame', $idGame)) {
-				$tipsNode = $list->addChild('tips');
+				$tipsNode = $gameNode->addChild('tips');
 				foreach ($tips as $tip) {
 					$tipNode = $tipsNode->addChild('tip');
 					$tipNode->addAttribute('id', $tip['idTip']);
@@ -667,9 +675,9 @@ class GameController extends BaseController
 				}
 			}
 		}
-		$this->loadLayout('xml');
-		echo($list->asXML());
-		die;
+		// $this->loadLayout('xml');
+		// echo($list->asXML());
+		// die;
 		return $list;
 	}
 
