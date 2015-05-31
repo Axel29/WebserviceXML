@@ -65,8 +65,8 @@ class GameController extends BaseController
 	}
 
 	/**
-	 * Add new game
-	 * Route: /game
+	 * Add new console
+	 * Route: /console
 	 */
 	public function add()
 	{
@@ -76,10 +76,279 @@ class GameController extends BaseController
 			return;
 		}
 
-		$gameModel = new Game();
-		$gameModel->addGame($_POST);
+	    // Test datas
+	    $_POST = [];
 
-		$this->sendStatus(204);
+	    $_POST['genders'] = [
+	    	[
+	    		'gender' => 'Genre n°1',
+	    	],
+	    	[
+	    		'gender' => 'Genre n°2',
+	    	],
+	    ];
+
+	    $_POST['title'] = 'Titre jeu n°1';
+	    
+	    $_POST['editors'] = [
+	    	[
+	    		'editor' => 'Editeur n°1',
+	    	],
+	    	[
+	    		'editor' => 'Editeur n°2',
+	    	],
+	    ];
+
+	    $_POST['themes'] = [
+	    	[
+	    		'theme' => 'Thème n°1',
+	    	],
+	    	[
+	    		'theme' => 'Thème n°2',
+	    	],
+	    ];
+
+	    $_POST['site'] = 'http://www.jeu-1.com/';
+
+	    $_POST['consoles'] = [
+	    	[
+				'business_model'  => 'Business Model n°1',
+				'pegi'            => 'Pegi n°1',
+				'modes'           => [
+			    	[
+			    		'mode' => 'Mode n°1',
+			    	],
+			    	[
+			    		'mode' => 'Mode n°2',
+			    	],
+			    ],
+				'cover_front' => 'http://www.cover-front.com/',
+				'cover_back'  => 'http://www.cover-back.com/',
+				'supports'    => [
+			    	[
+			    		'support' => 'Support n°1',
+			    	],
+			    	[
+			    		'support' => 'Support n°2',
+			    	],
+			    ],
+			    'release' => '2015-01-25',
+			    'editions' => [
+			    	[
+						'name'              => 'Nom édition n°1',
+						'content'           => 'Contenu édition n°1',
+						'shops' => [
+							[
+								'url'               => 'http://www.shop-n1.com/',
+								'name'              => 'Nom magasin n°1',
+								'price'             => '1.10',
+								'devise'            => '€',
+							]
+						],
+			    	],
+			    	[
+						'name'              => 'Nom édition n°2',
+						'content'           => 'Contenu édition n°2',
+						'console_idConsole' => '1',
+						'shops' => [
+							[
+								'url'               => 'http://www.shop-n2.com/',
+								'name'              => 'Nom magasin n°2',
+								'price'             => '2.20',
+								'devise'            => '$',
+							]
+						],
+			    	],
+			    ],
+			    'name' => 'Nom console n°1',
+			    'description' => 'Description console n°1',
+			    'dlcs' => [
+			    	[
+			    		'title'             => 'Titre DLC n°1',
+						'description'       => 'Description DLC n°1',
+						'price'             => '1.10',
+						'devise'            => '€',
+			    	],
+			    	[
+			    		'title'             => 'Titre DLC n°2',
+						'description'       => 'Description DLC n°2',
+						'price'             => '2.20',
+						'devise'            => '$',
+			    	],
+			    ],
+			    'configs' => [
+			    	[
+			    		'config'            => 'Config n°1',
+						'type'              => 'Type config n°1',
+			    	],
+			    	[
+			    		'config'            => 'Config n°2',
+						'type'              => 'Type config n°2',
+			    	],
+			    ],
+			    'tests' => [
+			    	[
+			    		'report'            => 'Report test n°1',
+						'date'              => '2015-01-22 11:33:33',
+						'user_name'         => 'User name test n°1',
+						'note'              => '1',
+						'comments'          => [
+							[
+								'date'        => '2015-01-22 11:33:33',
+								'user_name'   => 'User name commentaire n°1',
+								'note'        => '1',
+								'like'        => '1',
+								'dislike'     => '1',
+								'text'        => 'Text commentaire n°1',
+							],
+							[
+								'date'        => '2015-02-20 12:44:44',
+								'user_name'   => 'User name commentaire n°2',
+								'note'        => '2',
+								'like'        => '2',
+								'dislike'     => '2',
+								'text'        => 'Text commentaire n°2',
+							],
+						],
+						'analyses' => [
+							[
+								'analyse'     => 'Analyse n°1',
+								'type'        => 'Type analyse n°1',
+							],
+							[
+								'analyse'     => 'Analyse n°2',
+								'type'        => 'Type analyse n°2',
+							],
+						]
+			    	],
+			    ],
+			],
+	    ];
+
+	    $_POST['languages'] = [
+	    	[
+				'language' => 'Langage n°1',
+	    	],
+	    	[
+				'language' => 'Langage n°2',
+	    	],
+	    ];
+
+	    $_POST['articles'] = [
+	    	[
+				'type'          => 'Type article n°1',
+				'title'         => 'Titre article n°1',
+				'user_name'     => 'User name article n°1',
+				'date'          => '2015-02-05 17:54:43',
+				'console_names' => 'Console names article n°1',
+	    	],
+	    	[
+				'type'          => 'Type article n°2',
+				'title'         => 'Titre article n°2',
+				'user_name'     => 'User name article n°2',
+				'date'          => '2015-02-05 17:54:43',
+				'console_names' => 'Console names article n°2',
+	    	],
+	    ];
+
+	    $_POST['medias'] = [
+	    	[
+				'type'          => 'Type media n°1',
+				'url'           => 'URL media n°1',
+				'unit'          => 'Unité media n°1',
+				'width'         => '100',
+				'height'        => '100',
+				'console_names' => 'Console names media n°1',
+	    	],
+	    	[
+				'type'          => 'Type media n°2',
+				'url'           => 'URL media n°2',
+				'unit'          => 'Unité media n°2',
+				'width'         => '200',
+				'height'        => '200',
+				'console_names' => 'Console names media n°2',
+	    	],
+	    ];
+
+	    $_POST['tips'] = [
+	    	[
+				'content'       => 'Contenu astuce n°1',
+				'console_names' => 'Console names astuce n°1',
+	    	],
+	    	[
+				'content'       => 'Contenu astuce n°2',
+				'console_names' => 'Console names astuce n°2',
+	    	],
+	    ];
+
+		// Check every required field
+		$this->checkRequiredFields(Game::getRequiredFields(), $_POST);
+
+		// Check every required fields for genders
+		foreach ($_POST['genders'] as $gender) {
+			$this->checkRequiredFields(Gender::getRequiredFields(), $gender);
+		}
+
+		// Check every required fields for editors
+		foreach ($_POST['editors'] as $editor) {
+			$this->checkRequiredFields(Editor::getRequiredFields(), $editor);
+		}
+
+		// Check every required fields for consoles
+		foreach ($_POST['consoles'] as $console) {
+			$requiredFields = Console::getRequiredFields();
+			if (isset($requiredFields['game_idGame'])) unset($requiredFields['game_idGame']);
+			$this->checkRequiredFields($requiredFields, $console, 'Y-m-d');
+		}
+
+		// Check every required fields for themes
+		if (isset($_POST['themes'])) {
+			foreach ($_POST['themes'] as $theme) {
+				$this->checkRequiredFields(Theme::getRequiredFields(), $theme);
+			}
+		}
+
+		// Check every required fields for languages
+		foreach ($_POST['languages'] as $language) {
+			$this->checkRequiredFields(Language::getRequiredFields(), $language);
+		}
+
+		// Check every required fields for articles
+		if (isset($_POST['articles'])) {
+			$requiredFields = Article::getRequiredFields();
+			if (isset($requiredFields['game_idGame'])) unset($requiredFields['game_idGame']);
+			foreach ($_POST['articles'] as $article) {
+				$this->checkRequiredFields($requiredFields, $article);
+			}
+		}
+
+		// Check every required fields for medias
+		if (isset($_POST['medias'])) {
+			$requiredFields = Media::getRequiredFields();
+			if (isset($requiredFields['game_idGame'])) unset($requiredFields['game_idGame']);
+			foreach ($_POST['medias'] as $media) {
+				$this->checkRequiredFields($requiredFields, $media);
+			}
+		}
+
+		// Check every required fields for tips
+		if (isset($_POST['tips'])) {
+			$requiredFields = Tip::getRequiredFields();
+			if (isset($requiredFields['game_idGame'])) unset($requiredFields['game_idGame']);
+			foreach ($_POST['tips'] as $tip) {
+				$this->checkRequiredFields($requiredFields, $tip);
+			}
+		}
+
+		$gameModel    = new Game();
+		$insertedGame = $gameModel->insertGame($_POST);
+
+		if ($insertedGame) {
+			$this->sendStatus(201);
+			return;
+		} else {
+			$this->exitError(400, 'An error has occurred. Please try again.');
+		}
 	}
 
 	/**
