@@ -82,6 +82,19 @@ class Dlc extends BaseModel
 		if (!$pdo) {
 			$pdo  = $this->db;
 		}
+
+		// Check that the console's ID exists
+		$stmt = $pdo->prepare('SELECT `idConsole`
+							   FROM `console`
+							   WHERE `idConsole` = :idConsole;');
+		$stmt->bindParam(':idConsole', $datas['console_idConsole'], PDO::PARAM_INT);
+		$stmt->execute();
+
+		$console = $stmt->fetch();
+		if (!count($console) || !isset($console['idConsole'])) {
+			return false;
+		}
+
 		$stmt = $pdo->prepare('INSERT INTO `dlc` (`title`, `description`, `price`, `devise`, `console_idConsole`) 
 							   VALUES (:title, :description, :price, :devise, :console_idConsole);');
 		$stmt->bindParam(':title', $datas['title'], PDO::PARAM_STR);
@@ -126,6 +139,33 @@ class Dlc extends BaseModel
 		if (!$pdo) {
 			$pdo  = $this->db;
 		}
+
+		if (isset($datas['console_idConsole'])) {
+			// Check that the console's ID exists
+			$stmt = $pdo->prepare('SELECT `idConsole`
+								   FROM `console`
+								   WHERE `idConsole` = :idConsole;');
+			$stmt->bindParam(':idConsole', $datas['console_idConsole'], PDO::PARAM_INT);
+			$stmt->execute();
+
+			$console = $stmt->fetch();
+			if (!count($console) || !isset($console['idConsole'])) {
+				return false;
+			}
+		}
+		
+		// Check that the dlc's ID exists
+		$stmt = $pdo->prepare('SELECT `idDlc`
+							   FROM `dlc`
+							   WHERE `idDlc` = :idDlc;');
+		$stmt->bindParam(':idDlc', $idDlc, PDO::PARAM_INT);
+		$stmt->execute();
+
+		$dlc = $stmt->fetch();
+		if (!count($dlc) || !isset($dlc['idDlc'])) {
+			return false;
+		}
+
 		$stmt = $pdo->prepare('UPDATE `dlc`
 								SET `title`             = :title,
 									`description`       = :description,
