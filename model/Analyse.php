@@ -64,13 +64,26 @@ class Analyse extends BaseModel
 	 *
 	 * @param array $datas Analyse's datas
 	 * @param PDO $pdo Current's PDO object
-	 * @return int $id Inserted analyse's ID
+	 * @return int $insertedAnalse Inserted analyse's ID
 	 */
 	public function directInsert($datas, $pdo = null)
 	{
 		if (!$pdo) {
 			$pdo  = $this->db;
 		}
+
+		// Check that the test's ID exists
+		$stmt = $pdo->prepare('SELECT `idTest`
+							   FROM `test`
+							   WHERE `idTest` = :idTest;');
+		$stmt->bindParam(':idTest', $datas['test_idTest'], PDO::PARAM_INT);
+		$stmt->execute();
+
+		$test = $stmt->fetch();
+		if (!count($test) || !isset($test['idTest'])) {
+			return false;
+		}
+
 		$stmt = $pdo->prepare('INSERT INTO `analyse` (`analyse`, `type`, `test_idTest`) 
 							   VALUES (:analyse, :type, :test_idTest);');
 		$stmt->bindParam(':analyse', $datas['analyse'], PDO::PARAM_STR);
@@ -78,7 +91,8 @@ class Analyse extends BaseModel
 		$stmt->bindParam(':test_idTest', $datas['test_idTest'], PDO::PARAM_INT);
 		$stmt->execute();
 
-		return $pdo->lastInsertId();
+		$insertedAnalyse = $pdo->lastInsertId();
+		return $insertedAnalyse;
 	}
 
 	/**
@@ -113,6 +127,33 @@ class Analyse extends BaseModel
 		if (!$pdo) {
 			$pdo  = $this->db;
 		}
+
+		if (isset($datas['test_idTest'])) {
+			// Check that the test's ID exists
+			$stmt = $pdo->prepare('SELECT `idTest`
+								   FROM `test`
+								   WHERE `idTest` = :idTest;');
+			$stmt->bindParam(':idTest', $datas['test_idTest'], PDO::PARAM_INT);
+			$stmt->execute();
+
+			$test = $stmt->fetch();
+			if (!count($test) || !isset($test['idTest'])) {
+				return false;
+			}
+		}
+		
+		// Check that the analyse's ID exists
+		$stmt = $pdo->prepare('SELECT `idAnalyse`
+							   FROM `analyse`
+							   WHERE `idAnalyse` = :idAnalyse;');
+		$stmt->bindParam(':idAnalyse', $idAnalyse, PDO::PARAM_INT);
+		$stmt->execute();
+
+		$analyse = $stmt->fetch();
+		if (!count($analyse) || !isset($analyse['idAnalyse'])) {
+			return false;
+		}
+
 		$stmt = $pdo->prepare('UPDATE `analyse` 
 							   SET `analyse` = :analyse, `type` = :type, `test_idTest` = :test_idTest 
 							   WHERE `idAnalyse` =  :idAnalyse;');
