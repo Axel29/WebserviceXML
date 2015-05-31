@@ -1,7 +1,4 @@
 <?php
-/**
- * @todo Vérifier que l'ID de la console existe avant d'insérer ou de mettre à jour.
- */
 class SupportController extends BaseController
 {
 	/**

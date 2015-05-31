@@ -124,6 +124,19 @@ class Test extends BaseModel
 		if (!$pdo) {
 			$pdo  = $this->db;
 		}
+
+		// Check that the console's ID exists
+		$stmt = $pdo->prepare('SELECT `idConsole`
+							   FROM `console`
+							   WHERE `idConsole` = :idConsole;');
+		$stmt->bindParam(':idConsole', $datas['console_idConsole'], PDO::PARAM_INT);
+		$stmt->execute();
+
+		$console = $stmt->fetch();
+		if (!count($console) || !isset($console['idConsole'])) {
+			return false;
+		}
+
 		$stmt = $pdo->prepare('INSERT INTO `test` (`report`, `date`, `user_name`, `note`, `console_idConsole`) 
 							   VALUES (:report, :date, :user_name, :note, :console_idConsole)');
 		$stmt->bindParam(':report', $datas['report'], PDO::PARAM_STR);
@@ -197,6 +210,33 @@ class Test extends BaseModel
 		if (!$pdo) {
 			$pdo  = $this->db;
 		}
+
+		if (isset($datas['console_idConsole'])) {
+			// Check that the console's ID exists
+			$stmt = $pdo->prepare('SELECT `idConsole`
+								   FROM `console`
+								   WHERE `idConsole` = :idConsole;');
+			$stmt->bindParam(':idConsole', $datas['console_idConsole'], PDO::PARAM_INT);
+			$stmt->execute();
+
+			$console = $stmt->fetch();
+			if (!count($console) || !isset($console['idConsole'])) {
+				return false;
+			}
+		}
+		
+		// Check that the test's ID exists
+		$stmt = $pdo->prepare('SELECT `idTest`
+							   FROM `test`
+							   WHERE `idTest` = :idTest;');
+		$stmt->bindParam(':idTest', $idTest, PDO::PARAM_INT);
+		$stmt->execute();
+
+		$test = $stmt->fetch();
+		if (!count($test) || !isset($test['idTest'])) {
+			return false;
+		}
+
 		$stmt = $pdo->prepare('UPDATE `test`
 							   SET `report`            = :report,
 								   `date`              = :date,

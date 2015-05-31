@@ -1,7 +1,4 @@
 <?php
-/**
- * @todo Vérifier que l'ID de la console existe avant d'insérer ou de mettre à jour.
- */
 class TestController extends BaseController
 {
 	/**
@@ -125,7 +122,6 @@ class TestController extends BaseController
 		$this->checkRequiredFields(Test::getRequiredFields(), $_PUT);
 
 		// Check every required fields for comments if neeeded
-		$this->commentsRequiredFields['idComment'] = 'int';
 		if (isset($_PUT['comments'])) {
 			foreach ($_PUT['comments'] as $comment) {
 				$this->checkRequiredFields(Comment::getRequiredFields(), $comment);
@@ -133,7 +129,6 @@ class TestController extends BaseController
 		}
 
 		// Check every required fields for analyses if neeeded
-		$this->analysesRequiredFields['idAnalyse'] = 'int';
 		if (isset($_PUT['analyses'])) {
 			foreach ($_PUT['analyses'] as $analyse) {
 				$this->checkRequiredFields(Analyse::getRequiredFields(), $analyse);
