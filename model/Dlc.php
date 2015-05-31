@@ -75,7 +75,7 @@ class Dlc extends BaseModel
 	 *
 	 * @param array $datas Dlc's datas
 	 * @param PDO $pdo Current's PDO object
-	 * @return int $id Inserted mode's ID
+	 * @return int $insertedDlc Inserted dlc's ID
 	 */
 	public function directInsert($datas, $pdo = null)
 	{
@@ -104,7 +104,8 @@ class Dlc extends BaseModel
 		$stmt->bindParam(':console_idConsole', $datas['console_idConsole'], PDO::PARAM_INT);
 		$stmt->execute();
 
-		return $pdo->lastInsertId();
+		$insertedDlc = $pdo->lastInsertId();
+		return $insertedDlc;
 	}
 
 	/**
