@@ -112,12 +112,12 @@ class Test extends BaseModel
 	}
 
 	/**
-	 * Insert a new edition in database without any try / catch.
+	 * Insert a new test in database without any try / catch.
 	 * Used to make valid transactions for other models.
 	 *
-	 * @param array $datas Support's datas
+	 * @param array $datas Test's datas
 	 * @param PDO $pdo Current's PDO object
-	 * @return int $insertedTest Inserted mode's ID
+	 * @return int $insertedTest Inserted test's ID
 	 */
 	public function directInsert($datas, $pdo = null)
 	{
@@ -197,11 +197,11 @@ class Test extends BaseModel
 	}
 
 	/**
-	 * Update an edition without any try / catch.
+	 * Update an test without any try / catch.
 	 * Used to make valid transactions for other models.
 	 *
 	 * @param int $idTest Test's ID
-	 * @param array $datas Edition's datas
+	 * @param array $datas Test's datas
 	 * @param PDO $pdo Current's PDO object
 	 * @return bool
 	 */
