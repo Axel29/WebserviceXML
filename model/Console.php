@@ -131,6 +131,18 @@ class Console extends BaseModel
 			$pdo  = $this->db;
 		}
 
+		// Check that the game's ID exists
+		$stmt = $pdo->prepare('SELECT `idGame`
+							   FROM `game`
+							   WHERE `idGame` = :idGame;');
+		$stmt->bindParam(':idGame', $datas['game_idGame'], PDO::PARAM_INT);
+		$stmt->execute();
+
+		$game = $stmt->fetch();
+		if (!count($game) || !isset($game['idGame'])) {
+			return false;
+		}
+
 	    // Insert datas into 'console' table
 		$stmt = $pdo->prepare('INSERT INTO `console` (`business_model`, `pegi`, `release`, `name`, `description`, `cover_front`, `cover_back`, `game_idGame`) 
 							   VALUES (:business_model, :pegi, :release, :name, :description, :cover_front, :cover_back, :game_idGame);');
@@ -240,6 +252,33 @@ class Console extends BaseModel
 		if (!$pdo) {
 			$pdo  = $this->db;
 		}
+
+		if (isset($datas['game_idGame'])) {
+			// Check that the game's ID exists
+			$stmt = $pdo->prepare('SELECT `idGame`
+								   FROM `game`
+								   WHERE `idGame` = :idGame;');
+			$stmt->bindParam(':idGame', $datas['game_idGame'], PDO::PARAM_INT);
+			$stmt->execute();
+
+			$game = $stmt->fetch();
+			if (!count($game) || !isset($game['idGame'])) {
+				return false;
+			}
+		}
+		
+		// Check that the console's ID exists
+		$stmt = $pdo->prepare('SELECT `idConsole`
+							   FROM `console`
+							   WHERE `idConsole` = :idConsole;');
+		$stmt->bindParam(':idConsole', $idTest, PDO::PARAM_INT);
+		$stmt->execute();
+
+		$console = $stmt->fetch();
+		if (!count($console) || !isset($console['idConsole'])) {
+			return false;
+		}
+
 		$stmt = $pdo->prepare('UPDATE `console`
 							   SET `report` = :report,
 							   	   `date` = :date,
