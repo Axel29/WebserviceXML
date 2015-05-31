@@ -47,8 +47,8 @@ class GameController extends BaseController
 	{
 		$gameModel = new Game();
 
-		// Show the full games list or a specific game by it's ID
-		$datas = $gameModel->getGames($this->getId());
+		// Show the full console list or a specific console by it's ID
+		$datas = $gameModel->findBy('idGame', $this->getId());
 
 		if ($datas) {
 			$this->xml = $this->generateXml($datas)->asXML();
@@ -412,129 +412,158 @@ class GameController extends BaseController
 	 */
 	public function generateXml($games = [])
 	{
-		$list = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><list/>');
-		foreach ($games as $idGame => $game) {
-			$gameNode = $list->addChild('game');
-			$gameNode->addAttribute('id', $idGame);
+		$list = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><games/>');
+		foreach ($games as $game) {
+			// Check that every datas exist, otherwise we skip this console.
+			$idGame = $game['idGame'];
 
+			$genderModel = new Gender();
+			$genders = $genderModel->findBy('idGame', $idGame);
+
+			$editorModel = new Editor();
+			$editors = $editorModel->findBy('idGame', $idGame);
+
+			$themeModel = new Theme();
+			$themes = $themeModel->findBy('idGame', $idGame);
+
+			$consoleModel = new Console();
+			$consoles = $consoleModel->findBy('game_idGame', $idGame);
+
+			$languageModel = new Language();
+			$languages = $languageModel->findBy('idGame', $idGame);
+
+			if (!$genders || !$editors || !$themes || !$consoles || !$languages) {
+				continue;
+			}
+
+			// If everything is okay, we can process
+			$gameNode         = $list->addChild('game');
 			$presentationNode = $gameNode->addChild('presentation');
-			// Game's genders
+
+			// Genders: REQUIRED
 			$gendersNode = $presentationNode->addChild('genders');
-			foreach ($game['presentation']['genders'] as $gender) {
+			foreach ($genders as $gender) {
 				$genderNode = $gendersNode->addChild('gender', $gender['gender']);
 				$genderNode->addAttribute('id', $gender['idGender']);
 			}
 
-			// Game's title
-			$presentationNode->addChild('title', $game['presentation']['title']);
+			$presentationNode->addChild('title', $game['title']);
 
-			// Game's editors
-			$editorsNode = $presentationNode->addChild('editors');
-			foreach ($game['presentation']['editors'] as $editor) {
-				$editorNode = $editorsNode->addChild('editor', $editor['editor']);
-				$editorNode->addAttribute('id', $editor['idEditor']);
-			}
-
-			// Game's themes
+			// Themes: REQUIRED
 			$themesNode = $presentationNode->addChild('themes');
-			if (isset($game['presentation']['themes'])) {
-				foreach ($game['presentation']['themes'] as $theme) {
-					$themeNode = $themesNode->addChild('theme', $theme['theme']);
-					$themeNode->addAttribute('id', $theme['idTheme']);
-				}
+			foreach ($themes as $theme) {
+				$themeNode = $themesNode->addChild('theme', $theme['theme']);
+				$themeNode->addAttribute('id', $theme['idTheme']);
 			}
 
-			// Game's website
-			$presentationNode->addChild('site', $game['presentation']['site']);
+			$presentationNode->addChild('site', $game['site']);
 
+			// Consoles: REQUIRED
 			$consolesNode = $presentationNode->addChild('consoles');
-			foreach ($game['presentation']['consoles'] as $console) {
-				$consoleNode  = $consolesNode->addChild('console');
+			foreach ($consoles as $console) {
+				$idConsole = $console['idConsole'];
+				// Check that every datas exist for the console too, otherwise we skip this console.
+				$modes = new Mode();
+				$modes = $modes->findBy('idConsole', $idConsole);
+
+				$supports = new Support();
+				$supports = $supports->findBy('idConsole', $idConsole);
+
+				$editions = new Edition();
+				$editions = $editions->findBy('console_idConsole', $idConsole);
+
+				if (!$modes || !$supports || !$editions) {
+					continue;
+				}
+
+				$consoleNode = $consolesNode->addChild('console');
 				$consoleNode->addAttribute('id', $console['idConsole']);
-				// Console's business model
+
 				$consoleNode->addChild('businessModel', $console['business_model']);
-				// Console's pegi
 				$consoleNode->addChild('pegi', $console['pegi']);
 
-				// Console's modes
+				// Modes: REQUIRED
 				$modesNode = $consoleNode->addChild('modes');
-				foreach ($console['modes'] as $mode) {
+				foreach ($modes as $mode) {
 					$modeNode = $modesNode->addChild('mode', $mode['mode']);
 					$modeNode->addAttribute('id', $mode['idMode']);
 				}
 
-				// Console's covers
-				$coverNode  = $consoleNode->addChild('cover');
-				$frontCover = $coverNode->addChild('front');
-				$frontCover->addAttribute('url', $console['cover_front']);
+				// Covers
+				$coverNode = $consoleNode->addChild('cover');
+				$frontNode = $coverNode->addChild('front');
+				$frontNode->addAttribute('url', $console['cover_front']);
+				$backNode = $coverNode->addChild('back');
+				$backNode->addAttribute('url', $console['cover_back']);
 
-				$backCover  = $coverNode->addChild('back');
-				$backCover->addAttribute('url', $console['cover_back']);
-			
-				// Console's supports
+				// Supports: REQUIRED
 				$supportsNode = $consoleNode->addChild('supports');
-				foreach ($console['supports'] as $support) {
+				foreach ($supports as $support) {
 					$supportNode = $supportsNode->addChild('support', $support['support']);
 					$supportNode->addAttribute('id', $support['idSupport']);
 				}
 
-				// Console's release date
 				$consoleNode->addChild('release', $console['release']);
 
-				// Editions
+				// Editions: REQUIRED
 				$editionsNode = $consoleNode->addChild('editions');
-				foreach ($console['editions'] as $edition) {
+				foreach ($editions as $edition) {
 					$editionNode = $editionsNode->addChild('edition');
 					$editionNode->addAttribute('id', $edition['idEdition']);
 					$editionNode->addChild('name', $edition['name']);
 					$editionNode->addChild('content', $edition['content']);
 
-					// Edition's shops
+					// Shops: optional
+					$shops     = new Shop();
 					$shopsNode = $editionNode->addChild('shops');
-					if (isset($edition['shops'])) {
-						foreach ($edition['shops'] as $shop) {
+					if ($shops = $shops->findBy('edition_idEdition', $edition['idEdition'])) {
+						foreach ($shops as $shop) {
 							$shopNode = $shopsNode->addChild('shop');
 							$shopNode->addAttribute('id', $shop['idShop']);
 							$shopNode->addAttribute('url', $shop['url']);
+
 							$shopNode->addChild('name', $shop['name']);
-							$shopPrice = $shopNode->addChild('price', $shop['price']);
-							$shopPrice->addAttribute('devise', $shop['devise']);
+
+							$priceNode = $shopNode->addChild('price', $shop['price']);
+							$priceNode->addAttribute('devise', $shop['devise']);
 						}
 					}
 				}
 
-				// Console's name
 				$consoleNode->addChild('name', $console['name']);
-
-				// Console's description
 				$consoleNode->addChild('description', $console['description']);
 
-				// DLCs
+				// Dlcs: optional
+				$dlcs = new Dlc();
 				$dlcsNode = $consoleNode->addChild('dlcs');
-				if (isset($console['dlcs'])) {
-					foreach ($console['dlcs'] as $dlc) {
+				if ($dlcs = $dlcs->findBy('console_idConsole', $idConsole)) {
+					foreach ($dlcs as $dlc) {
 						$dlcNode = $dlcsNode->addChild('dlc');
 						$dlcNode->addAttribute('id', $dlc['idDlc']);
+
 						$dlcNode->addChild('title', $dlc['title']);
 						$dlcNode->addChild('description', $dlc['description']);
-						$dlcPrice = $dlcNode->addChild('price', $dlc['price']);
-						$dlcPrice->addAttribute('devise', $dlc['devise']);						
+
+						$priceNode = $dlcNode->addChild('price', $dlc['price']);
+						$priceNode->addAttribute('devise', $dlc['devise']);
 					}
 				}
 
-				// Configs
+				// Configs: optional
+				$configs     = new Config();
 				$configsNode = $consoleNode->addChild('configs');
-				if (isset($console['configs'])) {
-					foreach ($console['configs'] as $config) {
+				if ($configs = $configs->findBy('console_idConsole', $idConsole)) {
+					foreach ($configs as $config) {
 						$configNode = $configsNode->addChild('config', $config['config']);
 						$configNode->addAttribute('id', $config['idConfig']);
 						$configNode->addAttribute('type', $config['type']);
 					}
 				}
 
-				// Tests
-				if (isset($console['tests'])) {
-					foreach ($console['tests'] as $test) {
+				// Tests: optional
+				$tests = new Test();
+				if ($tests = $tests->findBy('console_idConsole', $idConsole)) {
+					foreach ($tests as $test) {
 						$testNode = $consoleNode->addChild('test');
 						$testNode->addAttribute('id', $test['idTest']);
 						$testNode->addChild('report', $test['report']);
@@ -542,10 +571,11 @@ class GameController extends BaseController
 						$testNode->addChild('userName', $test['user_name']);
 						$testNode->addChild('note', $test['note']);
 
-						// Test's comments
+						// Comments: optional
+						$comments     = new Comment();
 						$commentsNode = $testNode->addChild('comments');
-						if (isset($test['comments'])) {
-							foreach ($test['comments'] as $comment) {
+						if ($comments = $comments->findBy('test_idTest', $test['idTest'])) {
+							foreach ($comments as $comment) {
 								$commentNode = $commentsNode->addChild('comment');
 								$commentNode->addAttribute('id', $comment['idComment']);
 								$commentNode->addChild('text', $comment['text']);
@@ -557,11 +587,12 @@ class GameController extends BaseController
 							}
 						}
 
-						// Test's analyses
+						// Analyses: optional
+						$analyses     = new Analyse();
 						$analysesNode = $testNode->addChild('analyses');
-						if (isset($test['analyses'])) {
-							foreach ($test['analyses'] as $analyse) {
-								$analyseNode = $analysesNode->addChild('analyse', $analyse['analyse']);
+						if ($analyses = $analyses->findBy('test_idTest', $test['idTest'])) {
+							foreach ($analyses as $analyse) {
+								$analyseNode = $analysesNode->addChild('analyse');
 								$analyseNode->addAttribute('id', $analyse['idAnalyse']);
 								$analyseNode->addAttribute('type', $analyse['type']);
 							}
@@ -570,63 +601,75 @@ class GameController extends BaseController
 				}
 			}
 
-			// Game's languages
+			// Languages: REQUIRED
 			$languagesNode = $presentationNode->addChild('languages');
-			foreach ($game['presentation']['languages'] as $language) {
+			foreach ($languages as $language) {
 				$languageNode = $languagesNode->addChild('language', $language['language']);
 				$languageNode->addAttribute('id', $language['idLanguage']);
 			}
 
-			// Game's articles
-			$articlesNode = $gameNode->addChild('articles');
-			if (isset($game['articles'])) {
-				foreach ($game['articles'] as $article) {
+			// Articles: OPTIONAL
+			$articlesModel = new Article();
+			if ($articles = $articlesModel->findBy('game_idGame', $idGame)) {
+				$articlesNode = $list->addChild('articles');
+				foreach ($articles as $article) {
 					$articleNode = $articlesNode->addChild('article');
 					$articleNode->addAttribute('id', $article['idArticle']);
 					$articleNode->addAttribute('type', $article['type']);
-					$articleConsolesNames = $articleNode->addChild('consolesNames');
+
+					$consolesNamesNode = $articleNode->addChild('consolesNames');
 					foreach (explode(',', $article['console_names']) as $consoleName) {
-						$articleConsolesNames->addChild('consoleName', $consoleName);
+						$consolesNamesNode->addChild('consoleName', $consoleName);
 					}
+
 					$articleNode->addChild('title', $article['title']);
 					$articleNode->addChild('userName', $article['user_name']);
 					$articleNode->addChild('date', $article['date']);
 				}
 			}
 
-			// Game's medias
-			$mediasNode = $gameNode->addChild('medias');
-			if (isset($game['medias'])) {
-				foreach ($game['medias'] as $media) {
+			// Media: OPTIONAL
+			$mediasModel = new Media();
+			if ($medias = $mediasModel->findBy('game_idGame', $idGame)) {
+				$mediasNode = $list->addChild('medias');
+				foreach ($medias as $media) {
 					$mediaNode = $mediasNode->addChild('media');
 					$mediaNode->addAttribute('id', $media['idMedia']);
 					$mediaNode->addAttribute('type', $media['type']);
 					$mediaNode->addAttribute('url', $media['url']);
-					$mediaConsolesNames = $mediaNode->addChild('consolesNames');
+
+					$consolesNamesNode = $mediaNode->addChild('consolesNames');
 					foreach (explode(',', $media['console_names']) as $consoleName) {
-						$mediaConsolesNames->addChild('consoleName', $consoleName);
+						$consolesNamesNode->addChild('consoleName', $consoleName);
 					}
-					$mediaDimensions = $mediaNode->addChild('dimensions');
-					$mediaDimensions->addAttribute('unit', $media['unit']);
-					$mediaDimensions->addAttribute('height', $media['height']);
-					$mediaDimensions->addAttribute('width', $media['width']);
+
+					$dimensionsNode = $mediaNode->addChild('dimensions');
+					$dimensionsNode->addAttribute('unit', $media['unit']);
+					$dimensionsNode->addAttribute('width', $media['width']);
+					$dimensionsNode->addAttribute('height', $media['height']);
 				}
 			}
 
-			// Game's tips
-			$tipsNode = $gameNode->addChild('tips');
-			if (isset($game['tips'])) {
-				foreach ($game['tips'] as $tip) {
+			// Tips: OPTIONAL
+			$tipsModel = new Tip();
+			if ($tips = $tipsModel->findBy('game_idGame', $idGame)) {
+				$tipsNode = $list->addChild('tips');
+				foreach ($tips as $tip) {
 					$tipNode = $tipsNode->addChild('tip');
 					$tipNode->addAttribute('id', $tip['idTip']);
-					$tipConsoleNames = $tipNode->addChild('consolesNames');
+
+					$consolesNamesNode = $tipNode->addChild('consolesNames');
 					foreach (explode(',', $tip['console_names']) as $consoleName) {
-						$tipConsoleNames->addChild('consoleName', $consoleName);
+						$consolesNamesNode->addChild('consoleName', $consoleName);
 					}
+					
 					$tipNode->addChild('content', $tip['content']);
 				}
 			}
 		}
+		$this->loadLayout('xml');
+		echo($list->asXML());
+		die;
 		return $list;
 	}
 
