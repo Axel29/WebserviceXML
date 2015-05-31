@@ -1,7 +1,4 @@
 <?php
-/**
- * @todo Vérifier que l'ID du test existe avant d'insérer ou de mettre à jour.
- */
 class CommentController extends BaseController
 {
 	/**

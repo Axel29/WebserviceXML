@@ -86,6 +86,19 @@ class Comment extends BaseModel
 		if (!$pdo) {
 			$pdo  = $this->db;
 		}
+
+		// Check that the test's ID exists
+		$stmt = $pdo->prepare('SELECT `idTest`
+							   FROM `test`
+							   WHERE `idTest` = :idTest;');
+		$stmt->bindParam(':idTest', $datas['test_idTest'], PDO::PARAM_INT);
+		$stmt->execute();
+
+		$test = $stmt->fetch();
+		if (!count($test) || !isset($test['idTest'])) {
+			return false;
+		}
+
 		$stmt = $pdo->prepare('INSERT INTO `comment` (`date`, `user_name`, `note`, `like`, `dislike`, `text`, `test_idTest`) 
 							   VALUES (:date, :user_name, :note, :like, :dislike, :text, :test_idTest);');
 		$stmt->bindParam(':date', $datas['date'], PDO::PARAM_STR);
@@ -134,6 +147,33 @@ class Comment extends BaseModel
 		if (!$pdo) {
 			$pdo  = $this->db;
 		}
+
+		if (isset($datas['test_idTest'])) {
+			// Check that the test's ID exists
+			$stmt = $pdo->prepare('SELECT `idTest`
+								   FROM `test`
+								   WHERE `idTest` = :idTest;');
+			$stmt->bindParam(':idTest', $datas['test_idTest'], PDO::PARAM_INT);
+			$stmt->execute();
+
+			$test = $stmt->fetch();
+			if (!count($test) || !isset($test['idTest'])) {
+				return false;
+			}
+		}
+		
+		// Check that the comment's ID exists
+		$stmt = $pdo->prepare('SELECT `idComment`
+							   FROM `comment`
+							   WHERE `idComment` = :idComment;');
+		$stmt->bindParam(':idComment', $idComment, PDO::PARAM_INT);
+		$stmt->execute();
+
+		$comment = $stmt->fetch();
+		if (!count($comment) || !isset($comment['idComment'])) {
+			return false;
+		}
+
 		$stmt = $pdo->prepare('UPDATE `comment` 
 							   SET `date` = :date,
 							       `user_name` = :user_name,
