@@ -100,11 +100,14 @@ class Config extends BaseModel
 	 * Used to make valid transactions for other models.
 	 *
 	 * @param array $datas Config's datas
+	 * @param PDO $pdo Current's PDO object
 	 * @return int $id Inserted mode's ID
 	 */
-	public function directInsert($datas)
+	public function directInsert($datas, $pdo = null)
 	{
-		$pdo  = $this->db;
+		if (!$pdo) {
+			$pdo  = $this->db;
+		}
 		$stmt = $pdo->prepare('INSERT INTO `config` (`config`, `type`, `console_idConsole`) 
 							   VALUES (:config, :type, :console_idConsole)');
 		$stmt->bindParam(':config', $datas['config'], PDO::PARAM_STR);

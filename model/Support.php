@@ -86,18 +86,21 @@ class Support extends BaseModel
 	 * Used to make valid transactions for other models.
 	 *
 	 * @param array $datas Support's datas
+	 * @param PDO $pdo Current's PDO object
 	 * @return int $id Inserted support's ID
 	 */
-	public function directInsert($datas)
+	public function directInsert($datas, $pdo = null)
 	{
 		/*
 		 * Check that the support doesn't already exist.
 		 * If so, return this ID
 		 */
 		if ($existingMode = $this->findBy('support', $datas['support'])) {
-			return $existingMode;
+			return $existingMode[0]['idSupport'];
 		} else {
-			$pdo  = $this->db;
+			if (!$pdo) {
+				$pdo  = $this->db;
+			}
 			$stmt = $pdo->prepare('INSERT INTO `support` (`support`) 
 								   VALUES (:support)');
 			$stmt->bindParam(':support', $datas['support'], PDO::PARAM_STR);

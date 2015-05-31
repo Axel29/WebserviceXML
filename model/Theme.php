@@ -74,7 +74,7 @@ class Theme extends BaseModel
 		 * If so, return this ID
 		 */
 		if ($existingTheme = $this->findBy('theme', $datas['theme'])) {
-			return $existingTheme;
+			return $existingTheme[0]['idTheme'];
 		} else {
 			try {
 				$pdo  = $this->db;

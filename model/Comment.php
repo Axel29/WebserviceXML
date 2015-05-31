@@ -77,11 +77,14 @@ class Comment extends BaseModel
 	 * Used to make valid transactions for other models.
 	 *
 	 * @param array $datas Shop's datas
+	 * @param PDO $pdo Current's PDO object
 	 * @return int $id Inserted comment's ID
 	 */
-	public function directInsert($datas)
+	public function directInsert($datas, $pdo = null)
 	{
-		$pdo  = $this->db;
+		if (!$pdo) {
+			$pdo  = $this->db;
+		}
 		$stmt = $pdo->prepare('INSERT INTO `comment` (`date`, `user_name`, `note`, `like`, `dislike`, `text`, `test_idTest`) 
 							   VALUES (:date, :user_name, :note, :like, :dislike, :text, :test_idTest)');
 		$stmt->bindParam(':date', $datas['date'], PDO::PARAM_STR);

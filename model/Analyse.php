@@ -62,11 +62,14 @@ class Analyse extends BaseModel
 	 * Used to make valid transactions for other models.
 	 *
 	 * @param array $datas Analyse's datas
+	 * @param PDO $pdo Current's PDO object
 	 * @return int $id Inserted analyse's ID
 	 */
-	public function directInsert($datas)
+	public function directInsert($datas, $pdo = null)
 	{
-		$pdo  = $this->db;
+		if (!$pdo) {
+			$pdo  = $this->db;
+		}
 		$stmt = $pdo->prepare('INSERT INTO `analyse` (`analyse`, `type`, `test_idTest`) 
 							   VALUES (:analyse, :type, :test_idTest)');
 		$stmt->bindParam(':analyse', $datas['analyse'], PDO::PARAM_STR);

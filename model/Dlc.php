@@ -73,11 +73,14 @@ class Dlc extends BaseModel
 	 * Used to make valid transactions for other models.
 	 *
 	 * @param array $datas Dlc's datas
+	 * @param PDO $pdo Current's PDO object
 	 * @return int $id Inserted mode's ID
 	 */
-	public function directInsert($datas)
+	public function directInsert($datas, $pdo = null)
 	{
-		$pdo  = $this->db;
+		if (!$pdo) {
+			$pdo  = $this->db;
+		}
 		$stmt = $pdo->prepare('INSERT INTO `dlc` (`title`, `description`, `price`, `devise`, `console_idConsole`) 
 							   VALUES (:title, :description, :price, :devise, :console_idConsole)');
 		$stmt->bindParam(':title', $datas['title'], PDO::PARAM_STR);

@@ -100,6 +100,7 @@ class Edition extends BaseModel
 		} catch (PDOException $e) {
 			// Cancel the transaction
 		    $pdo->rollback();
+		    echo $e->getMessage();
 			return false;
 		} catch (Exception $e) {
 			return false;
@@ -111,11 +112,14 @@ class Edition extends BaseModel
 	 * Used to make valid transactions for other models.
 	 *
 	 * @param array $datas Support's datas
+	 * @param PDO $pdo Current's PDO object
 	 * @return int $id Inserted mode's ID
 	 */
-	public function directInsert($datas)
+	public function directInsert($datas, $pdo = null)
 	{
-		$pdo  = $this->db;
+		if (!$pdo) {
+			$pdo  = $this->db;
+		}
 		$stmt = $pdo->prepare('INSERT INTO `edition` (`name`, `content`, `console_idConsole`) 
 							   VALUES (:name, :content, :console_idConsole)');
 		$stmt->bindParam(':name', $datas['name'], PDO::PARAM_STR);
@@ -129,7 +133,7 @@ class Edition extends BaseModel
 		if (isset($datas['shops'])) {
 			$shopModel = new Shop();
 			foreach ($datas['shops'] as $shop) {
-				$insertedShop = $shopModel->directInsert($shop);
+				$insertedShop = $shopModel->directInsert($shop, $pdo);
 			}
 		}
 

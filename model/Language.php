@@ -74,7 +74,7 @@ class Language extends BaseModel
 		 * If so, return this ID
 		 */
 		if ($existingLanguage = $this->findBy('language', $datas['language'])) {
-			return $existingLanguage;
+			return $existingLanguage[0]['idLanguage'];
 		} else {
 			try {
 				$pdo  = $this->db;

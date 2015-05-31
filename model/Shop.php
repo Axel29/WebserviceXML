@@ -75,9 +75,11 @@ class Shop extends BaseModel
 	 * @param array $datas Shop's datas
 	 * @return int $id Inserted shop's ID
 	 */
-	public function directInsert($datas)
+	public function directInsert($datas, $pdo = null)
 	{
-		$pdo  = $this->db;
+		if (!$pdo) {
+			$pdo  = $this->db;
+		}
 		$stmt = $pdo->prepare('INSERT INTO `shop` (`url`, `name`, `price`, `devise`, `edition_idEdition`) 
 							   VALUES (:url, :name, :price, :devise, :edition_idEdition)');
 		$stmt->bindParam(':url', $datas['url'], PDO::PARAM_STR);

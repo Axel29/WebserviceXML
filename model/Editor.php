@@ -74,7 +74,7 @@ class Editor extends BaseModel
 		 * If so, return this ID
 		 */
 		if ($existingEditor = $this->findBy('editor', $datas['editor'])) {
-			return $existingEditor;
+			return $existingEditor[0]['idEditor'];
 		} else {
 			try {
 				$pdo  = $this->db;

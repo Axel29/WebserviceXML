@@ -115,11 +115,14 @@ class Test extends BaseModel
 	 * Used to make valid transactions for other models.
 	 *
 	 * @param array $datas Support's datas
+	 * @param PDO $pdo Current's PDO object
 	 * @return int $id Inserted mode's ID
 	 */
-	public function directInsert($datas)
+	public function directInsert($datas, $pdo = null)
 	{
-		$pdo  = $this->db;
+		if (!$pdo) {
+			$pdo  = $this->db;
+		}
 		$stmt = $pdo->prepare('INSERT INTO `test` (`report`, `date`, `user_name`, `note`, `console_idConsole`) 
 							   VALUES (:report, :date, :user_name, :note, :console_idConsole)');
 		$stmt->bindParam(':report', $datas['report'], PDO::PARAM_STR);
@@ -135,7 +138,7 @@ class Test extends BaseModel
 		if (isset($datas['comments'])) {
 			$commentModel = new Comment();
 			foreach ($datas['comments'] as $comment) {
-				$insertedComment = $commentModel->directInsert($comment);
+				$insertedComment = $commentModel->directInsert($comment, $pdo);
 			}
 		}
 
@@ -143,7 +146,7 @@ class Test extends BaseModel
 		if (isset($datas['analyses'])) {
 			$analyseModel = new Analyse();
 			foreach ($datas['analyses'] as $analyse) {
-				$insertedAnalyse = $analyseModel->directInsert($analyse);
+				$insertedAnalyse = $analyseModel->directInsert($analyse, $pdo);
 			}
 		}
 		return $testId;

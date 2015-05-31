@@ -95,7 +95,7 @@ class Mode extends BaseModel
 		 * If so, return this ID
 		 */
 		if ($existingMode = $this->findBy('mode', $datas['mode'])) {
-			return $existingMode;
+			return $existingMode[0]['idMode'];
 		} else {
 			$pdo  = $this->db;
 			$stmt = $pdo->prepare('INSERT INTO `mode` (`mode`) 

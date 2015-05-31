@@ -74,7 +74,7 @@ class Gender extends BaseModel
 		 * If so, return this ID
 		 */
 		if ($existingGender = $this->findBy('gender', $datas['gender'])) {
-			return $existingGender;
+			return $existingGender[0]['idGender'];
 		} else {
 			try {
 				$pdo  = $this->db;
