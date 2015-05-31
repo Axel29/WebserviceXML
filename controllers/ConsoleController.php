@@ -497,9 +497,9 @@ class ConsoleController extends BaseController
 				}
 			}
 		}
-		$this->loadLayout('xml');
-		echo($list->asXML());
-		die;
+		// $this->loadLayout('xml');
+		// echo($list->asXML());
+		// die;
 		return $list;
 	}
 
