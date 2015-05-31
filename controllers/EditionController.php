@@ -1,7 +1,4 @@
 <?php
-/**
- * @todo Vérifier que l'ID de la console existe avant d'insérer ou de mettre à jour.
- */
 class EditionController extends BaseController
 {
 	/**
@@ -115,10 +112,9 @@ class EditionController extends BaseController
 		}
 
 		// Check every required field
-		$this->checkRequiredFields(Edtion::getRequiredFields(), $_PUT);
+		$this->checkRequiredFields(Edition::getRequiredFields(), $_PUT);
 
 		// Check every required fields for shops if neeeded
-		$this->shopsRequiredFields['idShop'] = 'int';
 		if (isset($_PUT['shops'])) {
 			foreach ($_PUT['shops'] as $shop) {
 				$this->checkRequiredFields(Shop::getRequiredFields(), $shop);

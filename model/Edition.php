@@ -120,6 +120,19 @@ class Edition extends BaseModel
 		if (!$pdo) {
 			$pdo  = $this->db;
 		}
+
+		// Check that the console's ID exists
+		$stmt = $pdo->prepare('SELECT `idConsole`
+							   FROM `console`
+							   WHERE `idConsole` = :idConsole;');
+		$stmt->bindParam(':idConsole', $datas['console_idConsole'], PDO::PARAM_INT);
+		$stmt->execute();
+
+		$console = $stmt->fetch();
+		if (!count($console) || !isset($console['idConsole'])) {
+			return false;
+		}
+
 		$stmt = $pdo->prepare('INSERT INTO `edition` (`name`, `content`, `console_idConsole`) 
 							   VALUES (:name, :content, :console_idConsole);');
 		$stmt->bindParam(':name', $datas['name'], PDO::PARAM_STR);
@@ -185,6 +198,33 @@ class Edition extends BaseModel
 		if (!$pdo) {
 			$pdo  = $this->db;
 		}
+
+		if (isset($datas['console_idConsole'])) {
+			// Check that the console's ID exists
+			$stmt = $pdo->prepare('SELECT `idConsole`
+								   FROM `console`
+								   WHERE `idConsole` = :idConsole;');
+			$stmt->bindParam(':idConsole', $datas['console_idConsole'], PDO::PARAM_INT);
+			$stmt->execute();
+
+			$console = $stmt->fetch();
+			if (!count($console) || !isset($console['idConsole'])) {
+				return false;
+			}
+		}
+		
+		// Check that the edition's ID exists
+		$stmt = $pdo->prepare('SELECT `idEdition`
+							   FROM `edition`
+							   WHERE `idEdition` = :idEdition;');
+		$stmt->bindParam(':idEdition', $idEdition, PDO::PARAM_INT);
+		$stmt->execute();
+
+		$edition = $stmt->fetch();
+		if (!count($edition) || !isset($edition['idEdition'])) {
+			return false;
+		}
+
 		$stmt = $pdo->prepare('UPDATE `edition`
 							   SET `name`              = :name,
 								   `content`           = :content,
@@ -200,7 +240,7 @@ class Edition extends BaseModel
 		if (isset($datas['shops'])) {
 			$shopModel = new Shop();
 			foreach ($datas['shops'] as $shop) {
-				$updatedShop = $shopModel->directUpdate($shop['idShop'], $shop);
+				$updatedShop = $shopModel->directUpdate($shop['idShop'], $shop, $pdo);
 			}
 		}
 
