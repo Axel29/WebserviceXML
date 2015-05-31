@@ -168,9 +168,9 @@ class ArticleController extends BaseController
 			$articleNode->addAttribute('id', $article['idArticle']);
 			$articleNode->addAttribute('type', $article['type']);
 
-			$consoleNamesNode = $articleNode->addChild('consolesNames');
+			$consolesNamesNode = $articleNode->addChild('consolesNames');
 			foreach (explode(',', $article['console_names']) as $consoleName) {
-				$consoleNamesNode->addChild('consoleName', $consoleName);
+				$consolesNamesNode->addChild('consoleName', $consoleName);
 			}
 
 			$articleNode->addChild('title', $article['title']);
