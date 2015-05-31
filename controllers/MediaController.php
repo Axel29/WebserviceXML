@@ -169,9 +169,9 @@ class MediaController extends BaseController
 			$mediaNode->addAttribute('type', $media['type']);
 			$mediaNode->addAttribute('url', $media['url']);
 
-			$consoleNamesNode = $mediaNode->addChild('consolesNames');
+			$consolesNamesNode = $mediaNode->addChild('consolesNames');
 			foreach (explode(',', $media['console_names']) as $consoleName) {
-				$consoleNamesNode->addChild('consoleName', $consoleName);
+				$consolesNamesNode->addChild('consoleName', $consoleName);
 			}
 
 			$dimensionsNode = $mediaNode->addChild('dimensions');
