@@ -8,13 +8,16 @@ class BaseModel
 
 	public function __construct()
 	{
-		try {
-			$this->db = new PDO(DB, USER, PASSWORD);
-			$this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-			$this->db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-		} catch (PDOException $e) {
-			echo 'Database connection error: ' . $e->getMessage();
-			exit();
+		if (!$this->db) {
+			try {
+				$this->db = new PDO(DB, USER, PASSWORD);
+				$this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+				$this->db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+				$this->db->setAttribute(PDO::ATTR_PERSISTENT, true);
+			} catch (PDOException $e) {
+				echo 'Database connection error: ' . $e->getMessage();
+				exit();
+			}
 		}
 	}
 
