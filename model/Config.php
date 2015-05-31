@@ -110,6 +110,19 @@ class Config extends BaseModel
 		if (!$pdo) {
 			$pdo  = $this->db;
 		}
+
+		// Check that the console's ID exists
+		$stmt = $pdo->prepare('SELECT `idConsole`
+							   FROM `console`
+							   WHERE `idConsole` = :idConsole;');
+		$stmt->bindParam(':idConsole', $datas['console_idConsole'], PDO::PARAM_INT);
+		$stmt->execute();
+
+		$console = $stmt->fetch();
+		if (!count($console) || !isset($console['idConsole'])) {
+			return false;
+		}
+
 		$stmt = $pdo->prepare('INSERT INTO `config` (`config`, `type`, `console_idConsole`) 
 							   VALUES (:config, :type, :console_idConsole);');
 		$stmt->bindParam(':config', $datas['config'], PDO::PARAM_STR);
@@ -153,6 +166,33 @@ class Config extends BaseModel
 		if (!$pdo) {
 			$pdo  = $this->db;
 		}
+
+		if (isset($datas['console_idConsole'])) {
+			// Check that the console's ID exists
+			$stmt = $pdo->prepare('SELECT `idConsole`
+								   FROM `console`
+								   WHERE `idConsole` = :idConsole;');
+			$stmt->bindParam(':idConsole', $datas['console_idConsole'], PDO::PARAM_INT);
+			$stmt->execute();
+
+			$console = $stmt->fetch();
+			if (!count($console) || !isset($console['idConsole'])) {
+				return false;
+			}
+		}
+		
+		// Check that the config's ID exists
+		$stmt = $pdo->prepare('SELECT `idConfig`
+							   FROM `config`
+							   WHERE `idConfig` = :idConfig;');
+		$stmt->bindParam(':idConfig', $idConfig, PDO::PARAM_INT);
+		$stmt->execute();
+
+		$config = $stmt->fetch();
+		if (!count($config) || !isset($config['idConfig'])) {
+			return false;
+		}
+
 		$stmt = $pdo->prepare('UPDATE `config`
 							   SET `config` = :config,
 							       `type` = :type,
