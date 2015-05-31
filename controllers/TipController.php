@@ -167,9 +167,9 @@ class TipController extends BaseController
 			$tipNode = $list->addChild('tip');
 			$tipNode->addAttribute('id', $tip['idTip']);
 
-			$consoleNamesNode = $tipNode->addChild('consolesNames');
+			$consolesNamesNode = $tipNode->addChild('consolesNames');
 			foreach (explode(',', $tip['console_names']) as $consoleName) {
-				$consoleNamesNode->addChild('consoleName', $consoleName);
+				$consolesNamesNode->addChild('consoleName', $consoleName);
 			}
 			
 			$tipNode->addChild('content', $tip['content']);
