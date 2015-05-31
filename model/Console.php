@@ -99,96 +99,114 @@ class Console extends BaseModel
 	{
 		$pdo  = $this->db;
 		try {
-		    // Begin transaction to avoid inserting wrong or partial datas
-		    $pdo->beginTransaction();
+			// Begin transaction to avoid inserting wrong or partial datas
+			$pdo->beginTransaction();
 
-		    // Insert datas into 'console' table
-			$stmt = $pdo->prepare('INSERT INTO `console` (`business_model`, `pegi`, `release`, `name`, `description`, `cover_front`, `cover_back`, `game_idGame`) 
-								   VALUES (:business_model, :pegi, :release, :name, :description, :cover_front, :cover_back, :game_idGame);');
-			$stmt->bindParam(':business_model', $datas['business_model'], PDO::PARAM_STR);
-			$stmt->bindParam(':pegi', $datas['pegi'], PDO::PARAM_STR);
-			$stmt->bindParam(':release', $datas['release'], PDO::PARAM_STR);
-			$stmt->bindParam(':name', $datas['name'], PDO::PARAM_INT);
-			$stmt->bindParam(':description', $datas['description'], PDO::PARAM_STR);
-			$stmt->bindParam(':cover_front', $datas['cover_front'], PDO::PARAM_STR);
-			$stmt->bindParam(':cover_back', $datas['cover_back'], PDO::PARAM_STR);
-			$stmt->bindParam(':game_idGame', $datas['game_idGame'], PDO::PARAM_INT);
-			$stmt->execute();
-
-			$consoleId = $pdo->lastInsertId();
-
-			// Insert datas into 'modes' table
-			$modeModel = new Mode();
-			foreach ($datas['modes'] as $mode) {
-				$insertedMode = $modeModel->directInsert($mode);
-
-				// Adding relation links
-				$stmt = $pdo->prepare('INSERT INTO `console_has_mode` (`console_idConsole`, `mode_idMode`) 
-									   VALUES (:console_idConsole, :mode_idMode);');
-				$stmt->bindParam(':console_idConsole', $consoleId, PDO::PARAM_INT);
-				$stmt->bindParam(':mode_idMode', $insertedMode, PDO::PARAM_INT);
-				$stmt->execute();
-			}
-
-			// Insert datas into 'supports' table
-			$supportModel = new Support();
-			foreach ($datas['supports'] as $support) {
-				$insertedSupport = $supportModel->insertSupport($support);
-
-				// Adding relation links
-				$stmt = $pdo->prepare('INSERT INTO `console_has_support` (`console_idConsole`, `support_idSupport`) 
-									   VALUES (:console_idConsole, :support_idSupport);');
-				$stmt->bindParam(':console_idConsole', $consoleId, PDO::PARAM_INT);
-				$stmt->bindParam(':support_idSupport', $insertedSupport, PDO::PARAM_INT);
-				$stmt->execute();
-			}
-
-			// Insert datas into 'edition' table and it's sub-table (shop)
-			$editionModel = new Edition();
-			foreach ($datas['editions'] as $edition) {
-				$edition['console_idConsole'] = $consoleId;
-				$insertedEdition              = $editionModel->directInsert($edition, $pdo);
-			}
-
-			// Insert datas into 'dlc' table
-			if (isset($datas['dlcs'])) {
-				$dlcModel = new Dlc();
-				foreach ($datas['dlcs'] as $dlc) {
-					$dlc['console_idConsole'] = $consoleId;
-					$insertedDlc              = $dlcModel->directInsert($dlc, $pdo);
-				}
-			}
-
-			// Insert datas into 'config' table
-			if (isset($datas['configs'])) {
-				$configModel = new Config();
-				foreach ($datas['configs'] as $config) {
-					$config['console_idConsole'] = $consoleId;
-					$insertedConfig              = $configModel->directInsert($config, $pdo);
-				}
-			}
-
-			// Insert datas into 'test' table and it's sub-tables (comment, analyse)
-			if (isset($datas['tests'])) {
-				$testModel = new Test();
-				foreach ($datas['tests'] as $test) {
-					$test['console_idConsole'] = $consoleId;
-					$insertedTest              = $testModel->directInsert($test, $pdo);
-				}
-			}
+			$insertedConsole = $this->directInsert($datas);
 
 			// If everything went well, commit the transaction
 			$pdo->commit();
 
-			return $consoleId;
+			return $insertedConsole;
 		} catch (PDOException $e) {
 			// Cancel the transaction
 		    $pdo->rollback();
-
 			return false;
 		} catch (Exception $e) {
 			return false;
 		}
+	}
+
+	/**
+	 * Insert a new edition in database without any try / catch.
+	 * Used to make valid transactions for other models.
+	 *
+	 * @param array $datas Support's datas
+	 * @param PDO $pdo Current's PDO object
+	 * @return int $consoleId Inserted console's ID
+	 */
+	public function directInsert($datas, $pdo = null)
+	{
+		if (!$pdo) {
+			$pdo  = $this->db;
+		}
+
+	    // Insert datas into 'console' table
+		$stmt = $pdo->prepare('INSERT INTO `console` (`business_model`, `pegi`, `release`, `name`, `description`, `cover_front`, `cover_back`, `game_idGame`) 
+							   VALUES (:business_model, :pegi, :release, :name, :description, :cover_front, :cover_back, :game_idGame);');
+		$stmt->bindParam(':business_model', $datas['business_model'], PDO::PARAM_STR);
+		$stmt->bindParam(':pegi', $datas['pegi'], PDO::PARAM_STR);
+		$stmt->bindParam(':release', $datas['release'], PDO::PARAM_STR);
+		$stmt->bindParam(':name', $datas['name'], PDO::PARAM_INT);
+		$stmt->bindParam(':description', $datas['description'], PDO::PARAM_STR);
+		$stmt->bindParam(':cover_front', $datas['cover_front'], PDO::PARAM_STR);
+		$stmt->bindParam(':cover_back', $datas['cover_back'], PDO::PARAM_STR);
+		$stmt->bindParam(':game_idGame', $datas['game_idGame'], PDO::PARAM_INT);
+		$stmt->execute();
+
+		$consoleId = $pdo->lastInsertId();
+
+		// Insert datas into 'mode' table
+		$modeModel = new Mode();
+		foreach ($datas['modes'] as $mode) {
+			$insertedMode = $modeModel->directInsert($mode);
+
+			// Adding relation links
+			$stmt = $pdo->prepare('INSERT INTO `console_has_mode` (`console_idConsole`, `mode_idMode`) 
+								   VALUES (:console_idConsole, :mode_idMode);');
+			$stmt->bindParam(':console_idConsole', $consoleId, PDO::PARAM_INT);
+			$stmt->bindParam(':mode_idMode', $insertedMode, PDO::PARAM_INT);
+			$stmt->execute();
+		}
+
+		// Insert datas into 'support' table
+		$supportModel = new Support();
+		foreach ($datas['supports'] as $support) {
+			$insertedSupport = $supportModel->directInsert($support);
+
+			// Adding relation links
+			$stmt = $pdo->prepare('INSERT INTO `console_has_support` (`console_idConsole`, `support_idSupport`) 
+								   VALUES (:console_idConsole, :support_idSupport);');
+			$stmt->bindParam(':console_idConsole', $consoleId, PDO::PARAM_INT);
+			$stmt->bindParam(':support_idSupport', $insertedSupport, PDO::PARAM_INT);
+			$stmt->execute();
+		}
+
+		// Insert datas into 'edition' table and it's sub-table (shop)
+		$editionModel = new Edition();
+		foreach ($datas['editions'] as $edition) {
+			$edition['console_idConsole'] = $consoleId;
+			$insertedEdition              = $editionModel->directInsert($edition, $pdo);
+		}
+
+		// Insert datas into 'dlc' table
+		if (isset($datas['dlcs'])) {
+			$dlcModel = new Dlc();
+			foreach ($datas['dlcs'] as $dlc) {
+				$dlc['console_idConsole'] = $consoleId;
+				$insertedDlc              = $dlcModel->directInsert($dlc, $pdo);
+			}
+		}
+
+		// Insert datas into 'config' table
+		if (isset($datas['configs'])) {
+			$configModel = new Config();
+			foreach ($datas['configs'] as $config) {
+				$config['console_idConsole'] = $consoleId;
+				$insertedConfig              = $configModel->directInsert($config, $pdo);
+			}
+		}
+
+		// Insert datas into 'test' table and it's sub-tables (comment, analyse)
+		if (isset($datas['tests'])) {
+			$testModel = new Test();
+			foreach ($datas['tests'] as $test) {
+				$test['console_idConsole'] = $consoleId;
+				$insertedTest              = $testModel->directInsert($test, $pdo);
+			}
+		}
+
+		return $consoleId;
 	}
 
 	/**
@@ -200,31 +218,44 @@ class Console extends BaseModel
 	public function updateConsole($idConsole, $datas)
 	{
 		try {
-			$pdo  = $this->db;
-			$stmt = $pdo->prepare('UPDATE `console`
-								   SET `report` = :report,
-								   	   `date` = :date,
-								       `user_name` = :user_name,
-								       `note` = :note,
-								       `console_idConsole` = :console_idConsole
-								   WHERE `idConsole` =  :idConsole;');
-			$stmt->bindParam(':report', $datas['report'], PDO::PARAM_STR);
-			$stmt->bindParam(':date', $datas['date'], PDO::PARAM_STR);
-			$stmt->bindParam(':user_name', $datas['user_name'], PDO::PARAM_STR);
-			$stmt->bindParam(':note', $datas['note'], PDO::PARAM_INT);
-			$stmt->bindParam(':console_idConsole', $datas['console_idConsole'], PDO::PARAM_INT);
-			$stmt->bindParam(':idConsole', $idConsole, PDO::PARAM_INT);
-			$stmt->execute();
-			/*
-			 * Check that the update was performed on an existing console.
-			 * MySQL won't send any error as, regarding to him, the request is correct, so we have to handle it manually.
-			 */
-			return $stmt->rowCount();
+			return $this->directUpdate($idConsole, $datas);
 		} catch (PDOException $e) {
 			return false;
 		} catch (Exception $e) {
 			return false;
 		}
+	}
+
+	/**
+	 * Update a console without any try / catch.
+	 * Used to make valid transactions for other models.
+	 *
+	 * @param int $idConsole Console's ID
+	 * @param array $datas Console's datas
+	 * @param PDO $pdo Current's PDO object
+	 * @return bool
+	 */
+	public function directUpdate($idConsole, $datas, $pdo = null)
+	{
+		if (!$pdo) {
+			$pdo  = $this->db;
+		}
+		$stmt = $pdo->prepare('UPDATE `console`
+							   SET `report` = :report,
+							   	   `date` = :date,
+							       `user_name` = :user_name,
+							       `note` = :note,
+							       `console_idConsole` = :console_idConsole
+							   WHERE `idConsole` =  :idConsole;');
+		$stmt->bindParam(':report', $datas['report'], PDO::PARAM_STR);
+		$stmt->bindParam(':date', $datas['date'], PDO::PARAM_STR);
+		$stmt->bindParam(':user_name', $datas['user_name'], PDO::PARAM_STR);
+		$stmt->bindParam(':note', $datas['note'], PDO::PARAM_INT);
+		$stmt->bindParam(':console_idConsole', $datas['console_idConsole'], PDO::PARAM_INT);
+		$stmt->bindParam(':idConsole', $idConsole, PDO::PARAM_INT);
+		$stmt->execute();
+
+		return true;
 	}
 
 	/**
@@ -239,7 +270,7 @@ class Console extends BaseModel
 			$pdo  = $this->db;
 			$stmt = $pdo->prepare('DELETE 
 								   FROM `console` 
-								   WHERE `idConsole` =  :idConsole;');
+								   WHERE `idConsole` = :idConsole;');
 			$stmt->bindParam(':idConsole', $idConsole, PDO::PARAM_INT);
 			$stmt->execute();
 
