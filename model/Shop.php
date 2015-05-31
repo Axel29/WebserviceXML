@@ -81,6 +81,19 @@ class Shop extends BaseModel
 		if (!$pdo) {
 			$pdo  = $this->db;
 		}
+
+		// Check that the edition's ID exists
+		$stmt = $pdo->prepare('SELECT `idEdition`
+							   FROM `edition`
+							   WHERE `idEdition` = :idEdition;');
+		$stmt->bindParam(':idEdition', $datas['edition_idEdition'], PDO::PARAM_INT);
+		$stmt->execute();
+
+		$edition = $stmt->fetch();
+		if (!count($edition) || !isset($edition['idEdition'])) {
+			return false;
+		}
+
 		$stmt = $pdo->prepare('INSERT INTO `shop` (`url`, `name`, `price`, `devise`, `edition_idEdition`) 
 							   VALUES (:url, :name, :price, :devise, :edition_idEdition);');
 		$stmt->bindParam(':url', $datas['url'], PDO::PARAM_STR);
@@ -126,6 +139,33 @@ class Shop extends BaseModel
 		if (!$pdo) {
 			$pdo  = $this->db;
 		}
+
+		if (isset($datas['edition_idEdition'])) {
+			// Check that the edition's ID exists
+			$stmt = $pdo->prepare('SELECT `idEdition`
+								   FROM `edition`
+								   WHERE `idEdition` = :idEdition;');
+			$stmt->bindParam(':idEdition', $datas['edition_idEdition'], PDO::PARAM_INT);
+			$stmt->execute();
+
+			$edition = $stmt->fetch();
+			if (!count($edition) || !isset($edition['idEdition'])) {
+				return false;
+			}
+		}
+		
+		// Check that the shop's ID exists
+		$stmt = $pdo->prepare('SELECT `idShop`
+							   FROM `shop`
+							   WHERE `idShop` = :idShop;');
+		$stmt->bindParam(':idShop', $idShop, PDO::PARAM_INT);
+		$stmt->execute();
+
+		$shop = $stmt->fetch();
+		if (!count($shop) || !isset($shop['idShop'])) {
+			return false;
+		}
+
 		$stmt = $pdo->prepare('UPDATE `shop`
 								SET `url`               = :url,
 									`name`              = :name,

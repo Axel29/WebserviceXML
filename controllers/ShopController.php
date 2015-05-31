@@ -1,7 +1,4 @@
 <?php
-/**
- * @todo Vérifier que l'ID de l'édition existe avant d'insérer ou de mettre à jour.
- */
 class ShopController extends BaseController
 {
 	/**
