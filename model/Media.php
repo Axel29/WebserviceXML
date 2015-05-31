@@ -4,9 +4,9 @@ class Media extends BaseModel
 	/**
 	 * Retrieve every available medias or medias by some param
 	 *
-	 * @param $paramName string Param's name to find by
-	 * @param $paramValue mixed Param's value
-	 * @return $medias array
+	 * @param string $paramName Param's name to find by
+	 * @param mixed $paramValue Param's value
+	 * @return array $medias Collection of medias
 	 */
 	public function findBy($paramName = null, $paramValue = null)
 	{
@@ -59,15 +59,15 @@ class Media extends BaseModel
 	/**
 	 * Insert a new media in database.
 	 *
-	 * @param $datas string Media's name
-	 * @return $id int Media's ID
+	 * @param array $datas Media's datas
+	 * @return int|bool $insertedMedia Media's ID or false if an error has occurred
 	 */
 	public function insertMedia($datas)
 	{
 		try {
 			$pdo  = $this->db;
 			$stmt = $pdo->prepare('INSERT INTO `media` (`type`, `url`, `unit`, `width`, `height`, `console_names`, `game_idGame`) 
-								   VALUES (:type, :url, :unit, :width, :height, :console_names, :game_idGame)');
+								   VALUES (:type, :url, :unit, :width, :height, :console_names, :game_idGame);');
 			$stmt->bindParam(':type', $datas['type'], PDO::PARAM_STR);
 			$stmt->bindParam(':url', $datas['url'], PDO::PARAM_STR);
 			$stmt->bindParam(':unit', $datas['unit'], PDO::PARAM_STR);
@@ -77,7 +77,8 @@ class Media extends BaseModel
 			$stmt->bindParam(':game_idGame', $datas['game_idGame'], PDO::PARAM_INT);
 			$stmt->execute();
 
-			return $pdo->lastInsertId();
+			$insertedMedia = $pdo->lastInsertId();
+			return $insertedMedia;
 		} catch (PDOException $e) {
 			return false;
 		} catch (Exception $e) {
@@ -88,8 +89,9 @@ class Media extends BaseModel
 	/**
 	 * Update media
 	 *
-	 * @param $idMedia int Media's ID
-	 * @param $media string Media's name
+	 * @param int $idMedia Media's ID
+	 * @param array $datas Media's datas
+	 * @return int|bool Number of affected rows or false if an error has occurred
 	 */
 	public function updateMedia($idMedia, $datas)
 	{
@@ -103,7 +105,7 @@ class Media extends BaseModel
 									   `height`        = :height,
 									   `console_names` = :console_names,
 									   `game_idGame`   = :game_idGame
-								   WHERE `idMedia` =  :idMedia');
+								   WHERE `idMedia` =  :idMedia;');
 			$stmt->bindParam(':type', $datas['type'], PDO::PARAM_STR);
 			$stmt->bindParam(':url', $datas['url'], PDO::PARAM_STR);
 			$stmt->bindParam(':unit', $datas['unit'], PDO::PARAM_STR);
@@ -120,10 +122,8 @@ class Media extends BaseModel
 			 */
 			return $stmt->rowCount();
 		} catch (PDOException $e) {
-			echo $e->getMessage(); die;
 			return false;
 		} catch (Exception $e) {
-			echo $e->getMessage(); die;
 			return false;
 		}
 	}
@@ -131,7 +131,8 @@ class Media extends BaseModel
 	/**
 	 * Delete an media by it's ID
 	 *
-	 * @param $id int Media's ID
+	 * @param int $idMedia Media's ID
+	 * @return int|bool Number of affected rows or false if an error has occurred
 	 */
 	public function deleteMedia($idMedia)
 	{
@@ -139,7 +140,7 @@ class Media extends BaseModel
 			$pdo  = $this->db;
 			$stmt = $pdo->prepare('DELETE 
 								   FROM `media` 
-								   WHERE `idMedia` =  :idMedia');
+								   WHERE `idMedia` =  :idMedia;');
 			$stmt->bindParam(':idMedia', $idMedia, PDO::PARAM_INT);
 			$stmt->execute();
 

@@ -4,9 +4,9 @@ class Gender extends BaseModel
 	/**
 	 * Retrieve every available genders or genders by some param
 	 *
-	 * @param $paramName string Param's name to find by
-	 * @param $paramValue mixed Param's value
-	 * @return $genders array
+	 * @param string $paramName Param's name to find by
+	 * @param mixed $paramValue Param's value
+	 * @return array $genders Collection of Genders
 	 */
 	public function findBy($paramName = null, $paramValue = null)
 	{
@@ -64,8 +64,8 @@ class Gender extends BaseModel
 	 * Insert a new gender in database.
 	 * If the gender already exists, return the existing gender's ID.
 	 *
-	 * @param $datas string Gender's name
-	 * @return $id int Gender's ID
+	 * @param array $datas Gender's datas
+	 * @return int|bool $insertedGender Gender's ID or false if an error has occurred
 	 */
 	public function insertGender($datas)
 	{
@@ -74,16 +74,18 @@ class Gender extends BaseModel
 		 * If so, return this ID
 		 */
 		if ($existingGender = $this->findBy('gender', $datas['gender'])) {
-			return $existingGender[0]['idGender'];
+			$insertedGender = $existingGender[0]['idGender'];
+			return $insertedGender;
 		} else {
 			try {
 				$pdo  = $this->db;
 				$stmt = $pdo->prepare('INSERT INTO `gender` (`gender`) 
-									   VALUES (:gender)');
+									   VALUES (:gender);');
 				$stmt->bindParam(':gender', $datas['gender'], PDO::PARAM_STR);
 				$stmt->execute();
 
-				return $pdo->lastInsertId();
+				$insertedGender = $pdo->lastInsertId();
+				return $insertedGender;
 			} catch (PDOException $e) {
 				return false;
 			} catch (Exception $e) {
@@ -95,8 +97,9 @@ class Gender extends BaseModel
 	/**
 	 * Update gender
 	 *
-	 * @param $idGender int Gender's ID
-	 * @param $gender string Gender's name
+	 * @param int $idGender Gender's ID
+	 * @param array $datas Gender's datas
+	 * @return int|bool Number of affected rows or false if an error has occurred
 	 */
 	public function updateGender($idGender, $datas)
 	{
@@ -104,7 +107,7 @@ class Gender extends BaseModel
 			$pdo  = $this->db;
 			$stmt = $pdo->prepare('UPDATE `gender` 
 								   SET `gender` = :gender 
-								   WHERE `idGender` =  :idGender');
+								   WHERE `idGender` =  :idGender;');
 			$stmt->bindParam(':idGender', $idGender, PDO::PARAM_INT);
 			$stmt->bindParam(':gender', $datas['gender'], PDO::PARAM_STR);
 			$stmt->execute();

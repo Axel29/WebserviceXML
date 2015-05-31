@@ -4,9 +4,9 @@ class Shop extends BaseModel
 	/**
 	 * Retrieve every available shops or shops by some param
 	 *
-	 * @param $paramName string Param's name to find by
-	 * @param $paramValue mixed Param's value
-	 * @return $shops array
+	 * @param string $paramName Param's name to find by
+	 * @param mixed $paramValue Param's value
+	 * @return array $shops Collection of Shops
 	 */
 	public function findBy($paramName = null, $paramValue = null)
 	{
@@ -54,13 +54,14 @@ class Shop extends BaseModel
 	/**
 	 * Insert a new shop in database.
 	 *
-	 * @param $datas array Shop's datas
-	 * @return $id int Shop's ID
+	 * @param array $datas Shop's datas
+	 * @return int|bool $insertedShop Inserted shop's ID or false if an error has occurred
 	 */
 	public function insertShop($datas)
 	{
 		try {
-			return $this->directInsert($datas);
+			$insertedShop = $this->directInsert($datas);
+			return $insertedShop;
 		} catch (PDOException $e) {
 			return false;
 		} catch (Exception $e) {
@@ -81,7 +82,7 @@ class Shop extends BaseModel
 			$pdo  = $this->db;
 		}
 		$stmt = $pdo->prepare('INSERT INTO `shop` (`url`, `name`, `price`, `devise`, `edition_idEdition`) 
-							   VALUES (:url, :name, :price, :devise, :edition_idEdition)');
+							   VALUES (:url, :name, :price, :devise, :edition_idEdition);');
 		$stmt->bindParam(':url', $datas['url'], PDO::PARAM_STR);
 		$stmt->bindParam(':name', $datas['name'], PDO::PARAM_STR);
 		$stmt->bindParam(':price', $datas['price'], PDO::PARAM_STR);
@@ -95,14 +96,15 @@ class Shop extends BaseModel
 	/**
 	 * Update shop
 	 *
-	 * @param $idShop int Shop's ID
-	 * @param $datas array Datas to update
-	 * @return Number of updated rows
+	 * @param int $idShop Shop's ID
+	 * @param array $datas Shop's datas
+	 * @return int $updatedShop Updated shop's ID
 	 */
 	public function updateShop($idShop, $datas)
 	{
 		try {
-			return $this->directUpdate($idShop, $datas);
+			$updatedShop = $this->directUpdate($idShop, $datas);
+			return $updatedShop;
 		} catch (PDOException $e) {
 			return false;
 		} catch (Exception $e) {
@@ -114,20 +116,23 @@ class Shop extends BaseModel
 	 * Update a shop without any try / catch.
 	 * Used to make valid transactions for other models.
 	 *
+	 * @param int $idShop Shop's ID
 	 * @param array $datas Shop's datas
-	 * @return int $id Inserted shop's ID
+	 * @param PDO $pdo Current's PDO object
 	 * @return bool
 	 */
-	public function directUpdate($idShop, $datas)
+	public function directUpdate($idShop, $datas, $pdo = null)
 	{
-		$pdo  = $this->db;
+		if (!$pdo) {
+			$pdo  = $this->db;
+		}
 		$stmt = $pdo->prepare('UPDATE `shop`
 								SET `url`               = :url,
 									`name`              = :name,
 									`price`             = :price,
 									`devise`            = :devise,
 									`edition_idEdition` = :edition_idEdition
-							   WHERE `idShop` =  :idShop');
+							   WHERE `idShop` =  :idShop;');
 		$stmt->bindParam(':url', $datas['url'], PDO::PARAM_STR);
 		$stmt->bindParam(':name', $datas['name'], PDO::PARAM_STR);
 		$stmt->bindParam(':price', $datas['price'], PDO::PARAM_STR);
@@ -142,7 +147,8 @@ class Shop extends BaseModel
 	/**
 	 * Delete a shop by it's ID
 	 *
-	 * @param $id int Shop's ID
+	 * @param int $idShop Shop's ID
+	 * @return int|bool Number of affected rows or false if an error has occurred
 	 */
 	public function deleteShop($idShop)
 	{
@@ -150,7 +156,7 @@ class Shop extends BaseModel
 			$pdo  = $this->db;
 			$stmt = $pdo->prepare('DELETE 
 								   FROM `shop` 
-								   WHERE `idShop` =  :idShop');
+								   WHERE `idShop` =  :idShop;');
 			$stmt->bindParam(':idShop', $idShop, PDO::PARAM_INT);
 			$stmt->execute();
 

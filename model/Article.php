@@ -4,9 +4,9 @@ class Article extends BaseModel
 	/**
 	 * Retrieve every available articles or articles by some param
 	 *
-	 * @param $paramName string Param's name to find by
-	 * @param $paramValue mixed Param's value
-	 * @return $articles array
+	 * @param string $paramName Param's name to find by
+	 * @param mixed $paramValue Param's value
+	 * @return array $articles Collection of articles as array
 	 */
 	public function findBy($paramName = null, $paramValue = null)
 	{
@@ -57,15 +57,15 @@ class Article extends BaseModel
 	/**
 	 * Insert a new article in database.
 	 *
-	 * @param $datas string Article's name
-	 * @return $id int Article's ID
+	 * @param array $datas Article's datas
+	 * @return int|bool $insertedArticle Article's ID or false if an error has occurred
 	 */
 	public function insertArticle($datas)
 	{
 		try {
 			$pdo  = $this->db;
 			$stmt = $pdo->prepare('INSERT INTO `article` (`type`, `title`, `user_name`, `date`, `console_names`, `game_idGame`) 
-								   VALUES (:type, :title, :user_name, :date, :console_names, :game_idGame)');
+								   VALUES (:type, :title, :user_name, :date, :console_names, :game_idGame);');
 			$stmt->bindParam(':type', $datas['type'], PDO::PARAM_STR);
 			$stmt->bindParam(':title', $datas['title'], PDO::PARAM_STR);
 			$stmt->bindParam(':user_name', $datas['user_name'], PDO::PARAM_STR);
@@ -74,7 +74,8 @@ class Article extends BaseModel
 			$stmt->bindParam(':game_idGame', $datas['game_idGame'], PDO::PARAM_INT);
 			$stmt->execute();
 
-			return $pdo->lastInsertId();
+			$insertedArticle = $pdo->lastInsertId();
+			return $insertedArticle;
 		} catch (PDOException $e) {
 			return false;
 		} catch (Exception $e) {
@@ -85,8 +86,9 @@ class Article extends BaseModel
 	/**
 	 * Update article
 	 *
-	 * @param $idArticle int Article's ID
-	 * @param $article string Article's name
+	 * @param int $idArticle Article's ID
+	 * @param array $datas Article's datas
+	 * @return int|bool Number of affected rows or false if an error has occurred
 	 */
 	public function updateArticle($idArticle, $datas)
 	{
@@ -99,7 +101,7 @@ class Article extends BaseModel
 									   `date`          = :date,
 									   `console_names` = :console_names,
 									   `game_idGame`   = :game_idGame
-								   WHERE `idArticle` =  :idArticle');
+								   WHERE `idArticle` =  :idArticle;');
 			$stmt->bindParam(':type', $datas['type'], PDO::PARAM_STR);
 			$stmt->bindParam(':title', $datas['title'], PDO::PARAM_STR);
 			$stmt->bindParam(':user_name', $datas['user_name'], PDO::PARAM_STR);
@@ -115,10 +117,8 @@ class Article extends BaseModel
 			 */
 			return $stmt->rowCount();
 		} catch (PDOException $e) {
-			echo $e->getMessage(); die;
 			return false;
 		} catch (Exception $e) {
-			echo $e->getMessage(); die;
 			return false;
 		}
 	}
@@ -127,6 +127,7 @@ class Article extends BaseModel
 	 * Delete an article by it's ID
 	 *
 	 * @param $id int Article's ID
+	 * @return int|bool Number of affected rows or false if an error has occurred
 	 */
 	public function deleteArticle($idArticle)
 	{
@@ -134,7 +135,7 @@ class Article extends BaseModel
 			$pdo  = $this->db;
 			$stmt = $pdo->prepare('DELETE 
 								   FROM `article` 
-								   WHERE `idArticle` =  :idArticle');
+								   WHERE `idArticle` =  :idArticle;');
 			$stmt->bindParam(':idArticle', $idArticle, PDO::PARAM_INT);
 			$stmt->execute();
 

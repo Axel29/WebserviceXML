@@ -4,9 +4,9 @@ class Comment extends BaseModel
 	/**
 	 * Retrieve every available comments or comments by some param
 	 *
-	 * @param $paramName string Param's name to find by
-	 * @param $paramValue mixed Param's value
-	 * @return $comments array
+	 * @param string $paramName Param's name to find by
+	 * @param mixed $paramValue Param's value
+	 * @return array $comments Collection of comments
 	 */
 	public function findBy($paramName = null, $paramValue = null)
 	{
@@ -58,13 +58,14 @@ class Comment extends BaseModel
 	/**
 	 * Insert a new comment in database.
 	 *
-	 * @param $datas array Comment's name
-	 * @return $id int Comment's ID
+	 * @param array $datas Comment's datas
+	 * @return int|bool $insertComment Comment's ID or false if an error has occurred
 	 */
 	public function insertComment($datas)
 	{
 		try {
-			return $this->directInsert($datas);
+			$insertedComment = $this->directInsert($datas);
+			return $insertedComment;
 		} catch (PDOException $e) {
 			return false;
 		} catch (Exception $e) {
@@ -76,9 +77,9 @@ class Comment extends BaseModel
 	 * Insert a new comment in database without any try / catch.
 	 * Used to make valid transactions for other models.
 	 *
-	 * @param array $datas Shop's datas
+	 * @param array $datas Comment's datas
 	 * @param PDO $pdo Current's PDO object
-	 * @return int $id Inserted comment's ID
+	 * @return int $insertedComment Inserted comment's ID
 	 */
 	public function directInsert($datas, $pdo = null)
 	{
@@ -86,7 +87,7 @@ class Comment extends BaseModel
 			$pdo  = $this->db;
 		}
 		$stmt = $pdo->prepare('INSERT INTO `comment` (`date`, `user_name`, `note`, `like`, `dislike`, `text`, `test_idTest`) 
-							   VALUES (:date, :user_name, :note, :like, :dislike, :text, :test_idTest)');
+							   VALUES (:date, :user_name, :note, :like, :dislike, :text, :test_idTest);');
 		$stmt->bindParam(':date', $datas['date'], PDO::PARAM_STR);
 		$stmt->bindParam(':user_name', $datas['user_name'], PDO::PARAM_STR);
 		$stmt->bindParam(':note', $datas['note'], PDO::PARAM_INT);
@@ -96,24 +97,25 @@ class Comment extends BaseModel
 		$stmt->bindParam(':test_idTest', $datas['test_idTest'], PDO::PARAM_INT);
 		$stmt->execute();
 
-		return $pdo->lastInsertId();
+		$insertedComment = $pdo->lastInsertId();
+		return $insertedComment;
 	}
 
 	/**
 	 * Update comment
 	 *
-	 * @param $idComment int Comment's ID
-	 * @param $datas array Datas to update
+	 * @param int $idComment Comment's ID
+	 * @param array $datas Comment's datas
+	 * @return int|bool Updated comment's ID or false if an error has occured
 	 */
 	public function updateComment($idComment, $datas)
 	{
 		try {
-			return $this->directUpdate($idShop, $datas);
+			$updatedComment = $this->directUpdate($idComment, $datas);
+			return $updatedComment;
 		} catch (PDOException $e) {
-			echo $e->getMessage();
 			return false;
 		} catch (Exception $e) {
-			echo $e->getMessage();
 			return false;
 		}
 	}
@@ -122,13 +124,16 @@ class Comment extends BaseModel
 	 * Update a comment without any try / catch.
 	 * Used to make valid transactions for other models.
 	 *
-	 * @param array $datas Shop's datas
-	 * @return int $id Inserted comment's ID
+	 * @param int $idComment Comment's ID
+	 * @param array $datas Comment's datas
+	 * @param PDO $pdo Current's PDO object
 	 * @return bool
 	 */
-	public function directUpdate($idComment, $datas)
+	public function directUpdate($idComment, $datas, $pdo = null)
 	{
-		$pdo  = $this->db;
+		if (!$pdo) {
+			$pdo  = $this->db;
+		}
 		$stmt = $pdo->prepare('UPDATE `comment` 
 							   SET `date` = :date,
 							       `user_name` = :user_name,
@@ -137,7 +142,7 @@ class Comment extends BaseModel
 							       `dislike` = :dislike,
 							       `text` = :text,
 							       `test_idTest` = :test_idTest
-							   WHERE `idComment` =  :idComment');
+							   WHERE `idComment` =  :idComment;');
 		$stmt->bindParam(':date', $datas['date'], PDO::PARAM_STR);
 		$stmt->bindParam(':user_name', $datas['user_name'], PDO::PARAM_STR);
 		$stmt->bindParam(':note', $datas['note'], PDO::PARAM_INT);
@@ -154,7 +159,8 @@ class Comment extends BaseModel
 	/**
 	 * Delete a comment by it's ID
 	 *
-	 * @param $id int Comment's ID
+	 * @param int $idComment Comment's ID
+	 * @return int|bool Number of updated rows or false if an error has occurred
 	 */
 	public function deleteComment($idComment)
 	{
@@ -162,7 +168,7 @@ class Comment extends BaseModel
 			$pdo  = $this->db;
 			$stmt = $pdo->prepare('DELETE 
 								   FROM `comment` 
-								   WHERE `idComment` =  :idComment');
+								   WHERE `idComment` =  :idComment;');
 			$stmt->bindParam(':idComment', $idComment, PDO::PARAM_INT);
 			$stmt->execute();
 

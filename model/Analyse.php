@@ -4,9 +4,9 @@ class Analyse extends BaseModel
 	/**
 	 * Retrieve every available analyses or analyses by some param
 	 *
-	 * @param $paramName string Param's name to find by
-	 * @param $paramValue mixed Param's value
-	 * @return $analyses array
+	 * @param string $paramName Param's name to find by
+	 * @param mixed $paramValue Param's value
+	 * @return array $analyses Collection of analyses as array
 	 */
 	public function findBy($paramName = null, $paramValue = null)
 	{
@@ -43,13 +43,14 @@ class Analyse extends BaseModel
 	/**
 	 * Insert a new analyse in database.
 	 *
-	 * @param $datas array Analyse's name
-	 * @return $id int Analyse's ID
+	 * @param array $datas Analyse's datas
+	 * @return int|bool $insertedAnalyse Analyse's ID or false if an error has occurred
 	 */
 	public function insertAnalyse($datas)
 	{
 		try {
-			return $this->directInsert($datas);
+			$insertedAnalyse = $this->directInsert($datas);
+			return $insertedAnalyse;
 		} catch (PDOException $e) {
 			return false;
 		} catch (Exception $e) {
@@ -71,7 +72,7 @@ class Analyse extends BaseModel
 			$pdo  = $this->db;
 		}
 		$stmt = $pdo->prepare('INSERT INTO `analyse` (`analyse`, `type`, `test_idTest`) 
-							   VALUES (:analyse, :type, :test_idTest)');
+							   VALUES (:analyse, :type, :test_idTest);');
 		$stmt->bindParam(':analyse', $datas['analyse'], PDO::PARAM_STR);
 		$stmt->bindParam(':type', $datas['type'], PDO::PARAM_STR);
 		$stmt->bindParam(':test_idTest', $datas['test_idTest'], PDO::PARAM_INT);
@@ -83,13 +84,15 @@ class Analyse extends BaseModel
 	/**
 	 * Update analyse
 	 *
-	 * @param $idAnalyse int Analyse's ID
-	 * @param $datas array Datas to update
+	 * @param int $idAnalyse Analyse's ID
+	 * @param array $datas Datas to update
+	 * @return int|bool $updatedAnalyse Updated analyse's ID or false if an error has occurred
 	 */
 	public function updateAnalyse($idAnalyse, $datas)
 	{
 		try {
-			return $this->directUpdate($idAnalyse, $datas);
+			$updatedAnalyse = $this->directUpdate($idAnalyse, $datas);
+			return $updatedAnalyse;
 		} catch (PDOException $e) {
 			return false;
 		} catch (Exception $e) {
@@ -98,26 +101,27 @@ class Analyse extends BaseModel
 	}
 
 	/**
-	 * Update a shop without any try / catch.
+	 * Update a analyse without any try / catch.
 	 * Used to make valid transactions for other models.
 	 *
+	 * @param int $idAnalyse Analyse's ID
 	 * @param array $datas Analyse's datas
-	 * @return int $id Inserted shop's ID
+	 * @param PDO $pdo Current's PDO object
 	 * @return bool
 	 */
-	public function directUpdate($idAnalyse, $datas)
+	public function directUpdate($idAnalyse, $datas, $pdo = null)
 	{
-		$pdo  = $this->db;
+		if (!$pdo) {
+			$pdo  = $this->db;
+		}
 		$stmt = $pdo->prepare('UPDATE `analyse` 
 							   SET `analyse` = :analyse, `type` = :type, `test_idTest` = :test_idTest 
-							   WHERE `idAnalyse` =  :idAnalyse');
+							   WHERE `idAnalyse` =  :idAnalyse;');
 		$stmt->bindParam(':analyse', $datas['analyse'], PDO::PARAM_STR);
 		$stmt->bindParam(':type', $datas['type'], PDO::PARAM_STR);
 		$stmt->bindParam(':test_idTest', $datas['test_idTest'], PDO::PARAM_INT);
 		$stmt->bindParam(':idAnalyse', $idAnalyse, PDO::PARAM_INT);
 		$stmt->execute();
-
-		$pdo = null;
 
 		return true;
 	}
@@ -125,7 +129,8 @@ class Analyse extends BaseModel
 	/**
 	 * Delete a analyse by it's ID
 	 *
-	 * @param $id int Analyse's ID
+	 * @param int|bool $idAnalyse Analyse's ID or false if an error has occurred
+	 * @return int|bool Number of affected rows or false if an error has occurred
 	 */
 	public function deleteAnalyse($idAnalyse)
 	{
@@ -133,7 +138,7 @@ class Analyse extends BaseModel
 			$pdo  = $this->db;
 			$stmt = $pdo->prepare('DELETE 
 								   FROM `analyse` 
-								   WHERE `idAnalyse` =  :idAnalyse');
+								   WHERE `idAnalyse` =  :idAnalyse;');
 			$stmt->bindParam(':idAnalyse', $idAnalyse, PDO::PARAM_INT);
 			$stmt->execute();
 

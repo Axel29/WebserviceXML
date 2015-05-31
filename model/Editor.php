@@ -4,9 +4,9 @@ class Editor extends BaseModel
 	/**
 	 * Retrieve every available editors or editors by some param
 	 *
-	 * @param $paramName string Param's name to find by
-	 * @param $paramValue mixed Param's value
-	 * @return $editors array
+	 * @param string $paramName Param's name to find by
+	 * @param mixed $paramValue Param's value
+	 * @return array $editors Collection of Editors
 	 */
 	public function findBy($paramName = null, $paramValue = null)
 	{
@@ -64,8 +64,8 @@ class Editor extends BaseModel
 	 * Insert a new editor in database.
 	 * If the editor already exists, return the existing editor's ID.
 	 *
-	 * @param $datas string Editor's name
-	 * @return $id int Editor's ID
+	 * @param array $datas Editor's datas
+	 * @return int Editor's ID
 	 */
 	public function insertEditor($datas)
 	{
@@ -79,7 +79,7 @@ class Editor extends BaseModel
 			try {
 				$pdo  = $this->db;
 				$stmt = $pdo->prepare('INSERT INTO `editor` (`editor`) 
-									   VALUES (:editor)');
+									   VALUES (:editor);');
 				$stmt->bindParam(':editor', $datas['editor'], PDO::PARAM_STR);
 				$stmt->execute();
 
@@ -95,8 +95,9 @@ class Editor extends BaseModel
 	/**
 	 * Update editor
 	 *
-	 * @param $idEditor int Editor's ID
-	 * @param $editor string Editor's name
+	 * @param int $idEditor Editor's ID
+	 * @param array $datas Editor's datas
+	 * @return int|bool Number of affected rows or false if an error has occurred
 	 */
 	public function updateEditor($idEditor, $datas)
 	{
@@ -104,7 +105,7 @@ class Editor extends BaseModel
 			$pdo  = $this->db;
 			$stmt = $pdo->prepare('UPDATE `editor` 
 								   SET `editor` = :editor 
-								   WHERE `idEditor` =  :idEditor');
+								   WHERE `idEditor` =  :idEditor;');
 			$stmt->bindParam(':editor', $datas['editor'], PDO::PARAM_STR);
 			$stmt->bindParam(':idEditor', $idEditor, PDO::PARAM_INT);
 			$stmt->execute();

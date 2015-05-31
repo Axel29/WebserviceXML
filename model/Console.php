@@ -4,9 +4,9 @@ class Console extends BaseModel
 	/**
 	 * Retrieve every available consoles or consoles by some param
 	 *
-	 * @param $paramName string Param's name to find by
-	 * @param $paramValue mixed Param's value
-	 * @return $consoles array
+	 * @param string $paramName Param's name to find by
+	 * @param mixed $paramValue Param's value
+	 * @return array $consoles Collection of consoles
 	 */
 	public function findBy($paramName = null, $paramValue = null)
 	{
@@ -40,8 +40,8 @@ class Console extends BaseModel
      * Retrieve number of available consoles for a game by console ID.
      * Used to check that there is at least one console left before deleting as they are required.
      *
-     * @param $consoleId int Console's ID
-     * @return $result['nbrConsole'] int Number of existing consoles
+     * @param int $consoleId Console's ID
+     * @return int|bool $numberOfConsolesLeft Number of existing consoles or false if an error has occurred
      */
     public function getNumberOfConsolesLeft($consoleId)
     {
@@ -53,13 +53,14 @@ class Console extends BaseModel
 								   WHERE `c`.`game_idGame` = (SELECT `c`.`game_idGame`
                                                              FROM `console` `c`
                                                              WHERE `c`.`idConsole` = :idConsole
-                                                            );
-                                  ');
+                                                            );'
+                                  );
             $stmt->bindParam(':idConsole', $consoleId, PDO::PARAM_INT);
             $stmt->execute();
 
-            $result = $stmt->fetch();
-            return $result['nbrConsoles'];
+			$result               = $stmt->fetch();
+			$numberOfConsolesLeft = $result['nbrConsoles'];
+            return $numberOfConsolesLeft;
         } catch (PDOException $e) {
             return false;
         } catch (Exception $e) {
@@ -91,8 +92,8 @@ class Console extends BaseModel
 	/**
 	 * Insert a new console in database.
 	 *
-	 * @param $datas array Console's name
-	 * @return $id int Console's ID
+	 * @param array $datas Console's datas
+	 * @return int|bool $consoleId Console's ID or false if an error has occurred
 	 */
 	public function insertConsole($datas)
 	{
@@ -150,24 +151,30 @@ class Console extends BaseModel
 			}
 
 			// Insert datas into 'dlc' table
-			$dlcModel = new Dlc();
-			foreach ($datas['dlcs'] as $dlc) {
-				$dlc['console_idConsole'] = $consoleId;
-				$insertedDlc              = $dlcModel->directInsert($dlc, $pdo);
+			if (isset($datas['dlcs'])) {
+				$dlcModel = new Dlc();
+				foreach ($datas['dlcs'] as $dlc) {
+					$dlc['console_idConsole'] = $consoleId;
+					$insertedDlc              = $dlcModel->directInsert($dlc, $pdo);
+				}
 			}
 
 			// Insert datas into 'config' table
-			$configModel = new Config();
-			foreach ($datas['configs'] as $config) {
-				$config['console_idConsole'] = $consoleId;
-				$insertedConfig              = $configModel->directInsert($config, $pdo);
+			if (isset($datas['configs'])) {
+				$configModel = new Config();
+				foreach ($datas['configs'] as $config) {
+					$config['console_idConsole'] = $consoleId;
+					$insertedConfig              = $configModel->directInsert($config, $pdo);
+				}
 			}
 
 			// Insert datas into 'test' table and it's sub-tables (comment, analyse)
-			$testModel = new Test();
-			foreach ($datas['tests'] as $test) {
-				$test['console_idConsole'] = $consoleId;
-				$insertedTest              = $testModel->directInsert($test, $pdo);
+			if (isset($datas['tests'])) {
+				$testModel = new Test();
+				foreach ($datas['tests'] as $test) {
+					$test['console_idConsole'] = $consoleId;
+					$insertedTest              = $testModel->directInsert($test, $pdo);
+				}
 			}
 
 			// If everything went well, commit the transaction
@@ -189,8 +196,8 @@ class Console extends BaseModel
 	/**
 	 * Uppegi console
 	 *
-	 * @param $idConsole int Console's ID
-	 * @param $datas array Datas to update
+	 * @param int $idConsole Console's ID
+	 * @param array $datas Datas to update
 	 */
 	public function updateConsole($idConsole, $datas)
 	{
@@ -227,7 +234,8 @@ class Console extends BaseModel
 	/**
 	 * Delete a console by it's ID
 	 *
-	 * @param $id int Console's ID
+	 * @param int $idConsole Console's ID
+	 * @return int|bool Number of affected rows or false if an error has occurred
 	 */
 	public function deleteConsole($idConsole)
 	{

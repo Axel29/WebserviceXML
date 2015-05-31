@@ -4,9 +4,9 @@ class Support extends BaseModel
 	/**
 	 * Retrieve every available supports or supports by some param
 	 *
-	 * @param $paramName string Param's name to find by
-	 * @param $paramValue mixed Param's value
-	 * @return $supports array
+	 * @param string $paramName Param's name to find by
+	 * @param mixed $paramValue Param's value
+	 * @return array $supports Collection of supports
 	 */
 	public function findBy($paramName = null, $paramValue = null)
 	{
@@ -67,13 +67,14 @@ class Support extends BaseModel
 	 * Insert a new support in database.
 	 * If the support already exists, return the existing support's ID.
 	 *
-	 * @param $datas array Support's name
-	 * @return $id int Support's ID
+	 * @param array $datas Support's datas
+	 * @return int|bool $insertedSupport Inserted support's ID or false if an error has occurred
 	 */
 	public function insertSupport($datas)
 	{
 		try {
-			return $this->directInsert($datas);
+			$insertedSupport = $this->directInsert($datas);
+			return $insertedSupport;
 		} catch (PDOException $e) {
 			return false;
 		} catch (Exception $e) {
@@ -87,7 +88,7 @@ class Support extends BaseModel
 	 *
 	 * @param array $datas Support's datas
 	 * @param PDO $pdo Current's PDO object
-	 * @return int $id Inserted support's ID
+	 * @return int $insertedSupport Inserted support's ID
 	 */
 	public function directInsert($datas, $pdo = null)
 	{
@@ -96,30 +97,34 @@ class Support extends BaseModel
 		 * If so, return this ID
 		 */
 		if ($existingMode = $this->findBy('support', $datas['support'])) {
-			return $existingMode[0]['idSupport'];
+			$insertedSupport = $existingMode[0]['idSupport'];
+			return $insertedSupport;
 		} else {
 			if (!$pdo) {
 				$pdo  = $this->db;
 			}
 			$stmt = $pdo->prepare('INSERT INTO `support` (`support`) 
-								   VALUES (:support)');
+								   VALUES (:support);');
 			$stmt->bindParam(':support', $datas['support'], PDO::PARAM_STR);
 			$stmt->execute();
 
-			return $pdo->lastInsertId();
+			$insertedSupport = $pdo->lastInsertId();
+			return $insertedSupport;
 		}
 	}
 
 	/**
 	 * Update support
 	 *
-	 * @param $idSupport int Support's ID
-	 * @param $datas array Datas to update
+	 * @param int $idSupport Support's ID
+	 * @param array $datas Datas to update
+	 * @return int|bool $updatedSupport Updated support's ID or false if an error has occurred
 	 */
 	public function updateSupport($idSupport, $datas)
 	{
 		try {
-			return $this->directUpdate($idSupport, $datas);
+			$insertedSupport = $this->directUpdate($idSupport, $datas);
+			return $insertedSupport;
 		} catch (PDOException $e) {
 			return false;
 		} catch (Exception $e) {
@@ -133,14 +138,17 @@ class Support extends BaseModel
 	 *
 	 * @param array $datas Support's datas
 	 * @return int $id Inserted support's ID
+	 * @param PDO $pdo Current's PDO object
 	 * @return bool
 	 */
-	public function directUpdate($idSupport, $datas)
+	public function directUpdate($idSupport, $datas, $pdo = null)
 	{
-		$pdo  = $this->db;
+		if (!$pdo) {
+			$pdo  = $this->db;
+		}
 		$stmt = $pdo->prepare('UPDATE `support`
 							   SET `support` = :support
-							   WHERE `idSupport` =  :idSupport');
+							   WHERE `idSupport` =  :idSupport;');
 		$stmt->bindParam(':support', $datas['support'], PDO::PARAM_STR);
 		$stmt->bindParam(':idSupport', $idSupport, PDO::PARAM_INT);
 		$stmt->execute();
@@ -151,7 +159,8 @@ class Support extends BaseModel
 	/**
 	 * Delete a support by it's ID
 	 *
-	 * @param $id int Support's ID
+	 * @param int $idSupport Support's ID
+	 * @return int|bool Number of affected rows or false if an error has occurred
 	 */
 	public function deleteSupport($idSupport)
 	{

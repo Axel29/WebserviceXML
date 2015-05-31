@@ -4,9 +4,9 @@ class Theme extends BaseModel
 	/**
 	 * Retrieve every available themes or themes by some param
 	 *
-	 * @param $paramName string Param's name to find by
-	 * @param $paramValue mixed Param's value
-	 * @return $themes array
+	 * @param string $paramName Param's name to find by
+	 * @param mixed $paramValue Param's value
+	 * @return array $themes Collection of Themes
 	 */
 	public function findBy($paramName = null, $paramValue = null)
 	{
@@ -64,8 +64,8 @@ class Theme extends BaseModel
 	 * Insert a new theme in database.
 	 * If the theme already exists, return the existing theme's ID.
 	 *
-	 * @param $datas string Theme's name
-	 * @return $id int Theme's ID
+	 * @param array $datas Theme's datas
+	 * @return int|bool $insertedTheme Theme's ID or false if an error has occurred
 	 */
 	public function insertTheme($datas)
 	{
@@ -83,7 +83,8 @@ class Theme extends BaseModel
 				$stmt->bindParam(':theme', $datas['theme'], PDO::PARAM_STR);
 				$stmt->execute();
 
-				return $pdo->lastInsertId();
+				$insertedTheme = $pdo->lastInsertId();
+				return $insertedTheme;
 			} catch (PDOException $e) {
 				return false;
 			} catch (Exception $e) {
@@ -95,8 +96,9 @@ class Theme extends BaseModel
 	/**
 	 * Update theme
 	 *
-	 * @param $idTheme int Theme's ID
-	 * @param $theme string Theme's name
+	 * @param int $idTheme Theme's ID
+	 * @param array $theme Theme's datas
+	 * @return int|bool Number of affected rows or false if an error has occurred
 	 */
 	public function updateTheme($idTheme, $datas)
 	{

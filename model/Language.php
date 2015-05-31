@@ -4,9 +4,9 @@ class Language extends BaseModel
 	/**
 	 * Retrieve every available languages or languages by some param
 	 *
-	 * @param $paramName string Param's name to find by
-	 * @param $paramValue mixed Param's value
-	 * @return $languages array
+	 * @param string $paramName Param's name to find by
+	 * @param mixed $paramValue Param's value
+	 * @return array $languages Collection of Languages
 	 */
 	public function findBy($paramName = null, $paramValue = null)
 	{
@@ -64,8 +64,8 @@ class Language extends BaseModel
 	 * Insert a new language in database.
 	 * If the language already exists, return the existing language's ID.
 	 *
-	 * @param $datas string Language's name
-	 * @return $id int Language's ID
+	 * @param array $datas Language's datas
+	 * @return int|bool $insertedLanguage Language's ID or false if an error has occurred
 	 */
 	public function insertLanguage($datas)
 	{
@@ -79,11 +79,12 @@ class Language extends BaseModel
 			try {
 				$pdo  = $this->db;
 				$stmt = $pdo->prepare('INSERT INTO `language` (`language`) 
-									   VALUES (:language)');
+									   VALUES (:language);');
 				$stmt->bindParam(':language', $datas['language'], PDO::PARAM_STR);
 				$stmt->execute();
 
-				return $pdo->lastInsertId();
+				$insertedLanguage = $pdo->lastInsertId();
+				return $insertedLanguage;
 			} catch (PDOException $e) {
 				return false;
 			} catch (Exception $e) {
@@ -95,8 +96,9 @@ class Language extends BaseModel
 	/**
 	 * Update language
 	 *
-	 * @param $idLanguage int Language's ID
-	 * @param $language string Language's name
+	 * @param int $idLanguage int Language's ID
+	 * @param array $datas Language's datas
+	 * @return int|bool Number of affected rows or false if an error has occurred
 	 */
 	public function updateLanguage($idLanguage, $datas)
 	{
@@ -104,7 +106,7 @@ class Language extends BaseModel
 			$pdo  = $this->db;
 			$stmt = $pdo->prepare('UPDATE `language` 
 								   SET `language` = :language 
-								   WHERE `idLanguage` =  :idLanguage');
+								   WHERE `idLanguage` =  :idLanguage;');
 			$stmt->bindParam(':language', $datas['language'], PDO::PARAM_STR);
 			$stmt->bindParam(':idLanguage', $idLanguage, PDO::PARAM_INT);
 			$stmt->execute();

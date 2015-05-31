@@ -4,9 +4,9 @@ class Test extends BaseModel
 	/**
 	 * Retrieve every available tests or tests by some param
 	 *
-	 * @param $paramName string Param's name to find by
-	 * @param $paramValue mixed Param's value
-	 * @return $tests array
+	 * @param string $paramName Param's name to find by
+	 * @param mixed $paramValue Param's value
+	 * @return array $tests Collection of Tests
 	 */
 	public function findBy($paramName = null, $paramValue = null)
 	{
@@ -37,8 +37,8 @@ class Test extends BaseModel
      * Retrieve number of available tests for a console by test ID.
      * Used to check that there is at least one test left before deleting as they are required.
      *
-     * @param $testId int Test's ID
-     * @return $result['nbrTest'] int Number of existing tests
+     * @param int $testId Test's ID
+     * @return int|bool $numberOfTestsLeft Number of existing tests or false if an error has occurred
      */
     public function getNumberOfTestsLeft($testId)
     {
@@ -50,13 +50,14 @@ class Test extends BaseModel
 								   WHERE `c`.`idConsole` = (SELECT `t`.`console_idConsole`
                                                              FROM `test` `t`
                                                              WHERE `t`.`idTest` = :idTest
-                                                            )
-                                  ');
+                                                            );'
+                                  );
             $stmt->bindParam(':idTest', $testId, PDO::PARAM_INT);
             $stmt->execute();
 
-            $result = $stmt->fetch();
-            return $result['nbrTests'];
+			$result            = $stmt->fetch();
+			$numberOfTestsLeft = $result['nbrTests'];
+            return $numberOfTestsLeft
         } catch (PDOException $e) {
             return false;
         } catch (Exception $e) {
@@ -85,8 +86,8 @@ class Test extends BaseModel
 	/**
 	 * Insert a new test in database.
 	 *
-	 * @param $datas array Test's name
-	 * @return $id int Test's ID
+	 * @param array $datas Test's datas
+	 * @return int|bool $insertedTest Test's ID or false if an error has occurred
 	 */
 	public function insertTest($datas)
 	{
@@ -95,12 +96,12 @@ class Test extends BaseModel
 			// Begin transaction to avoid inserting wrong or partial datas
 			$pdo->beginTransaction();
 
-			$testId = $this->directInsert($datas);
+			$insertedTest = $this->directInsert($datas);
 
 			// If everything went well, commit the transaction
 			$pdo->commit();
 
-			return $testId;
+			return $insertedTest;
 		} catch (PDOException $e) {
 			// Cancel the transaction
 		    $pdo->rollback();
@@ -116,7 +117,7 @@ class Test extends BaseModel
 	 *
 	 * @param array $datas Support's datas
 	 * @param PDO $pdo Current's PDO object
-	 * @return int $id Inserted mode's ID
+	 * @return int $insertedTest Inserted mode's ID
 	 */
 	public function directInsert($datas, $pdo = null)
 	{
@@ -132,13 +133,13 @@ class Test extends BaseModel
 		$stmt->bindParam(':console_idConsole', $datas['console_idConsole'], PDO::PARAM_INT);
 		$stmt->execute();
 
-		$testId = $pdo->lastInsertId();
+		$insertedTest = $pdo->lastInsertId();
 
 		// Insert comments
 		if (isset($datas['comments'])) {
 			$commentModel = new Comment();
 			foreach ($datas['comments'] as $comment) {
-				$comment['test_idTest'] = $testId;
+				$comment['test_idTest'] = $insertedTest;
 				$insertedComment = $commentModel->directInsert($comment, $pdo);
 			}
 		}
@@ -147,18 +148,19 @@ class Test extends BaseModel
 		if (isset($datas['analyses'])) {
 			$analyseModel = new Analyse();
 			foreach ($datas['analyses'] as $analyse) {
-				$analyse['test_idTest'] = $testId;
+				$analyse['test_idTest'] = $insertedTest;
 				$insertedAnalyse = $analyseModel->directInsert($analyse, $pdo);
 			}
 		}
-		return $testId;
+		return $insertedTest;
 	}
 
 	/**
 	 * Update test
 	 *
-	 * @param $idTest int Test's ID
-	 * @param $datas array Datas to update
+	 * @param int $idTest Test's ID
+	 * @param array $datas Test's datas
+	 * @return int|bool $updatedTest Updated test's ID or false if an error has occurred
 	 */
 	public function updateTest($idTest, $datas)
 	{
@@ -167,7 +169,7 @@ class Test extends BaseModel
 			// Begin transaction to avoid inserting wrong or partial datas
 			$pdo->beginTransaction();
 
-			$update = $this->directUpdate($idTest, $datas);
+			$updatedTest = $this->directUpdate($idTest, $datas);
 
 			// If everything went well, commit the transaction
 			$pdo->commit();
@@ -185,20 +187,23 @@ class Test extends BaseModel
 	 * Update an edition without any try / catch.
 	 * Used to make valid transactions for other models.
 	 *
+	 * @param int $idTest Test's ID
 	 * @param array $datas Edition's datas
-	 * @return int $id Inserted edition's ID
+	 * @param PDO $pdo Current's PDO object
 	 * @return bool
 	 */
-	public function directUpdate($idTest, $datas)
+	public function directUpdate($idTest, $datas, $pdo = null)
 	{
-		$pdo  = $this->db;
+		if (!$pdo) {
+			$pdo  = $this->db;
+		}
 		$stmt = $pdo->prepare('UPDATE `test`
 							   SET `report`            = :report,
 								   `date`              = :date,
 								   `user_name`         = :user_name,
 								   `note`              = :note,
 								   `console_idConsole` = :console_idConsole
-							   WHERE `idTest` =  :idTest');
+							   WHERE `idTest` =  :idTest;');
 		$stmt->bindParam(':report', $datas['report'], PDO::PARAM_STR);
 		$stmt->bindParam(':date', $datas['date'], PDO::PARAM_STR);
 		$stmt->bindParam(':user_name', $datas['user_name'], PDO::PARAM_STR);
@@ -224,16 +229,14 @@ class Test extends BaseModel
 			}
 		}
 
-		// Close PDO connection
-		$pdo = null;
-
 		return true;
 	}
 
 	/**
 	 * Delete a test by it's ID
 	 *
-	 * @param $id int Test's ID
+	 * @param int $idTest Test's ID
+	 * @return int|bool Number of affected rows or false if an error has occurred
 	 */
 	public function deleteTest($idTest)
 	{
@@ -241,7 +244,7 @@ class Test extends BaseModel
 			$pdo  = $this->db;
 			$stmt = $pdo->prepare('DELETE 
 								   FROM `test` 
-								   WHERE `idTest` =  :idTest');
+								   WHERE `idTest` =  :idTest;');
 			$stmt->bindParam(':idTest', $idTest, PDO::PARAM_INT);
 			$stmt->execute();
 

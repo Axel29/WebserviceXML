@@ -4,9 +4,9 @@ class Tip extends BaseModel
 	/**
 	 * Retrieve every available tips or tips by some param
 	 *
-	 * @param $paramName string Param's name to find by
-	 * @param $paramValue mixed Param's value
-	 * @return $tips array
+	 * @param string $paramName Param's name to find by
+	 * @param mixed $paramValue Param's value
+	 * @return array $tips Collection of tips
 	 */
 	public function findBy($paramName = null, $paramValue = null)
 	{
@@ -51,23 +51,23 @@ class Tip extends BaseModel
 	/**
 	 * Insert a new tip in database.
 	 *
-	 * @param $datas string Tip's name
-	 * @return $id int Tip's ID
+	 * @param array $datas Tip's datas
+	 * @return int $insertedTip Tip's ID
 	 */
 	public function insertTip($datas)
 	{
 		try {
 			$pdo  = $this->db;
 			$stmt = $pdo->prepare('INSERT INTO `tip` (`content`, `console_names`, `game_idGame`) 
-								   VALUES (:content, :console_names, :game_idGame)');
+								   VALUES (:content, :console_names, :game_idGame);');
 			$stmt->bindParam(':content', $datas['content'], PDO::PARAM_STR);
 			$stmt->bindParam(':console_names', $datas['console_names'], PDO::PARAM_STR);
 			$stmt->bindParam(':game_idGame', $datas['game_idGame'], PDO::PARAM_INT);
 			$stmt->execute();
 
-			return $pdo->lastInsertId();
+			$insertedTip = $pdo->lastInsertId();
+			return $insertedTip;
 		} catch (PDOException $e) {
-			echo $e->getMessage(); die;
 			return false;
 		} catch (Exception $e) {
 			return false;
@@ -77,8 +77,9 @@ class Tip extends BaseModel
 	/**
 	 * Update tip
 	 *
-	 * @param $idTip int Tip's ID
-	 * @param $tip string Tip's name
+	 * @param int $idTip Tip's ID
+	 * @param array $datas Tip's datas
+	 * @return int|bool Number of affected rows or false if an error has occurred
 	 */
 	public function updateTip($idTip, $datas)
 	{
@@ -88,7 +89,7 @@ class Tip extends BaseModel
 								   SET `content`      = :content,
 									   `console_names` = :console_names,
 									   `game_idGame`   = :game_idGame
-								   WHERE `idTip` =  :idTip');
+								   WHERE `idTip` =  :idTip;');
 			$stmt->bindParam(':content', $datas['content'], PDO::PARAM_STR);
 			$stmt->bindParam(':console_names', $datas['console_names'], PDO::PARAM_STR);
 			$stmt->bindParam(':game_idGame', $datas['game_idGame'], PDO::PARAM_INT);
@@ -101,10 +102,8 @@ class Tip extends BaseModel
 			 */
 			return $stmt->rowCount();
 		} catch (PDOException $e) {
-			echo $e->getMessage(); die;
 			return false;
 		} catch (Exception $e) {
-			echo $e->getMessage(); die;
 			return false;
 		}
 	}
@@ -112,7 +111,8 @@ class Tip extends BaseModel
 	/**
 	 * Delete an tip by it's ID
 	 *
-	 * @param $id int Tip's ID
+	 * @param int $idTip Tip's ID
+	 * @return int|bool Number of affected rows or false if an error has occurred
 	 */
 	public function deleteTip($idTip)
 	{
@@ -120,7 +120,7 @@ class Tip extends BaseModel
 			$pdo  = $this->db;
 			$stmt = $pdo->prepare('DELETE 
 								   FROM `tip` 
-								   WHERE `idTip` =  :idTip');
+								   WHERE `idTip` =  :idTip;');
 			$stmt->bindParam(':idTip', $idTip, PDO::PARAM_INT);
 			$stmt->execute();
 

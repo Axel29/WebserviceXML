@@ -4,9 +4,9 @@ class Dlc extends BaseModel
 	/**
 	 * Retrieve every available dlcs or dlcs by some param
 	 *
-	 * @param $paramName string Param's name to find by
-	 * @param $paramValue mixed Param's value
-	 * @return $dlcs array
+	 * @param string $paramName Param's name to find by
+	 * @param mixed $paramValue Param's value
+	 * @return array $dlcs Collection of Dlcs
 	 */
 	public function findBy($paramName = null, $paramValue = null)
 	{
@@ -54,13 +54,14 @@ class Dlc extends BaseModel
 	/**
 	 * Insert a new dlc in database.
 	 *
-	 * @param $datas array Dlc's name
-	 * @return $id int Dlc's ID
+	 * @param array $datas Dlc's datas
+	 * @return int|bool $insertedDlc Dlc's ID or false if an error has occurred
 	 */
 	public function insertDlc($datas)
 	{
 		try {
-			return $this->directInsert($datas);
+			$insertedDlc = $this->directInsert($datas);
+			return $insertedDlc;
 		} catch (PDOException $e) {
 			return false;
 		} catch (Exception $e) {
@@ -82,7 +83,7 @@ class Dlc extends BaseModel
 			$pdo  = $this->db;
 		}
 		$stmt = $pdo->prepare('INSERT INTO `dlc` (`title`, `description`, `price`, `devise`, `console_idConsole`) 
-							   VALUES (:title, :description, :price, :devise, :console_idConsole)');
+							   VALUES (:title, :description, :price, :devise, :console_idConsole);');
 		$stmt->bindParam(':title', $datas['title'], PDO::PARAM_STR);
 		$stmt->bindParam(':description', $datas['description'], PDO::PARAM_STR);
 		$stmt->bindParam(':price', $datas['price'], PDO::PARAM_STR);
@@ -96,13 +97,15 @@ class Dlc extends BaseModel
 	/**
 	 * Update dlc
 	 *
-	 * @param $idDlc int Dlc's ID
-	 * @param $datas array Datas to update
+	 * @param int $idDlc Dlc's ID
+	 * @param array $datas Datas to update
+	 * @return int|bool $updatedDlc Updated Dlc's ID or false if an error has occurred
 	 */
 	public function updateDlc($idDlc, $datas)
 	{
 		try {
-			return $this->directUpdate($idDlc, $datas);
+			$insertedDlc = $this->directUpdate($idDlc, $datas);
+			return $insertedDlc;
 		} catch (PDOException $e) {
 			return false;
 		} catch (Exception $e) {
@@ -114,20 +117,23 @@ class Dlc extends BaseModel
 	 * Update a dlc without any try / catch.
 	 * Used to make valid transactions for other models.
 	 *
+	 * @param int $idDlc Dlc's ID
 	 * @param array $datas Dlc's datas
-	 * @return int $id Inserted dlc's ID
+	 * @param PDO $pdo Current's PDO object
 	 * @return bool
 	 */
-	public function directUpdate($idDlc, $datas)
+	public function directUpdate($idDlc, $datas, $pdo = null)
 	{
-		$pdo  = $this->db;
+		if (!$pdo) {
+			$pdo  = $this->db;
+		}
 		$stmt = $pdo->prepare('UPDATE `dlc`
 								SET `title`             = :title,
 									`description`       = :description,
 									`price`             = :price,
 									`devise`            = :devise,
 									`console_idConsole` = :console_idConsole
-							   WHERE `idDlc` =  :idDlc');
+							   WHERE `idDlc` =  :idDlc;');
 		$stmt->bindParam(':title', $datas['title'], PDO::PARAM_STR);
 		$stmt->bindParam(':description', $datas['description'], PDO::PARAM_STR);
 		$stmt->bindParam(':price', $datas['price'], PDO::PARAM_STR);
@@ -142,7 +148,8 @@ class Dlc extends BaseModel
 	/**
 	 * Delete a dlc by it's ID
 	 *
-	 * @param $id int Dlc's ID
+	 * @param int $idDlc Dlc's ID
+	 * @return int|bool Number of affected rows or false if an error has occurred
 	 */
 	public function deleteDlc($idDlc)
 	{
@@ -150,7 +157,7 @@ class Dlc extends BaseModel
 			$pdo  = $this->db;
 			$stmt = $pdo->prepare('DELETE 
 								   FROM `dlc` 
-								   WHERE `idDlc` =  :idDlc');
+								   WHERE `idDlc` =  :idDlc;');
 			$stmt->bindParam(':idDlc', $idDlc, PDO::PARAM_INT);
 			$stmt->execute();
 

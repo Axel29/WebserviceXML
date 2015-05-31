@@ -71,68 +71,11 @@ class GameController extends BaseController
 			$this->exitError(405, 'Only POST methods are allowed.');
 			return;
 		}
-		// if (isset($_POST['analyses']['analyse']) && 
-		// 	isset($_POST['analyses']['type']) &&
-		// 	isset($_POST['articles']['type']) &&
-		// 	isset($_POST['articles']['title']) &&
-		// 	isset($_POST['articles']['user_name']) &&
-		// 	isset($_POST['articles']['date']) &&
-		// 	isset($_POST['articles']['console_names']) &&
-		// 	isset($_POST['comments']['date']) &&
-		// 	isset($_POST['comments']['user_name']) &&
-		// 	isset($_POST['comments']['note']) &&
-		// 	isset($_POST['comments']['like']) &&
-		// 	isset($_POST['comments']['dislike']) &&
-		// 	isset($_POST['comments']['text']) &&
-		// 	isset($_POST['configs']['config']) &&
-		// 	isset($_POST['configs']['type']) &&
-		// 	isset($_POST['consoles']['business_model']) &&
-		// 	isset($_POST['consoles']['pegi']) &&
-		// 	isset($_POST['consoles']['release']) &&
-		// 	isset($_POST['consoles']['name']) &&
-		// 	isset($_POST['consoles']['description']) &&
-		// 	isset($_POST['consoles']['cover_front']) &&
-		// 	isset($_POST['consoles']['cover_back']) &&
-		// 	isset($_POST['dlcs']['title']) &&
-		// 	isset($_POST['dlcs']['description']) &&
-		// 	isset($_POST['dlcs']['price']) &&
-		// 	isset($_POST['dlcs']['devise']) &&
-		// 	isset($_POST['editions']['name']) &&
-		// 	isset($_POST['editions']['content']) &&
-		// 	isset($_POST['editors']['editor']) &&
-		// 	isset($_POST['game']['title']) &&
-		// 	isset($_POST['game']['site']) &&
-		// 	isset($_POST['genders']['gender']) &&
-		// 	isset($_POST['languages']['language']) &&
-		// 	isset($_POST['medias']['type']) &&
-		// 	isset($_POST['medias']['url']) &&
-		// 	isset($_POST['medias']['unit']) &&
-		// 	isset($_POST['medias']['width']) &&
-		// 	isset($_POST['medias']['height']) &&
-		// 	isset($_POST['medias']['console_names']) &&
-		// 	isset($_POST['modes']['name']) &&
-		// 	isset($_POST['shops']['url']) && 
-		// 	isset($_POST['shops']['name']) && 
-		// 	isset($_POST['shops']['price']) &&
-		// 	isset($_POST['shops']['device']) && 
-		// 	isset($_POST['supports']['support']) &&
-		// 	isset($_POST['tests']['report']) &&
-		// 	isset($_POST['tests']['date']) &&
-		// 	isset($_POST['tests']['user_name']) &&
-		// 	isset($_POST['tests']['note']) &&
-		// 	isset($_POST['themes']['theme']) &&
-		// 	isset($_POST['tips']['content']) &&
-		// 	isset($_POST['tips']['console_names'])
-		// 	) {
 
-			$gameModel = new Game();
-			$gameModel->addGame($_POST);
+		$gameModel = new Game();
+		$gameModel->addGame($_POST);
 
-			$this->sendStatus(204);
-
-		// } else {
-		// 	$this->exitError(400);
-		// }
+		$this->sendStatus(204);
 	}
 
 	/**
@@ -317,36 +260,38 @@ class GameController extends BaseController
 				}
 
 				// Tests
-				foreach ($console['tests'] as $test) {
-					$testNode = $consoleNode->addChild('test');
-					$testNode->addAttribute('id', $test['idTest']);
-					$testNode->addChild('report', $test['report']);
-					$testNode->addChild('date', $test['date']);
-					$testNode->addChild('userName', $test['user_name']);
-					$testNode->addChild('note', $test['note']);
+				if (isset($console['tests'])) {
+					foreach ($console['tests'] as $test) {
+						$testNode = $consoleNode->addChild('test');
+						$testNode->addAttribute('id', $test['idTest']);
+						$testNode->addChild('report', $test['report']);
+						$testNode->addChild('date', $test['date']);
+						$testNode->addChild('userName', $test['user_name']);
+						$testNode->addChild('note', $test['note']);
 
-					// Test's comments
-					$commentsNode = $testNode->addChild('comments');
-					if (isset($test['comments'])) {
-						foreach ($test['comments'] as $comment) {
-							$commentNode = $commentsNode->addChild('comment');
-							$commentNode->addAttribute('id', $comment['idComment']);
-							$commentNode->addChild('text', $comment['text']);
-							$commentNode->addChild('date', $comment['date']);
-							$commentNode->addChild('userName', $comment['user_name']);
-							$commentNode->addChild('note', $comment['note']);
-							$commentNode->addChild('like', $comment['like']);
-							$commentNode->addChild('dislike', $comment['dislike']);
+						// Test's comments
+						$commentsNode = $testNode->addChild('comments');
+						if (isset($test['comments'])) {
+							foreach ($test['comments'] as $comment) {
+								$commentNode = $commentsNode->addChild('comment');
+								$commentNode->addAttribute('id', $comment['idComment']);
+								$commentNode->addChild('text', $comment['text']);
+								$commentNode->addChild('date', $comment['date']);
+								$commentNode->addChild('userName', $comment['user_name']);
+								$commentNode->addChild('note', $comment['note']);
+								$commentNode->addChild('like', $comment['like']);
+								$commentNode->addChild('dislike', $comment['dislike']);
+							}
 						}
-					}
 
-					// Test's analyses
-					$analysesNode = $testNode->addChild('analyses');
-					if (isset($test['analyses'])) {
-						foreach ($test['analyses'] as $analyse) {
-							$analyseNode = $analysesNode->addChild('analyse', $analyse['analyse']);
-							$analyseNode->addAttribute('id', $analyse['idAnalyse']);
-							$analyseNode->addAttribute('type', $analyse['type']);
+						// Test's analyses
+						$analysesNode = $testNode->addChild('analyses');
+						if (isset($test['analyses'])) {
+							foreach ($test['analyses'] as $analyse) {
+								$analyseNode = $analysesNode->addChild('analyse', $analyse['analyse']);
+								$analyseNode->addAttribute('id', $analyse['idAnalyse']);
+								$analyseNode->addAttribute('type', $analyse['type']);
+							}
 						}
 					}
 				}
@@ -375,7 +320,6 @@ class GameController extends BaseController
 					$articleNode->addChild('date', $article['date']);
 				}
 			}
-
 
 			// Game's medias
 			$mediasNode = $gameNode->addChild('medias');
@@ -457,115 +401,6 @@ class GameController extends BaseController
 		}
 
 		return $result;
-	}
-
-	public function testAction()
-	{
-		$dateTime = date("Y-m-d H:i:s");
-		$datas    = [
-			'analyses'       => [
-				'analyse'        => 'Test analyse -> analyse INSERT',
-				'type'           => 'Test analyse -> type INSERT',
-			],
-			'articles'       => [
-				'type'           => 'Test article -> type INSERT',
-				'title'          => 'Test article -> title INSERT',
-				'user_name'      => 'Test article -> user_name INSERT',
-				'date'           => $dateTime,
-				'console_names' => 'Test article -> console_names INSERT',
-			],
-			'comments'       => [
-				'date'           => $dateTime,
-				'user_name'      => 'Test comment -> user_name INSERT',
-				'note'           => 'Test comment -> note INSERT',
-				'like'           => 'Test comment -> like INSERT',
-				'dislike'        => 'Test comment -> dislike INSERT',
-				'text'           => 'Test comment -> text INSERT',
-			],
-			'configs'        => [
-				'config'         => 'Test config -> config INSERT',
-				'type'           => 'Test config -> type INSERT',
-			],
-			'consoles'       => [
-				'business_model' => 'Test console -> business_model INSERT',
-				'pegi'           => 'Test console -> pegi INSERT',
-				'release'        => 'Test console -> release INSERT',
-				'name'           => 'Test console -> name INSERT',
-				'description'    => 'Test console -> description INSERT',
-				'cover_front'    => 'Test console -> cover_front INSERT',
-				'cover_back'     => 'Test console -> cover_back INSERT',
-			],
-			'dlcs'           => [
-				'title'          => 'Test dlc -> title INSERT',
-				'description'    => 'Test dlc -> description INSERT',
-				'price'          => 'Test dlc -> price INSERT',
-				'devise'         => 'Test dlc -> devise INSERT',
-			],
-			'editions'       => [
-				'name'           => 'Test edition -> name INSERT',
-				'content'        => 'Test edition -> content INSERT',
-			],
-			'editors'        => [
-				'editor'         => 'Test editor -> editor INSERT',
-			],
-			'game'           => [
-				'title'          => 'Test game -> title INSERT',
-				'site'           => 'Test game -> site INSERT',
-			],
-			'genders'        => [
-				'gender'         => 'Test gender -> gender INSERT',
-			],
-			'languages'      => [
-				'language'       => 'Test language -> language INSERT',
-			],
-			'medias'         => [
-				'type'           => 'Test media -> type INSERT',
-				'url'            => 'Test media -> url INSERT',
-				'unit'           => 'Test media -> unit INSERT',
-				'width'          => 'Test media -> width INSERT',
-				'height'         => 'Test media -> height INSERT',
-				'console_names' => 'Test media -> console_names INSERT',
-			],
-			'modes'          => [
-				'name'           => 'Test mode -> name INSERT',
-			],
-			'shops'          => [
-				'url'            => 'Test shop -> url INSERT',
-				'name'           => 'Test shop -> name INSERT',
-				'price'          => 'Test shop -> price INSERT',
-				'device'         => 'Test shop -> device INSERT',
-			],
-			'supports'       => [
-				'support'        => 'Test support -> support INSERT',
-			],
-			'tests'          => [
-				'report'         => 'Test test -> report INSERT',
-				'date'           => date('Y-m-d'),
-				'user_name'      => 'Test test -> user_name INSERT',
-				'note'           => 'Test test -> note INSERT',
-			],
-			'themes'         => [
-				'theme'          => 'Test theme -> theme INSERT',
-			],
-			'tips'           => [
-				'content'        => 'Test tip -> content INSERT',
-				'console_names' => 'Test tip -> console_names INSERT',
-			],
-		];
-		$data     = http_build_query ($datas);
-
-		// echo '<pre>'; var_dump($datas); echo '</pre>'; die;
-		 
-		$context = stream_context_create ([
-			'http' => [
-				'method'  => 'POST',
-				'header'  => "Content-type: application/x-www-form-urlencoded\r\n" . 
-							 "Content-Length: " . strlen($data) . "\r\n",
-				'content' => $data,
-			]
-		]);
-
-		$result = file_get_contents('http://ws-xml.localhost.com/game', null, $context);
 	}
 
 	/**

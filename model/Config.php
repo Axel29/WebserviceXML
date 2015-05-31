@@ -4,9 +4,9 @@ class Config extends BaseModel
 	/**
 	 * Retrieve every available configs or configs by some param
 	 *
-	 * @param $paramName string Param's name to find by
-	 * @param $paramValue mixed Param's value
-	 * @return $configs array
+	 * @param string $paramName Param's name to find by
+	 * @param mixed $paramValue Param's value
+	 * @return array $configs Collection of configs
 	 */
 	public function findBy($paramName = null, $paramValue = null)
 	{
@@ -35,8 +35,8 @@ class Config extends BaseModel
      * Retrieve number of available configs for a console by config ID.
      * Used to check that there is at least one config left before deleting as they are required.
      *
-     * @param $configId int Config's ID
-     * @return $result['nbrConfig'] int Number of existing configs
+     * @param int $configId Config's ID
+     * @return int $numberOfConfigsLeft Number of existing configs
      */
     public function getNumberOfConfigsLeft($configId)
     {
@@ -46,15 +46,16 @@ class Config extends BaseModel
 								   FROM `config`
 								   LEFT JOIN `console` `c` ON `config`.`console_idConsole` = `c`.`idConsole`
 								   WHERE `c`.`idConsole` = (SELECT `config`.`console_idConsole`
-                                                             FROM `config` `config`
-                                                             WHERE `config`.`idConfig` = :idConfig
-                                                            )
-                                  ');
+                                                            FROM `config` `config`
+                                                            WHERE `config`.`idConfig` = :idConfig
+                                                            );'
+                                  );
             $stmt->bindParam(':idConfig', $configId, PDO::PARAM_INT);
             $stmt->execute();
 
-            $result = $stmt->fetch();
-            return $result['nbrConfigs'];
+			$result              = $stmt->fetch();
+			$numberOfConfigsLeft = $result['nbrConfigs'];
+            return $numberOfConfigsLeft;
         } catch (PDOException $e) {
             return false;
         } catch (Exception $e) {
@@ -81,13 +82,14 @@ class Config extends BaseModel
 	/**
 	 * Insert a new config in database.
 	 *
-	 * @param $datas array Config's name
-	 * @return $id int Config's ID
+	 * @param array $datas Config's datas
+	 * @return int|bool $insertedConfig Config's ID or false if an error has occurred
 	 */
 	public function insertConfig($datas)
 	{
 		try {
-			return $this->directInsert($datas);
+			$insertedConfig = $this->directInsert($datas);
+			return $insertedConfig;
 		} catch (PDOException $e) {
 			return false;
 		} catch (Exception $e) {
@@ -101,7 +103,7 @@ class Config extends BaseModel
 	 *
 	 * @param array $datas Config's datas
 	 * @param PDO $pdo Current's PDO object
-	 * @return int $id Inserted mode's ID
+	 * @return int $insertedConfig Inserted mode's ID
 	 */
 	public function directInsert($datas, $pdo = null)
 	{
@@ -109,25 +111,28 @@ class Config extends BaseModel
 			$pdo  = $this->db;
 		}
 		$stmt = $pdo->prepare('INSERT INTO `config` (`config`, `type`, `console_idConsole`) 
-							   VALUES (:config, :type, :console_idConsole)');
+							   VALUES (:config, :type, :console_idConsole);');
 		$stmt->bindParam(':config', $datas['config'], PDO::PARAM_STR);
 		$stmt->bindParam(':type', $datas['type'], PDO::PARAM_STR);
 		$stmt->bindParam(':console_idConsole', $datas['console_idConsole'], PDO::PARAM_INT);
 		$stmt->execute();
 
-		return $pdo->lastInsertId();
+		$insertedConfig = $pdo->lastInsertId();
+		return $insertedConfig;
 	}
 
 	/**
 	 * Update config
 	 *
-	 * @param $idConfig int Config's ID
-	 * @param $datas array Datas to update
+	 * @param int $idConfig Config's ID
+	 * @param array $datas Datas to update
+	 * @return int|bool $updatedConfig Updated config's ID or false if an error has occurred
 	 */
 	public function updateConfig($idConfig, $datas)
 	{
 		try {
-			return $this->directUpdate($idConfig, $datas);
+			$updatedConfig = $this->directUpdate($idConfig, $datas);
+			return $updatedConfig;
 		} catch (PDOException $e) {
 			return false;
 		} catch (Exception $e) {
@@ -139,18 +144,21 @@ class Config extends BaseModel
 	 * Update an config without any try / catch.
 	 * Used to make valid transactions for other models.
 	 *
+	 * @param int $idConfig Config's ID
 	 * @param array $datas Config's datas
-	 * @return int $id Inserted config's ID
+	 * @param PDO $pdo Current's PDO object
 	 * @return bool
 	 */
-	public function directUpdate($idConfig, $datas)
+	public function directUpdate($idConfig, $datas, $pdo = null)
 	{
-		$pdo  = $this->db;
+		if (!$pdo) {
+			$pdo  = $this->db;
+		}
 		$stmt = $pdo->prepare('UPDATE `config`
 							   SET `config` = :config,
 							       `type` = :type,
 							       `console_idConsole` = :console_idConsole
-							   WHERE `idConfig` =  :idConfig');
+							   WHERE `idConfig` =  :idConfig;');
 		$stmt->bindParam(':config', $datas['config'], PDO::PARAM_STR);
 		$stmt->bindParam(':type', $datas['type'], PDO::PARAM_STR);
 		$stmt->bindParam(':console_idConsole', $datas['console_idConsole'], PDO::PARAM_INT);
@@ -163,7 +171,8 @@ class Config extends BaseModel
 	/**
 	 * Delete a config by it's ID
 	 *
-	 * @param $id int Config's ID
+	 * @param int $idConfig Config's ID
+	 * @return int|bool Number of affected rows or false if an error has occurred
 	 */
 	public function deleteConfig($idConfig)
 	{
@@ -171,7 +180,7 @@ class Config extends BaseModel
 			$pdo  = $this->db;
 			$stmt = $pdo->prepare('DELETE 
 								   FROM `config` 
-								   WHERE `idConfig` =  :idConfig');
+								   WHERE `idConfig` =  :idConfig;');
 			$stmt->bindParam(':idConfig', $idConfig, PDO::PARAM_INT);
 			$stmt->execute();
 

@@ -4,9 +4,9 @@ class Edition extends BaseModel
 	/**
 	 * Retrieve every available editions or editions by some param
 	 *
-	 * @param $paramName string Param's name to find by
-	 * @param $paramValue mixed Param's value
-	 * @return $editions array
+	 * @param string $paramName Param's name to find by
+	 * @param mixed $paramValue Param's value
+	 * @return array $editions Colleciton of Editions
 	 */
 	public function findBy($paramName = null, $paramValue = null)
 	{
@@ -35,8 +35,8 @@ class Edition extends BaseModel
      * Retrieve number of available editions for a console by edition ID.
      * Used to check that there is at least one edition left before deleting as they are required.
      *
-     * @param $editionId int Edition's ID
-     * @return $result['nbrEdition'] int Number of existing editions
+     * @param int $editionId Edition's ID
+     * @return int $numberOfEditionsLeft Number of existing editions
      */
     public function getNumberOfEditionsLeft($editionId)
     {
@@ -46,15 +46,16 @@ class Edition extends BaseModel
 								   FROM `edition` `e`
 								   LEFT JOIN `console` `c` ON `e`.`console_idConsole` = `c`.`idConsole`
 								   WHERE `c`.`idConsole` = (SELECT `e`.`console_idConsole`
-                                                             FROM `edition` `e`
-                                                             WHERE `e`.`idEdition` = :idEdition
-                                                            )
-                                  ');
+                                                            FROM `edition` `e`
+                                                            WHERE `e`.`idEdition` = :idEdition
+                                                            );'
+                                  );
             $stmt->bindParam(':idEdition', $editionId, PDO::PARAM_INT);
             $stmt->execute();
 
-            $result = $stmt->fetch();
-            return $result['nbrEditions'];
+			$result               = $stmt->fetch();
+			$numberOfEditionsLeft = $result['nbrEditions'];
+            return $numberOfEditionsLeft;
         } catch (PDOException $e) {
             return false;
         } catch (Exception $e) {
@@ -81,8 +82,8 @@ class Edition extends BaseModel
 	/**
 	 * Insert a new edition in database.
 	 *
-	 * @param $datas array Edition's name
-	 * @return $id int Edition's ID
+	 * @param array $datas Edition's datas
+	 * @return int|bool $editionId Edition's ID or false if an error has occurred
 	 */
 	public function insertEdition($datas)
 	{
@@ -100,7 +101,6 @@ class Edition extends BaseModel
 		} catch (PDOException $e) {
 			// Cancel the transaction
 		    $pdo->rollback();
-		    echo $e->getMessage();
 			return false;
 		} catch (Exception $e) {
 			return false;
@@ -121,7 +121,7 @@ class Edition extends BaseModel
 			$pdo  = $this->db;
 		}
 		$stmt = $pdo->prepare('INSERT INTO `edition` (`name`, `content`, `console_idConsole`) 
-							   VALUES (:name, :content, :console_idConsole)');
+							   VALUES (:name, :content, :console_idConsole);');
 		$stmt->bindParam(':name', $datas['name'], PDO::PARAM_STR);
 		$stmt->bindParam(':content', $datas['content'], PDO::PARAM_STR);
 		$stmt->bindParam(':console_idConsole', $datas['console_idConsole'], PDO::PARAM_INT);
@@ -145,8 +145,9 @@ class Edition extends BaseModel
 	/**
 	 * Update edition
 	 *
-	 * @param $idEdition int Edition's ID
-	 * @param $datas array Datas to update
+	 * @param int $idEdition Edition's ID
+	 * @param array $datas Datas to update
+	 * @return bool
 	 */
 	public function updateEdition($idEdition, $datas)
 	{
@@ -155,15 +156,11 @@ class Edition extends BaseModel
 			// Begin transaction to avoid inserting wrong or partial datas
 			$pdo->beginTransaction();
 
-			$update = $this->directUpdate($idEdition, $datas);
+			$updatedEdition = $this->directUpdate($idEdition, $datas);
 
 			// If everything went well, commit the transaction
 			$pdo->commit();
 
-			/*
-			 * Check that the update was performed on an existing edition.
-			 * MySQL won't send any error as, regarding to him, the request is correct, so we have to handle it manually.
-			 */
 			return true;
 		} catch (PDOException $e) {
 			// Cancel the transaction
@@ -178,18 +175,21 @@ class Edition extends BaseModel
 	 * Update an edition without any try / catch.
 	 * Used to make valid transactions for other models.
 	 *
+	 * @param int $idEdition Edition's ID
 	 * @param array $datas Edition's datas
-	 * @return int $id Inserted edition's ID
+	 * @param PDO $pdo Current's PDO object
 	 * @return bool
 	 */
-	public function directUpdate($idEdition, $datas)
+	public function directUpdate($idEdition, $datas, $pdo = null)
 	{
-		$pdo  = $this->db;
+		if (!$pdo) {
+			$pdo  = $this->db;
+		}
 		$stmt = $pdo->prepare('UPDATE `edition`
 							   SET `name`              = :name,
 								   `content`           = :content,
 								   `console_idConsole` = :console_idConsole
-							   WHERE `idEdition` =  :idEdition');
+							   WHERE `idEdition` =  :idEdition;');
 		$stmt->bindParam(':name', $datas['name'], PDO::PARAM_STR);
 		$stmt->bindParam(':content', $datas['content'], PDO::PARAM_STR);
 		$stmt->bindParam(':console_idConsole', $datas['console_idConsole'], PDO::PARAM_INT);
@@ -210,7 +210,8 @@ class Edition extends BaseModel
 	/**
 	 * Delete a edition by it's ID
 	 *
-	 * @param $id int Edition's ID
+	 * @param int $idEdition Edition's ID
+	 * @return int|bool Number of affected rows or false if an error has occurred
 	 */
 	public function deleteEdition($idEdition)
 	{
@@ -218,7 +219,7 @@ class Edition extends BaseModel
 			$pdo  = $this->db;
 			$stmt = $pdo->prepare('DELETE 
 								   FROM `edition` 
-								   WHERE `idEdition` =  :idEdition');
+								   WHERE `idEdition` =  :idEdition;');
 			$stmt->bindParam(':idEdition', $idEdition, PDO::PARAM_INT);
 			$stmt->execute();
 

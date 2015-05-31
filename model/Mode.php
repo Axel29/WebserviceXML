@@ -4,9 +4,9 @@ class Mode extends BaseModel
 	/**
 	 * Retrieve every available modes or modes by some param
 	 *
-	 * @param $paramName string Param's name to find by
-	 * @param $paramValue mixed Param's value
-	 * @return $modes array
+	 * @param string $paramName Param's name to find by
+	 * @param mixed $paramValue Param's value
+	 * @return array $modes Collection of Modes
 	 */
 	public function findBy($paramName = null, $paramValue = null)
 	{
@@ -67,13 +67,14 @@ class Mode extends BaseModel
 	 * Insert a new mode in database.
 	 * If the mode already exists, return the existing mode's ID.
 	 *
-	 * @param $datas array Mode's name
-	 * @return $id int Mode's ID
+	 * @param array $datas Mode's datas
+	 * @return int $insertedMode Mode's ID
 	 */
 	public function insertMode($datas)
 	{
 		try {
-			return $this->directInsert($datas);
+			$insertedMode = $this->directInsert($datas);
+			return $insertedMode;
 		} catch (PDOException $e) {
 			return false;
 		} catch (Exception $e) {
@@ -86,7 +87,7 @@ class Mode extends BaseModel
 	 * Used to make valid transactions for other models.
 	 *
 	 * @param array $datas Mode's datas
-	 * @return int $id Inserted mode's ID
+	 * @return int $insertedMode Inserted mode's ID
 	 */
 	public function directInsert($datas)
 	{
@@ -95,23 +96,26 @@ class Mode extends BaseModel
 		 * If so, return this ID
 		 */
 		if ($existingMode = $this->findBy('mode', $datas['mode'])) {
-			return $existingMode[0]['idMode'];
+			$insertedMode = $existingMode[0]['idMode'];
+			return $insertedMode;
 		} else {
 			$pdo  = $this->db;
 			$stmt = $pdo->prepare('INSERT INTO `mode` (`mode`) 
-								   VALUES (:mode)');
+								   VALUES (:mode);');
 			$stmt->bindParam(':mode', $datas['mode'], PDO::PARAM_STR);
 			$stmt->execute();
 
-			return $pdo->lastInsertId();
+			$insertedMode = $pdo->lastInsertId();
+			return $insertedMode;
 		}
 	}
 
 	/**
 	 * Update mode
 	 *
-	 * @param $idMode int Mode's ID
-	 * @param $datas array Datas to update
+	 * @param int $idMode Mode's ID
+	 * @param array $datas Mode's datas
+	 * @return int|bool Updated mode's ID or false if an error has occurred
 	 */
 	public function updateMode($idMode, $datas)
 	{
@@ -128,16 +132,19 @@ class Mode extends BaseModel
 	 * Update a mode without any try / catch.
 	 * Used to make valid transactions for other models.
 	 *
+	 * @param int $idMode Mode's ID
 	 * @param array $datas Mode's datas
-	 * @return int $id Inserted mode's ID
+	 * @param PDO $pdo Current's PDO object
 	 * @return bool
 	 */
-	public function directUpdate($idMode, $datas)
+	public function directUpdate($idMode, $datas, $pdo = null)
 	{
-		$pdo  = $this->db;
+		if (!$pdo) {
+			$pdo  = $this->db;
+		}
 		$stmt = $pdo->prepare('UPDATE `mode`
 							   SET `mode`             = :mode
-							   WHERE `idMode` =  :idMode');
+							   WHERE `idMode` =  :idMode;');
 		$stmt->bindParam(':mode', $datas['mode'], PDO::PARAM_STR);
 		$stmt->bindParam(':idMode', $idMode, PDO::PARAM_INT);
 		$stmt->execute();
@@ -149,6 +156,7 @@ class Mode extends BaseModel
 	 * Delete a mode by it's ID
 	 *
 	 * @param $id int Mode's ID
+	 * @return int|bool Number of affected rows or false if an error has occurred
 	 */
 	public function deleteMode($idMode)
 	{
@@ -156,7 +164,7 @@ class Mode extends BaseModel
 			$pdo  = $this->db;
 			$stmt = $pdo->prepare('DELETE 
 								   FROM `mode` 
-								   WHERE `idMode` =  :idMode');
+								   WHERE `idMode` =  :idMode;');
 			$stmt->bindParam(':idMode', $idMode, PDO::PARAM_INT);
 			$stmt->execute();
 
