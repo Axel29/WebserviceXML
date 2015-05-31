@@ -143,7 +143,7 @@ class ConfigController extends BaseController
 		$configModel   = new Config();
 
 		// Check that there is at least one test left before deleting, otherwise, the XML would be broken.
-		if ($testModel->getNumberOfTestsLeft($this->getId()) > 1) {
+		if ($configModel->getNumberOfConfigsLeft($this->getId()) > 1) {
 			$deletedConfig = $configModel->deleteConfig($this->getId());
 
 			if ($deletedConfig) {
