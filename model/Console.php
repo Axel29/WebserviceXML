@@ -68,6 +68,27 @@ class Console extends BaseModel
     }
 
 	/**
+	 * Get list of required fields and their types
+	 *
+	 * @return array $requiredFields List of required fields as array
+	 */
+	public static function getRequiredFields()
+	{
+		$requiredFields = [
+			'business_model' => 'string',
+			'pegi'           => 'string',
+			'release'        => 'date',
+			'name'           => 'string',
+			'description'    => 'string',
+			'cover_front'    => 'string',
+			'cover_back'     => 'string',
+			'game_idGame'    => 'int',
+		];
+
+		return $requiredFields;
+	}
+
+	/**
 	 * Insert a new console in database.
 	 *
 	 * @param $datas array Console's name
@@ -87,9 +108,9 @@ class Console extends BaseModel
 			$stmt->bindParam(':pegi', $datas['pegi'], PDO::PARAM_STR);
 			$stmt->bindParam(':release', $datas['release'], PDO::PARAM_STR);
 			$stmt->bindParam(':name', $datas['name'], PDO::PARAM_INT);
-			$stmt->bindParam(':description', $datas['description'], PDO::PARAM_INT);
-			$stmt->bindParam(':cover_front', $datas['cover_front'], PDO::PARAM_INT);
-			$stmt->bindParam(':cover_back', $datas['cover_back'], PDO::PARAM_INT);
+			$stmt->bindParam(':description', $datas['description'], PDO::PARAM_STR);
+			$stmt->bindParam(':cover_front', $datas['cover_front'], PDO::PARAM_STR);
+			$stmt->bindParam(':cover_back', $datas['cover_back'], PDO::PARAM_STR);
 			$stmt->bindParam(':game_idGame', $datas['game_idGame'], PDO::PARAM_INT);
 			$stmt->execute();
 
@@ -124,25 +145,29 @@ class Console extends BaseModel
 			// Insert datas into 'edition' table and it's sub-table (shop)
 			$editionModel = new Edition();
 			foreach ($datas['editions'] as $edition) {
-				$insertedEdition = $editionModel->directInsert($edition);
+				$edition['console_idConsole'] = $consoleId;
+				$insertedEdition              = $editionModel->directInsert($edition, $pdo);
 			}
 
 			// Insert datas into 'dlc' table
 			$dlcModel = new Dlc();
 			foreach ($datas['dlcs'] as $dlc) {
-				$insertedDlc = $dlcModel->directInsert($dlc);
+				$dlc['console_idConsole'] = $consoleId;
+				$insertedDlc              = $dlcModel->directInsert($dlc, $pdo);
 			}
 
 			// Insert datas into 'config' table
 			$configModel = new Config();
 			foreach ($datas['configs'] as $config) {
-				$insertedConfig = $configModel->directInsert($config);
+				$config['console_idConsole'] = $consoleId;
+				$insertedConfig              = $configModel->directInsert($config, $pdo);
 			}
 
 			// Insert datas into 'test' table and it's sub-tables (comment, analyse)
 			$testModel = new Test();
-			foreach ($datas['test'] as $test) {
-				$insertedTest = $testModel->directInsert($test);
+			foreach ($datas['tests'] as $test) {
+				$test['console_idConsole'] = $consoleId;
+				$insertedTest              = $testModel->directInsert($test, $pdo);
 			}
 
 			// If everything went well, commit the transaction
@@ -152,6 +177,8 @@ class Console extends BaseModel
 		} catch (PDOException $e) {
 			// Cancel the transaction
 		    $pdo->rollback();
+
+		    echo $e->getMessage();
 
 			return false;
 		} catch (Exception $e) {

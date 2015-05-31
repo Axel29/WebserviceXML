@@ -133,6 +133,8 @@ class Edition extends BaseModel
 		if (isset($datas['shops'])) {
 			$shopModel = new Shop();
 			foreach ($datas['shops'] as $shop) {
+				// Adding inserted edition's ID to shop's datas
+				$shop['edition_idEdition'] = $editionId;
 				$insertedShop = $shopModel->directInsert($shop, $pdo);
 			}
 		}

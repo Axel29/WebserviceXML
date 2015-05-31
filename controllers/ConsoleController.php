@@ -10,20 +10,6 @@ class ConsoleController extends BaseController
 	private $id = null;
 
 	/**
-	 * @var $requiredFields array Required fields and their types for insert / update
-	 */
-	private $requiredFields = [
-		'businessModel' => 'string',
-		'pegi'          => 'string',
-		'release'       => 'date',
-		'name'          => 'string',
-		'description'   => 'string',
-		'cover_front'   => 'string',
-		'cover_back'    => 'string',
-		'game_idGame'   => 'int',
-	];
-
-	/**
 	 * Redirect the request to the matching method regarding the request method
 	 * Route: /console/index/id/{id}
 	 *
@@ -89,20 +75,192 @@ class ConsoleController extends BaseController
 			return;
 		}
 
-		// Check every required field
-		$this->checkRequiredFields($this->requiredFields, $_POST);
+	    // Test datas
+	    $_POST = [];
 
-		// Check every required fields for sub-elements
-		if (isset($_POST['shops'])) {
-			$requiredFields = [
-				'url'               => 'string',
-				'name'              => 'string',
-				'price'             => 'float',
-				'devise'            => 'string',
-				'edition_idEdition' => 'int',
-			]
-			foreach ($_POST['shops'] as $shop) {
-				$this->checkRequiredFields($requiredFields, $shop);
+	    $_POST['game_idGame']     = '1';
+		$_POST['business_model']  = 'Business Model n°1';
+		$_POST['pegi']            = 'Pegi n°1';
+		$_POST['modes']           = [
+	    	[
+	    		'mode' => 'Mode n°1',
+	    	],
+	    	[
+	    		'mode' => 'Mode n°2',
+	    	],
+	    ];
+		$_POST['cover_front'] = 'http://www.cover-front.com/';
+		$_POST['cover_back']  = 'http://www.cover-back.com/';
+		$_POST['supports']    = [
+	    	[
+	    		'support' => 'Support n°1',
+	    	],
+	    	[
+	    		'support' => 'Support n°2',
+	    	],
+	    ];
+	    $_POST['release'] = '2015-01-25';
+	    $_POST['editions'] = [
+	    	[
+				'name'              => 'Nom édition n°1',
+				'content'           => 'Contenu édition n°1',
+				'shops' => [
+					[
+						'url'               => 'http://www.shop-n1.com/',
+						'name'              => 'Nom magasin n°1',
+						'price'             => '1.10',
+						'devise'            => '€',
+					]
+				],
+	    	],
+	    	[
+				'name'              => 'Nom édition n°2',
+				'content'           => 'Contenu édition n°2',
+				'console_idConsole' => '1',
+				'shops' => [
+					[
+						'url'               => 'http://www.shop-n2.com/',
+						'name'              => 'Nom magasin n°2',
+						'price'             => '2.20',
+						'devise'            => '$',
+					]
+				],
+	    	],
+	    ];
+	    $_POST['name'] = 'Nom console n°1';
+	    $_POST['description'] = 'Description console n°1';
+	    $_POST['dlcs'] = [
+	    	[
+	    		'title'             => 'Titre DLC n°1',
+				'description'       => 'Description DLC n°1',
+				'price'             => '1.10',
+				'devise'            => '€',
+	    	],
+	    	[
+	    		'title'             => 'Titre DLC n°2',
+				'description'       => 'Description DLC n°2',
+				'price'             => '2.20',
+				'devise'            => '$',
+	    	],
+	    ];
+	    $_POST['configs'] = [
+	    	[
+	    		'config'            => 'Config n°1',
+				'type'              => 'Type config n°1',
+	    	],
+	    	[
+	    		'config'            => 'Config n°2',
+				'type'              => 'Type config n°2',
+	    	],
+	    ];
+	    $_POST['tests'] = [
+	    	[
+	    		'report'            => 'Report test n°1',
+				'date'              => '2015-01-22 11:33:33',
+				'user_name'         => 'User name test n°1',
+				'note'              => '1',
+				'comments'          => [
+					[
+						'date'        => '2015-01-22 11:33:33',
+						'user_name'   => 'User name commentaire n°1',
+						'note'        => '1',
+						'like'        => '1',
+						'dislike'     => '1',
+						'text'        => 'Text commentaire n°1',
+					],
+					[
+						'date'        => '2016-02-23 12:44:44',
+						'user_name'   => 'User name commentaire n°2',
+						'note'        => '2',
+						'like'        => '2',
+						'dislike'     => '2',
+						'text'        => 'Text commentaire n°2',
+					],
+				],
+				'analyses' => [
+					[
+						'analyse'     => 'Analyse n°1',
+						'type'        => 'Type analyse n°1',
+					],
+					[
+						'analyse'     => 'Analyse n°2',
+						'type'        => 'Type analyse n°2',
+					],
+				]
+	    	],
+	    ];
+
+		// Check every required field
+		$this->checkRequiredFields(Console::getRequiredFields(), $_POST, 'Y-m-d');
+
+		// Check every required fields for modes
+		foreach ($_POST['modes'] as $mode) {
+			$this->checkRequiredFields(Mode::getRequiredFields(), $mode);
+		}
+
+		// Check every required fields for supports
+		foreach ($_POST['supports'] as $support) {
+			$this->checkRequiredFields(Support::getRequiredFields(), $support);
+		}
+
+		// Check every required fields for editions
+		foreach ($_POST['editions'] as $edition) {
+			$requiredFields = Edition::getRequiredFields();
+			if (isset($requiredFields['console_idConsole'])) unset($requiredFields['console_idConsole']);
+			$this->checkRequiredFields($requiredFields, $edition);
+
+			// Check every required fields for sub-elements
+			if (isset($edition['shops'])) {
+				foreach ($edition['shops'] as $shop) {
+					$requiredFields = Shop::getRequiredFields();
+					if (isset($requiredFields['edition_idEdition'])) unset($requiredFields['edition_idEdition']);
+					$this->checkRequiredFields($requiredFields, $shop);
+				}
+			}
+		}
+
+		// Check every required fields for dlcs
+		if (isset($_POST['dlcs'])) {
+			foreach ($_POST['dlcs'] as $dlc) {
+				$requiredFields = Dlc::getRequiredFields();
+				if (isset($requiredFields['console_idConsole'])) unset($requiredFields['console_idConsole']);
+				$this->checkRequiredFields($requiredFields, $dlc);
+			}
+		}
+
+		// Check every required fields for configs
+		if (isset($_POST['configs'])) {
+			foreach ($_POST['configs'] as $config) {
+				$requiredFields = Config::getRequiredFields();
+				if (isset($requiredFields['console_idConsole'])) unset($requiredFields['console_idConsole']);
+				$this->checkRequiredFields($requiredFields, $config);
+			}
+		}
+
+		// Check every required fields for tests
+		if (isset($_POST['tests'])) {
+			foreach ($_POST['tests'] as $test) {
+				$requiredFields = Test::getRequiredFields();
+				if (isset($requiredFields['console_idConsole'])) unset($requiredFields['console_idConsole']);
+				$this->checkRequiredFields($requiredFields, $test);
+
+				// Check every required fields for comments
+				if (isset($test['comments'])) {
+					foreach ($test['comments'] as $comment) {
+						$requiredFields = Comment::getRequiredFields();
+						if (isset($requiredFields['test_idTest'])) unset($requiredFields['test_idTest']);
+						$this->checkRequiredFields($requiredFields, $comment);
+					}
+				}
+
+				// Check every required fields for analyses
+				if (isset($test['analyses'])) {
+					foreach ($test['analyses'] as $analyse) {
+						$requiredFields = Analyse::getRequiredFields();
+						if (isset($requiredFields['test_idTest'])) unset($requiredFields['test_idTest']);
+						$this->checkRequiredFields($requiredFields, $analyse);
+					}
+				}
 			}
 		}
 
@@ -136,7 +294,7 @@ class ConsoleController extends BaseController
 		}
 
 		// Check every required field
-		$this->checkRequiredFields($this->requiredFields, $_PUT);
+		$this->checkRequiredFields(Console::getRequiredFields(), $_PUT, 'Y-m-d');
 
 		$consoleModel  = new Console();
 		$updatedConsole = $consoleModel->updateConsole($this->getId(), $_PUT);

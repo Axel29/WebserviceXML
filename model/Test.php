@@ -138,6 +138,7 @@ class Test extends BaseModel
 		if (isset($datas['comments'])) {
 			$commentModel = new Comment();
 			foreach ($datas['comments'] as $comment) {
+				$comment['test_idTest'] = $testId;
 				$insertedComment = $commentModel->directInsert($comment, $pdo);
 			}
 		}
@@ -146,6 +147,7 @@ class Test extends BaseModel
 		if (isset($datas['analyses'])) {
 			$analyseModel = new Analyse();
 			foreach ($datas['analyses'] as $analyse) {
+				$analyse['test_idTest'] = $testId;
 				$insertedAnalyse = $analyseModel->directInsert($analyse, $pdo);
 			}
 		}
