@@ -57,7 +57,7 @@ class Test extends BaseModel
 
 			$result            = $stmt->fetch();
 			$numberOfTestsLeft = $result['nbrTests'];
-            return $numberOfTestsLeft
+            return $numberOfTestsLeft;
         } catch (PDOException $e) {
             return false;
         } catch (Exception $e) {
