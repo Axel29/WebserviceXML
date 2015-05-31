@@ -166,7 +166,7 @@
     <xs:element name="comments">
         <xs:complexType>
             <xs:sequence>
-                <xs:element ref="comment" minOccurs="0"/>
+                <xs:element ref="comment" minOccurs="0" maxOccurs="unbounded" />
             </xs:sequence>
         </xs:complexType>
     </xs:element>

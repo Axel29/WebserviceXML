@@ -18,6 +18,30 @@
     <!-- Contenu de l'édition -->
     <xs:element name="content" type="xs:string" />
 
+    <!-- Résumé du test -->
+    <xs:element name="report" type="xs:string" />
+
+    <!-- Date de publication -->
+    <xs:element name="date" type="xs:dateTime" />
+
+    <!-- Nom du testeur -->
+    <xs:element name="userName" type="xs:string" />
+
+    <!-- Note du testeur -->
+    <xs:element name="note" type="xs:integer" />
+
+    <!-- Contenu du commentaire -->
+    <xs:element name="text" type="xs:string" />
+
+    <!-- Nombre de like du commentaire -->
+    <xs:element name="like" type="xs:integer" />
+    
+    <!-- Nombre de dislike du commentaire -->
+    <xs:element name="dislike" type="xs:integer" />
+
+    <!-- Titre du contenu -->
+    <xs:element name="title" type="xs:string" />
+
     <!-- Prix -->
     <xs:element name="price">
         <xs:complexType>
@@ -204,7 +228,7 @@
     <xs:element name="comments">
         <xs:complexType>
             <xs:sequence>
-                <xs:element ref="comment" minOccurs="0" />
+                <xs:element ref="comment" minOccurs="0" maxOccurs="unbounded" />
             </xs:sequence>
         </xs:complexType>
     </xs:element>

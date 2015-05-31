@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <list xsi:noNamespaceSchemaLocation="schemavideogame.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-	<game>
+	<game id="">
 		<presentation>
 			<genders>
 				<gender id="">Action</gender>
