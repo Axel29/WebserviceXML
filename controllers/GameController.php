@@ -76,65 +76,65 @@ class GameController extends BaseController
 			return;
 		}
 
-	    // Test datas
-	    $_POST = [];
+		// Test datas
+		$_POST = [];
 
-	    $_POST['genders'] = [
-	    	[
-	    		'gender' => 'Genre n°1',
-	    	],
-	    	[
-	    		'gender' => 'Genre n°2',
-	    	],
-	    ];
+		$_POST['genders'] = [
+			[
+				'gender' => 'Genre n°1',
+			],
+			[
+				'gender' => 'Genre n°2',
+			],
+		];
 
-	    $_POST['title'] = 'Titre jeu n°1';
-	    
-	    $_POST['editors'] = [
-	    	[
-	    		'editor' => 'Editeur n°1',
-	    	],
-	    	[
-	    		'editor' => 'Editeur n°2',
-	    	],
-	    ];
+		$_POST['title'] = 'Titre jeu n°1';
+		
+		$_POST['editors'] = [
+			[
+				'editor' => 'Editeur n°1',
+			],
+			[
+				'editor' => 'Editeur n°2',
+			],
+		];
 
-	    $_POST['themes'] = [
-	    	[
-	    		'theme' => 'Thème n°1',
-	    	],
-	    	[
-	    		'theme' => 'Thème n°2',
-	    	],
-	    ];
+		$_POST['themes'] = [
+			[
+				'theme' => 'Thème n°1',
+			],
+			[
+				'theme' => 'Thème n°2',
+			],
+		];
 
-	    $_POST['site'] = 'http://www.jeu-1.com/';
+		$_POST['site'] = 'http://www.jeu-1.com/';
 
-	    $_POST['consoles'] = [
-	    	[
+		$_POST['consoles'] = [
+			[
 				'business_model'  => 'Business Model n°1',
 				'pegi'            => 'Pegi n°1',
 				'modes'           => [
-			    	[
-			    		'mode' => 'Mode n°1',
-			    	],
-			    	[
-			    		'mode' => 'Mode n°2',
-			    	],
-			    ],
+					[
+						'mode' => 'Mode n°1',
+					],
+					[
+						'mode' => 'Mode n°2',
+					],
+				],
 				'cover_front' => 'http://www.cover-front.com/',
 				'cover_back'  => 'http://www.cover-back.com/',
 				'supports'    => [
-			    	[
-			    		'support' => 'Support n°1',
-			    	],
-			    	[
-			    		'support' => 'Support n°2',
-			    	],
-			    ],
-			    'release' => '2015-01-25',
-			    'editions' => [
-			    	[
+					[
+						'support' => 'Support n°1',
+					],
+					[
+						'support' => 'Support n°2',
+					],
+				],
+				'release' => '2015-01-25',
+				'editions' => [
+					[
 						'name'              => 'Nom édition n°1',
 						'content'           => 'Contenu édition n°1',
 						'shops' => [
@@ -145,8 +145,8 @@ class GameController extends BaseController
 								'devise'            => '€',
 							]
 						],
-			    	],
-			    	[
+					],
+					[
 						'name'              => 'Nom édition n°2',
 						'content'           => 'Contenu édition n°2',
 						'console_idConsole' => '1',
@@ -158,37 +158,37 @@ class GameController extends BaseController
 								'devise'            => '$',
 							]
 						],
-			    	],
-			    ],
-			    'name' => 'Nom console n°1',
-			    'description' => 'Description console n°1',
-			    'dlcs' => [
-			    	[
-			    		'title'             => 'Titre DLC n°1',
+					],
+				],
+				'name' => 'Nom console n°1',
+				'description' => 'Description console n°1',
+				'dlcs' => [
+					[
+						'title'             => 'Titre DLC n°1',
 						'description'       => 'Description DLC n°1',
 						'price'             => '1.10',
 						'devise'            => '€',
-			    	],
-			    	[
-			    		'title'             => 'Titre DLC n°2',
+					],
+					[
+						'title'             => 'Titre DLC n°2',
 						'description'       => 'Description DLC n°2',
 						'price'             => '2.20',
 						'devise'            => '$',
-			    	],
-			    ],
-			    'configs' => [
-			    	[
-			    		'config'            => 'Config n°1',
+					],
+				],
+				'configs' => [
+					[
+						'config'            => 'Config n°1',
 						'type'              => 'Type config n°1',
-			    	],
-			    	[
-			    		'config'            => 'Config n°2',
+					],
+					[
+						'config'            => 'Config n°2',
 						'type'              => 'Type config n°2',
-			    	],
-			    ],
-			    'tests' => [
-			    	[
-			    		'report'            => 'Report test n°1',
+					],
+				],
+				'tests' => [
+					[
+						'report'            => 'Report test n°1',
 						'date'              => '2015-01-22 11:33:33',
 						'user_name'         => 'User name test n°1',
 						'note'              => '1',
@@ -220,66 +220,66 @@ class GameController extends BaseController
 								'type'        => 'Type analyse n°2',
 							],
 						]
-			    	],
-			    ],
+					],
+				],
 			],
-	    ];
+		];
 
-	    $_POST['languages'] = [
-	    	[
+		$_POST['languages'] = [
+			[
 				'language' => 'Langage n°1',
-	    	],
-	    	[
+			],
+			[
 				'language' => 'Langage n°2',
-	    	],
-	    ];
+			],
+		];
 
-	    $_POST['articles'] = [
-	    	[
+		$_POST['articles'] = [
+			[
 				'type'          => 'Type article n°1',
 				'title'         => 'Titre article n°1',
 				'user_name'     => 'User name article n°1',
 				'date'          => '2015-02-05 17:54:43',
 				'console_names' => 'Console names article n°1',
-	    	],
-	    	[
+			],
+			[
 				'type'          => 'Type article n°2',
 				'title'         => 'Titre article n°2',
 				'user_name'     => 'User name article n°2',
 				'date'          => '2015-02-05 17:54:43',
 				'console_names' => 'Console names article n°2',
-	    	],
-	    ];
+			],
+		];
 
-	    $_POST['medias'] = [
-	    	[
+		$_POST['medias'] = [
+			[
 				'type'          => 'Type media n°1',
 				'url'           => 'URL media n°1',
 				'unit'          => 'Unité media n°1',
 				'width'         => '100',
 				'height'        => '100',
 				'console_names' => 'Console names media n°1',
-	    	],
-	    	[
+			],
+			[
 				'type'          => 'Type media n°2',
 				'url'           => 'URL media n°2',
 				'unit'          => 'Unité media n°2',
 				'width'         => '200',
 				'height'        => '200',
 				'console_names' => 'Console names media n°2',
-	    	],
-	    ];
+			],
+		];
 
-	    $_POST['tips'] = [
-	    	[
+		$_POST['tips'] = [
+			[
 				'content'       => 'Contenu astuce n°1',
 				'console_names' => 'Console names astuce n°1',
-	    	],
-	    	[
+			],
+			[
 				'content'       => 'Contenu astuce n°2',
 				'console_names' => 'Console names astuce n°2',
-	    	],
-	    ];
+			],
+		];
 
 		// Check every required field
 		$this->checkRequiredFields(Game::getRequiredFields(), $_POST);
@@ -362,21 +362,374 @@ class GameController extends BaseController
 			$this->exitError(405, 'Only PUT methods are allowed.');
 			return;
 		}
-		
+
+		// Get PUT datas
+		parse_str(file_get_contents("php://input"), $_PUT);
 		if (!$this->getId()) {
 			$this->exitError(400, "The 'id' must be specified.");
 		}
 
-		$post = [
-			/**
-			 * @todo Ajouter tous les paramètres.
-			 */
+		// Test datas
+		$_PUT = [
+			'genders' => [
+				[
+					'idGender' => '1',
+					'gender'   => 'Genre PUT n°1',
+				],
+				[
+					'idGender' => '2',
+					'gender'   => 'Genre PUT n°2',
+				],
+			],
+			'title'   => 'Titre jeu PUT n°1',
+			'editors' => [
+				[
+					'idEditor' => '1',
+					'editor'   => 'Editeur PUT n°1',
+				],
+				[
+					'idEditor' => '2',
+					'editor'   => 'Editeur PUT n°2',
+				],
+			],
+			'themes' => [
+				[
+					'idTheme' => '1',
+					'theme'   => 'Thème PUT n°1',
+				],
+				[
+					'idTheme' => '2',
+					'theme'   => 'Thème PUT n°2',
+				],
+			],
+			'site'           => 'http://www.jeu-1-put.com/',
+			'consoles'       => [
+				[
+					'idConsole'      => '1',
+					'business_model' => 'Business Model PUT n°1',
+					'pegi'           => 'Pegi PUT n°1',
+					'modes'          => [
+						[
+							'idMode' => '1',
+							'mode'   => 'Mode PUT n°1',
+						],
+						[
+							'idMode' => '2',
+							'mode'   => 'Mode PUT n°2',
+						],
+					],
+					'cover_front' => 'http://www.cover-front.com/',
+					'cover_back'  => 'http://www.cover-back.com/',
+					'supports'    => [
+						[
+							'idSupport' => '1',
+							'support'   => 'Support PUT n°1',
+						],
+						[
+							'idSupport' => '2',
+							'support'   => 'Support PUT n°2',
+						],
+					],
+					'release'  => '2015-01-25',
+					'editions' => [
+						[
+							'idEdition' => '1',
+							'name'      => 'Nom édition PUT n°1',
+							'content'   => 'Contenu édition PUT n°1',
+							'shops'     => [
+								[
+									'idShop'    		=> '1',
+									'url'               => 'http://www.shop-n1.com/',
+									'name'              => 'Nom magasin PUT n°1',
+									'price'             => '1.10',
+									'devise'            => '€',
+								],
+							],
+						],
+						[
+							'idEdition' => '2',
+							'name'      => 'Nom édition PUT n°2',
+							'content'   => 'Contenu édition PUT n°2',
+							'shops'     => [
+								[
+									'idShop' => '2',
+									'url'    => 'http://www.shop-n2.com/',
+									'name'   => 'Nom magasin PUT n°2',
+									'price'  => '2.20',
+									'devise' => '$',
+								],
+							],
+						],
+					],
+					'name'        => 'Nom console PUT n°1',
+					'description' => 'Description console PUT n°1',
+					'dlcs'        => [
+						[
+							'idDlc'       => '1',
+							'title'       => 'Titre DLC PUT n°1',
+							'description' => 'Description DLC PUT n°1',
+							'price'       => '1.10',
+							'devise'      => '€',
+						],
+						[
+							'idDlc'       => '2',
+							'title'       => 'Titre DLC PUT n°2',
+							'description' => 'Description DLC PUT n°2',
+							'price'       => '2.20',
+							'devise'      => '$',
+						],
+					],
+					'configs' => [
+						[
+							'idConfig' => '1',
+							'config'   => 'Config PUT n°1',
+							'type'     => 'Type config PUT n°1',
+						],
+						[
+							'idConfig' => '2',
+							'config'   => 'Config PUT n°2',
+							'type'     => 'Type config PUT n°2',
+						],
+					],
+					'tests' => [
+						[
+							'idTest'    => '1',
+							'report'    => 'Report test PUT n°1',
+							'date'      => '2015-01-22 11:33:33',
+							'user_name' => 'User name test PUT n°1',
+							'note'      => '1',
+							'comments'  => [
+								[
+									'idComment' => '1',
+									'date'      => '2015-01-22 11:33:33',
+									'user_name' => 'User name commentaire PUT n°1',
+									'note'      => '1',
+									'like'      => '1',
+									'dislike'   => '1',
+									'text'      => 'Text commentaire PUT n°1',
+								],
+								[
+									'idComment' => '2',
+									'date'      => '2016-02-23 12:44:44',
+									'user_name' => 'User name commentaire PUT n°2',
+									'note'      => '2',
+									'like'      => '2',
+									'dislike'   => '2',
+									'text'      => 'Text commentaire PUT n°2',
+								],
+							],
+							'analyses' => [
+								[
+									'idAnalyse' => '1',
+									'analyse'   => 'Analyse PUT n°1',
+									'type'      => 'Type analyse PUT n°1',
+								],
+								[
+									'idAnalyse' => '2',
+									'analyse'   => 'Analyse PUT n°2',
+									'type'      => 'Type analyse PUT n°2',
+								],
+							]
+						],
+					],
+				],
+			],
+			'languages' => [
+				[
+					'idLanguage' => '1',
+					'language'   => 'Langage PUT n°1',
+				],
+				[
+					'idLanguage' => '2',
+					'language'   => 'Langage PUT n°2',
+				],
+			],
+
+			'articles' => [
+				[
+					'idArticle'     => '1',
+					'type'          => 'Type article PUT n°1',
+					'title'         => 'Titre article PUT n°1',
+					'user_name'     => 'User name article PUT n°1',
+					'date'          => '2015-02-05 17:54:43',
+					'console_names' => 'Console names article PUT n°1',
+				],
+				[
+					'idArticle'     => '2',
+					'type'          => 'Type article PUT n°2',
+					'title'         => 'Titre article PUT n°2',
+					'user_name'     => 'User name article PUT n°2',
+					'date'          => '2015-02-05 17:54:43',
+					'console_names' => 'Console names article PUT n°2',
+				],
+			],
+
+			'medias' => [
+				[
+					'idMedia'     => '1',
+					'type'          => 'Type media PUT n°1',
+					'url'           => 'URL media PUT n°1',
+					'unit'          => 'Unité media PUT n°1',
+					'width'         => '110',
+					'height'        => '110',
+					'console_names' => 'Console names media PUT n°1',
+				],
+				[
+					'idMedia'       => '2',
+					'type'          => 'Type media PUT n°2',
+					'url'           => 'URL media PUT n°2',
+					'unit'          => 'Unité media PUT n°2',
+					'width'         => '220',
+					'height'        => '220',
+					'console_names' => 'Console names media PUT n°2',
+				],
+			],
+
+			'tips' => [
+				[
+					'idTip'         => '1',
+					'content'       => 'Contenu astuce PUT n°1',
+					'console_names' => 'Console names astuce PUT n°1',
+				],
+				[
+					'idTip'         => '2',
+					'content'       => 'Contenu astuce PUT n°2',
+					'console_names' => 'Console names astuce PUT n°2',
+				],
+			],
 		];
 
-		$gameModel = new Game();
-		$gameModel->updateGame($this->getId(), $post);
+		// Check every required field
+		$this->checkRequiredFields(Game::getRequiredFields(), $_PUT, 'Y-m-d');
 
-		$this->sendStatus(204);
+		// Check every required fields for genders
+		foreach ($_PUT['genders'] as $gender) {
+			$this->checkRequiredFields(Gender::getRequiredFields(), $gender);
+		}
+		
+		// Check every required fields for editors
+		foreach ($_PUT['editors'] as $editor) {
+			$this->checkRequiredFields(Editor::getRequiredFields(), $editor);
+		}
+		
+		// Check every required fields for themes
+		foreach ($_PUT['themes'] as $theme) {
+			$this->checkRequiredFields(Theme::getRequiredFields(), $theme);
+		}
+
+		// Check every required fields for console
+		foreach ($_PUT['consoles'] as $console) {
+			$requiredFields = Console::getRequiredFields();
+			if (isset($requiredFields['game_idGame'])) unset($requiredFields['game_idGame']);
+			$this->checkRequiredFields($requiredFields, $console, 'Y-m-d');
+
+			// Check every required fields for modes
+			foreach ($console['modes'] as $mode) {
+				$this->checkRequiredFields(Mode::getRequiredFields(), $mode);
+			}
+
+			// Check every required fields for supports
+			foreach ($console['supports'] as $support) {
+				$this->checkRequiredFields(Support::getRequiredFields(), $support);
+			}
+
+			// Check every required fields for editions
+			foreach ($console['editions'] as $edition) {
+				$requiredFields = Edition::getRequiredFields();
+				if (isset($requiredFields['console_idConsole'])) unset($requiredFields['console_idConsole']);
+				$this->checkRequiredFields($requiredFields, $edition);
+
+				// Check every required fields for sub-elements
+				if (isset($edition['shops'])) {
+					$requiredFields = Shop::getRequiredFields();
+					if (isset($requiredFields['edition_idEdition'])) unset($requiredFields['edition_idEdition']);
+					foreach ($edition['shops'] as $shop) {
+						$this->checkRequiredFields($requiredFields, $shop);
+					}
+				}
+			}
+
+			// Check every required fields for dlcs
+			if (isset($console['dlcs'])) 
+				$requiredFields = Dlc::getRequiredFields();
+				if (isset($requiredFields['console_idConsole'])) unset($requiredFields['console_idConsole']);{
+				foreach ($console['dlcs'] as $dlc) {
+					$this->checkRequiredFields($requiredFields, $dlc);
+				}
+			}
+
+			// Check every required fields for configs
+			if (isset($console['configs'])) {
+				$requiredFields = Config::getRequiredFields();
+				if (isset($requiredFields['console_idConsole'])) unset($requiredFields['console_idConsole']);
+				foreach ($console['configs'] as $config) {
+					$this->checkRequiredFields($requiredFields, $config);
+				}
+			}
+
+			// Check every required fields for tests
+			if (isset($console['tests'])) {
+				foreach ($console['tests'] as $test) {
+					$requiredFields = Test::getRequiredFields();
+					if (isset($requiredFields['console_idConsole'])) unset($requiredFields['console_idConsole']);
+					$this->checkRequiredFields($requiredFields, $test);
+
+					// Check every required fields for comments
+					if (isset($test['comments'])) {
+						$requiredFields = Comment::getRequiredFields();
+						if (isset($requiredFields['test_idTest'])) unset($requiredFields['test_idTest']);
+						foreach ($test['comments'] as $comment) {
+							$this->checkRequiredFields($requiredFields, $comment);
+						}
+					}
+
+					// Check every required fields for analyses
+					if (isset($test['analyses'])) {
+						$requiredFields = Analyse::getRequiredFields();
+						if (isset($requiredFields['test_idTest'])) unset($requiredFields['test_idTest']);
+						foreach ($test['analyses'] as $analyse) {
+							$this->checkRequiredFields($requiredFields, $analyse);
+						}
+					}
+				}
+			}
+		}
+
+		// Check every required fields for languages
+		foreach ($_PUT['languages'] as $language) {
+			$this->checkRequiredFields(Language::getRequiredFields(), $language);
+		}
+
+		// Check every required fields for articles
+		foreach ($_PUT['articles'] as $article) {
+			$requiredFields = Article::getRequiredFields();
+			if (isset($requiredFields['game_idGame'])) unset($requiredFields['game_idGame']);
+			$this->checkRequiredFields($requiredFields, $article);
+		}
+
+		// Check every required fields for medias
+		foreach ($_PUT['medias'] as $media) {
+			$requiredFields = Media::getRequiredFields();
+			if (isset($requiredFields['game_idGame'])) unset($requiredFields['game_idGame']);
+			$this->checkRequiredFields($requiredFields, $media);
+		}
+
+		// Check every required fields for tips
+		foreach ($_PUT['tips'] as $tip) {
+			$requiredFields = Tip::getRequiredFields();
+			if (isset($requiredFields['game_idGame'])) unset($requiredFields['game_idGame']);
+			$this->checkRequiredFields($requiredFields, $tip);
+		}
+
+		$gameModel   = new Game();
+		$updatedGame = $gameModel->updateGame($this->getId(), $_PUT);
+
+		if ($updatedGame) {
+			$this->sendStatus(201);
+			return;
+		} else {
+			$this->exitError(400, 'An error has occurred. Please try again.');
+		}
 	}
 
 	/**
