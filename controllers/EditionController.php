@@ -112,7 +112,7 @@ class EditionController extends BaseController
 		// Get PUT datas
 		parse_str(file_get_contents("php://input"), $_PUT);
 		if (!$this->getId()) {
-			$this->exitError(400, "'id' must be specified.");
+			$this->exitError(400, "The 'id' must be specified.");
 		}
 
 		// Check every required field
@@ -151,7 +151,7 @@ class EditionController extends BaseController
 		}
 
 		if (!$this->getId()) {
-			$this->exitError(400, "'id' must be specified.");
+			$this->exitError(400, "The 'id' must be specified.");
 		}
 
 		$editionModel = new Edition();

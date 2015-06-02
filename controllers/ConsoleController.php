@@ -291,7 +291,7 @@ class ConsoleController extends BaseController
 		// Get PUT datas
 		parse_str(file_get_contents("php://input"), $_PUT);
 		if (!$this->getId()) {
-			$this->exitError(400, "'id' must be specified.");
+			$this->exitError(400, "The 'id' must be specified.");
 		}
 
 	    // Test datas
@@ -525,7 +525,7 @@ class ConsoleController extends BaseController
 		}
 
 		if (!$this->getId()) {
-			$this->exitError(400, "'id' must be specified.");
+			$this->exitError(400, "The 'id' must be specified.");
 		}
 
 		$consoleModel   = new Console();

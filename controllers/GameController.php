@@ -364,7 +364,7 @@ class GameController extends BaseController
 		}
 		
 		if (!$this->getId()) {
-			$this->exitError(400, "'id' must be specified.");
+			$this->exitError(400, "The 'id' must be specified.");
 		}
 
 		$post = [
