@@ -242,7 +242,7 @@ class Console extends BaseModel
 			return true;
 		} catch (PDOException $e) {
 			// Cancel the transaction
-		    $pdo->rollback(); echo $e->getMessage();
+		    $pdo->rollback();
 			return false;
 		} catch (Exception $e) {
 			return false;
