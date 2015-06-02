@@ -222,10 +222,11 @@ class Console extends BaseModel
 	}
 
 	/**
-	 * Uppegi console
+	 * Update console
 	 *
 	 * @param int $idConsole Console's ID
 	 * @param array $datas Datas to update
+	 * @return bool
 	 */
 	public function updateConsole($idConsole, $datas)
 	{
