@@ -256,7 +256,8 @@ class Test extends BaseModel
 		if (isset($datas['comments'])) {
 			$commentModel = new Comment();
 			foreach ($datas['comments'] as $comment) {
-				$commentModel->directUpdate($comment['idComment'], $comment);
+				$comment['test_idTest'] = $idTest;
+				$updatedComment         = $commentModel->directUpdate($comment['idComment'], $comment);
 			}
 		}
 
@@ -264,8 +265,8 @@ class Test extends BaseModel
 		if (isset($datas['analyses'])) {
 			$analyseModel = new Analyse();
 			foreach ($datas['analyses'] as $analyse) {
-				// Stock the update into a variable otherwise the transaction will be blocked forever !
-				$updatedAnalyse = $analyseModel->directUpdate($analyse['idAnalyse'], $analyse);
+				$analyse['test_idTest'] = $idTest;
+				$updatedAnalyse         = $analyseModel->directUpdate($analyse['idAnalyse'], $analyse);
 			}
 		}
 

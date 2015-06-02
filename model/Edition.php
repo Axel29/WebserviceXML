@@ -240,6 +240,7 @@ class Edition extends BaseModel
 		if (isset($datas['shops'])) {
 			$shopModel = new Shop();
 			foreach ($datas['shops'] as $shop) {
+				$shop['edition_idEdition'] = $idEdition;
 				$updatedShop = $shopModel->directUpdate($shop['idShop'], $shop, $pdo);
 			}
 		}

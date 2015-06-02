@@ -399,7 +399,7 @@ class Console extends BaseModel
 		$editionModel = new Edition();
 		foreach ($datas['editions'] as $edition) {
 			$edition['console_idConsole'] = $idConsole;
-			$updatedEdition              = $editionModel->directUpdate($edition['idEdition'], $edition, $pdo);
+			$updatedEdition               = $editionModel->directUpdate($edition['idEdition'], $edition, $pdo);
 		}
 
 		// Update datas from 'dlc' table
@@ -407,7 +407,7 @@ class Console extends BaseModel
 			$dlcModel = new Dlc();
 			foreach ($datas['dlcs'] as $dlc) {
 				$dlc['console_idConsole'] = $idConsole;
-				$updatedDlc              = $dlcModel->directUpdate($dlc['idDlc'], $dlc, $pdo);
+				$updatedDlc               = $dlcModel->directUpdate($dlc['idDlc'], $dlc, $pdo);
 			}
 		}
 
@@ -416,7 +416,7 @@ class Console extends BaseModel
 			$configModel = new Config();
 			foreach ($datas['configs'] as $config) {
 				$config['console_idConsole'] = $idConsole;
-				$updatedConfig              = $configModel->directUpdate($config['idConfig'], $config, $pdo);
+				$updatedConfig               = $configModel->directUpdate($config['idConfig'], $config, $pdo);
 			}
 		}
 
@@ -425,7 +425,7 @@ class Console extends BaseModel
 			$testModel = new Test();
 			foreach ($datas['tests'] as $test) {
 				$test['console_idConsole'] = $idConsole;
-				$updatedTest              = $testModel->directUpdate($test['idTest'], $test, $pdo);
+				$updatedTest               = $testModel->directUpdate($test['idTest'], $test, $pdo);
 			}
 		}
 

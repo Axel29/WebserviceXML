@@ -222,18 +222,18 @@ class ConsoleController extends BaseController
 
 		// Check every required fields for dlcs
 		if (isset($_POST['dlcs'])) {
+			$requiredFields = Dlc::getRequiredFields();
+			if (isset($requiredFields['console_idConsole'])) unset($requiredFields['console_idConsole']);
 			foreach ($_POST['dlcs'] as $dlc) {
-				$requiredFields = Dlc::getRequiredFields();
-				if (isset($requiredFields['console_idConsole'])) unset($requiredFields['console_idConsole']);
 				$this->checkRequiredFields($requiredFields, $dlc);
 			}
 		}
 
 		// Check every required fields for configs
 		if (isset($_POST['configs'])) {
+			$requiredFields = Config::getRequiredFields();
+			if (isset($requiredFields['console_idConsole'])) unset($requiredFields['console_idConsole']);
 			foreach ($_POST['configs'] as $config) {
-				$requiredFields = Config::getRequiredFields();
-				if (isset($requiredFields['console_idConsole'])) unset($requiredFields['console_idConsole']);
 				$this->checkRequiredFields($requiredFields, $config);
 			}
 		}
@@ -247,18 +247,18 @@ class ConsoleController extends BaseController
 
 				// Check every required fields for comments
 				if (isset($test['comments'])) {
+					$requiredFields = Comment::getRequiredFields();
+					if (isset($requiredFields['test_idTest'])) unset($requiredFields['test_idTest']);
 					foreach ($test['comments'] as $comment) {
-						$requiredFields = Comment::getRequiredFields();
-						if (isset($requiredFields['test_idTest'])) unset($requiredFields['test_idTest']);
 						$this->checkRequiredFields($requiredFields, $comment);
 					}
 				}
 
 				// Check every required fields for analyses
 				if (isset($test['analyses'])) {
+					$requiredFields = Analyse::getRequiredFields();
+					if (isset($requiredFields['test_idTest'])) unset($requiredFields['test_idTest']);
 					foreach ($test['analyses'] as $analyse) {
-						$requiredFields = Analyse::getRequiredFields();
-						if (isset($requiredFields['test_idTest'])) unset($requiredFields['test_idTest']);
 						$this->checkRequiredFields($requiredFields, $analyse);
 					}
 				}
@@ -298,12 +298,12 @@ class ConsoleController extends BaseController
 	    $_PUT = [];
 
 	    $_PUT['game_idGame']     = '1';
-		$_PUT['business_model']  = 'Business Model n°1';
-		$_PUT['pegi']            = 'Pegi n°1';
+		$_PUT['business_model']  = 'Business Model PUT n°1';
+		$_PUT['pegi']            = 'Pegi PUT n°1';
 		$_PUT['modes']           = [
 	    	[
 				'idMode' => '1',
-				'mode'   => 'Mode n°1',
+				'mode'   => 'Mode PUT n°1',
 	    	],
 	    	[
 				'idMode' => '2',
@@ -315,7 +315,7 @@ class ConsoleController extends BaseController
 		$_PUT['supports']    = [
 	    	[
 				'idSupport' => '1',
-				'support'   => 'Support n°1',
+				'support'   => 'Support PUT n°1',
 	    	],
 	    	[
 				'idSupport' => '2',
@@ -326,17 +326,15 @@ class ConsoleController extends BaseController
 	    $_PUT['editions'] = [
 	    	[
 	    		'idEdition'         => '1',
-	    		'console_idConsole' => '1',
-				'name'              => 'Nom édition n°1',
-				'content'           => 'Contenu édition n°1',
+				'name'              => 'Nom édition PUT n°1',
+				'content'           => 'Contenu édition PUT n°1',
 				'shops' => [
 					[
 						'idShop'    		=> '1',
 						'url'               => 'http://www.shop-n1.com/',
-						'name'              => 'Nom magasin n°1',
+						'name'              => 'Nom magasin PUT n°1',
 						'price'             => '1.10',
 						'devise'            => '€',
-						'edition_idEdition' => '1',
 					]
 				],
 	    	],
@@ -344,7 +342,6 @@ class ConsoleController extends BaseController
 	    		'idEdition'         => '2',
 				'name'              => 'Nom édition n°2',
 				'content'           => 'Contenu édition n°2',
-				'console_idConsole' => '1',
 				'shops' => [
 					[
 						'idShop'    		=> '2',
@@ -352,21 +349,19 @@ class ConsoleController extends BaseController
 						'name'              => 'Nom magasin n°2',
 						'price'             => '2.20',
 						'devise'            => '$',
-						'edition_idEdition' => '2',
 					]
 				],
 	    	],
 	    ];
-	    $_PUT['name'] = 'Nom console n°1';
-	    $_PUT['description'] = 'Description console n°1';
+	    $_PUT['name'] = 'Nom console PUT n°1';
+	    $_PUT['description'] = 'Description console PUT n°1';
 	    $_PUT['dlcs'] = [
 	    	[
 	    		'idDlc'             => '1',
-	    		'title'             => 'Titre DLC n°1',
-				'description'       => 'Description DLC n°1',
+	    		'title'             => 'Titre DLC PUT n°1',
+				'description'       => 'Description DLC PUT n°1',
 				'price'             => '1.10',
 				'devise'            => '€',
-				'console_idConsole' => '1',
 	    	],
 	    	[
 	    		'idDlc'             => '2',
@@ -374,41 +369,36 @@ class ConsoleController extends BaseController
 				'description'       => 'Description DLC n°2',
 				'price'             => '2.20',
 				'devise'            => '$',
-				'console_idConsole' => '1',
 	    	],
 	    ];
 	    $_PUT['configs'] = [
 	    	[
 	    		'idConfig'          => '1',
-	    		'config'            => 'Config n°1',
-				'type'              => 'Type config n°1',
-				'console_idConsole' => '1',
+	    		'config'            => 'Config PUT n°1',
+				'type'              => 'Type config PUT n°1',
 	    	],
 	    	[
 	    		'idConfig'          => '2',
 	    		'config'            => 'Config n°2',
 				'type'              => 'Type config n°2',
-				'console_idConsole' => '1',
 	    	],
 	    ];
 	    $_PUT['tests'] = [
 	    	[
 	    		'idTest'            => '1',
-				'console_idConsole' => '1',
-	    		'report'            => 'Report test n°1',
+	    		'report'            => 'Report test PUT n°1',
 				'date'              => '2015-01-22 11:33:33',
-				'user_name'         => 'User name test n°1',
+				'user_name'         => 'User name test PUT n°1',
 				'note'              => '1',
 				'comments'          => [
 					[
 						'idComment'   => '1',
 						'date'        => '2015-01-22 11:33:33',
-						'user_name'   => 'User name commentaire n°1',
+						'user_name'   => 'User name commentaire PUT n°1',
 						'note'        => '1',
 						'like'        => '1',
 						'dislike'     => '1',
-						'text'        => 'Text commentaire n°1',
-						'test_idTest' => '1',
+						'text'        => 'Text commentaire PUT n°1',
 					],
 					[
 						'idComment'   => '2',
@@ -418,21 +408,18 @@ class ConsoleController extends BaseController
 						'like'        => '2',
 						'dislike'     => '2',
 						'text'        => 'Text commentaire n°2',
-						'test_idTest' => '1',
 					],
 				],
 				'analyses' => [
 					[
 						'idAnalyse'   => '1',
-						'analyse'     => 'Analyse n°1',
-						'type'        => 'Type analyse n°1',
-						'test_idTest' => '1',
+						'analyse'     => 'Analyse PUT n°1',
+						'type'        => 'Type analyse PUT n°1',
 					],
 					[
 						'idAnalyse'   => '2',
 						'analyse'     => 'Analyse n°2',
 						'type'        => 'Type analyse n°2',
-						'test_idTest' => '1',
 					],
 				]
 	    	],
@@ -453,46 +440,60 @@ class ConsoleController extends BaseController
 
 		// Check every required fields for editions
 		foreach ($_PUT['editions'] as $edition) {
-			$this->checkRequiredFields(Edition::getRequiredFields(), $edition);
+			$requiredFields = Edition::getRequiredFields();
+			if (isset($requiredFields['console_idConsole'])) unset($requiredFields['console_idConsole']);
+			$this->checkRequiredFields($requiredFields, $edition);
 
 			// Check every required fields for sub-elements
 			if (isset($edition['shops'])) {
+				$requiredFields = Shop::getRequiredFields();
+				if (isset($requiredFields['edition_idEdition'])) unset($requiredFields['edition_idEdition']);
 				foreach ($edition['shops'] as $shop) {
-					$this->checkRequiredFields(Shop::getRequiredFields(), $shop);
+					$this->checkRequiredFields($requiredFields, $shop);
 				}
 			}
 		}
 
 		// Check every required fields for dlcs
-		if (isset($_PUT['dlcs'])) {
+		if (isset($_PUT['dlcs'])) 
+			$requiredFields = Dlc::getRequiredFields();
+			if (isset($requiredFields['console_idConsole'])) unset($requiredFields['console_idConsole']);{
 			foreach ($_PUT['dlcs'] as $dlc) {
-				$this->checkRequiredFields(Dlc::getRequiredFields(), $dlc);
+				$this->checkRequiredFields($requiredFields, $dlc);
 			}
 		}
 
 		// Check every required fields for configs
 		if (isset($_PUT['configs'])) {
+			$requiredFields = Config::getRequiredFields();
+			if (isset($requiredFields['console_idConsole'])) unset($requiredFields['console_idConsole']);
 			foreach ($_PUT['configs'] as $config) {
-				$this->checkRequiredFields(Config::getRequiredFields(), $config);
+				$this->checkRequiredFields($requiredFields, $config);
 			}
 		}
 
 		// Check every required fields for tests
 		if (isset($_PUT['tests'])) {
 			foreach ($_PUT['tests'] as $test) {
-				$this->checkRequiredFields(Test::getRequiredFields(), $test);
+				$requiredFields = Test::getRequiredFields();
+				if (isset($requiredFields['console_idConsole'])) unset($requiredFields['console_idConsole']);
+				$this->checkRequiredFields($requiredFields, $test);
 
 				// Check every required fields for comments
 				if (isset($test['comments'])) {
+					$requiredFields = Comment::getRequiredFields();
+					if (isset($requiredFields['test_idTest'])) unset($requiredFields['test_idTest']);
 					foreach ($test['comments'] as $comment) {
-						$this->checkRequiredFields(Comment::getRequiredFields(), $comment);
+						$this->checkRequiredFields($requiredFields, $comment);
 					}
 				}
 
 				// Check every required fields for analyses
 				if (isset($test['analyses'])) {
+					$requiredFields = Analyse::getRequiredFields();
+					if (isset($requiredFields['test_idTest'])) unset($requiredFields['test_idTest']);
 					foreach ($test['analyses'] as $analyse) {
-						$this->checkRequiredFields(Analyse::getRequiredFields(), $analyse);
+						$this->checkRequiredFields($requiredFields, $analyse);
 					}
 				}
 			}
