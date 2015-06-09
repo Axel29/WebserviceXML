@@ -204,12 +204,18 @@ class Game extends BaseModel
 			// Stock every gender IDs to remove deleted ones from game_has_gender table
 			$genderIds = [];
 			foreach ($datas['genders'] as $gender) {
-				$genderIds[] = (int)$gender['idGender'];
+				if (isset($gender['idGender'])) {
+					$genderIds[] = (int)$gender['idGender'];
+				}
 			}
 
 			foreach ($datas['genders'] as $gender) {
-				$idGender      = $gender['idGender'];
-				$updatedGender = $genderModel->directUpdate($idGender, $gender, $pdo);
+				if (isset($gender['idGender'])) {
+					$idGender = $gender['idGender'];
+				} else {
+					$idGender = $genderModel->directInsert($gender, $pdo);
+					if (!in_array($idGender, $genderIds)) $genderIds[] = $idGender;
+				}
 
 				// Check that the relation link exists, otherwise, we add it.
 				$stmt = $pdo->prepare('SELECT *
@@ -251,12 +257,18 @@ class Game extends BaseModel
 			// Stock every mode IDs to remove deleted ones from game_has_gender table
 			$editorIds = [];
 			foreach ($datas['editors'] as $editor) {
-				$editorIds[] = (int)$editor['idEditor'];
+				if (isset($editor['idEditor'])) {
+					$editorIds[] = (int)$editor['idEditor'];
+				}
 			}
 
 			foreach ($datas['editors'] as $editor) {
-				$idEditor      = $editor['idEditor'];
-				$updatedEditor = $editorModel->directUpdate($idEditor, $editor, $pdo);
+				if (isset($editor['idEditor'])) {
+					$idEditor = $editor['idEditor'];
+				} else {
+					$idEditor = $editorModel->directInsert($editor, $pdo);
+					if (!in_array($idEditor, $editorIds)) $genderIds[] = $idEditor;
+				}
 
 				// Check that the relation link exists, otherwise, we add it.
 				$stmt = $pdo->prepare('SELECT *
@@ -298,12 +310,18 @@ class Game extends BaseModel
 			// Stock every mode IDs to remove deleted ones from game_has_gender table
 			$themeIds = [];
 			foreach ($datas['themes'] as $theme) {
-				$themeIds[] = (int)$theme['idTheme'];
+				if (isset($theme['idTheme'])) {
+					$themeIds[] = (int)$theme['idTheme'];
+				}
 			}
 
 			foreach ($datas['themes'] as $theme) {
-				$idTheme      = $theme['idTheme'];
-				$updatedTheme = $themeModel->directUpdate($idTheme, $theme, $pdo);
+				if (isset($theme['idTheme'])) {
+					$idTheme = $theme['idTheme'];
+				} else {
+					$idTheme = $themeModel->directInsert($theme, $pdo);
+					if (!in_array($idTheme, $themeIds)) $themeIds[] = $idTheme;
+				}
 
 				// Check that the relation link exists, otherwise, we add it.
 				$stmt = $pdo->prepare('SELECT *
@@ -352,12 +370,18 @@ class Game extends BaseModel
 			// Stock every mode IDs to remove deleted ones from game_has_gender table
 			$languageIds = [];
 			foreach ($datas['languages'] as $language) {
-				$languageIds[] = (int)$language['idLanguage'];
+				if (isset($language['idLanguage'])) {
+					$languageIds[] = (int)$language['idLanguage'];
+				}
 			}
 
 			foreach ($datas['languages'] as $language) {
-				$idLanguage      = $language['idLanguage'];
-				$updatedLanguage = $languageModel->directUpdate($idLanguage, $language, $pdo);
+				if (isset($language['idLanguage'])) {
+					$idLanguage = $language['idLanguage'];
+				} else {
+					$idLanguage = $languageModel->directInsert($language, $pdo);
+					if (!in_array($idLanguage, $languageIds)) $languageIds[] = $idLanguage;
+				}
 
 				// Check that the relation link exists, otherwise, we add it.
 				$stmt = $pdo->prepare('SELECT *

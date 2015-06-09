@@ -318,12 +318,18 @@ class Console extends BaseModel
 		// Stock every mode IDs to remove deleted ones from console_has_mode table
 		$modeIds   = [];
 		foreach ($datas['modes'] as $mode) {
-			$modeIds[] = (int)$mode['idMode'];
+			if (isset($mode['idMode'])) {
+				$modeIds[] = (int)$mode['idMode'];
+			}
 		}
 
 		foreach ($datas['modes'] as $mode) {
-			$idMode      = $mode['idMode'];
-			$updatedMode = $modeModel->directUpdate($idMode, $mode, $pdo);
+			if (isset($mode['idMode'])) {
+				$idMode = $mode['idMode'];
+			} else {
+				$idMode = $modeModel->directInsert($mode, $pdo);
+				if (!in_array($idMode, $modeIds)) $modeIds[] = $idMode;
+			}
 
 			// Check that the relation link exists, otherwise, we add it.
 			$stmt = $pdo->prepare('SELECT *
@@ -360,12 +366,18 @@ class Console extends BaseModel
 		// Stock every mode IDs to remove deleted ones from console_has_mode table
 		$supportIds   = [];
 		foreach ($datas['supports'] as $support) {
-			$supportIds[] = (int)$support['idSupport'];
+			if (isset($support['idSupport'])) {
+				$supportIds[] = (int)$support['idSupport'];
+			}
 		}
 
 		foreach ($datas['supports'] as $support) {
-			$idSupport      = $support['idSupport'];
-			$updatedSupport = $supportModel->directUpdate($idSupport, $support, $pdo);
+			if (isset($support['idSupport'])) {
+				$idSupport = $support['idSupport'];
+			} else {
+				$idSupport = $supportModel->directInsert($support, $pdo);
+				if (!in_array($idSupport, $supportIds)) $supportIds[] = $idSupport;
+			}
 
 			// Check that the relation link exists, otherwise, we add it.
 			$stmt = $pdo->prepare('SELECT *
