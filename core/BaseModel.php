@@ -329,4 +329,14 @@ class BaseModel
 
 		return $this;
 	}
+
+	/**
+	 * Define the maximum number of rows to get per request
+	 *
+	 * @return int Numer of rows per request
+	 */
+	public function getLimit()
+	{
+		return (int)'1';
+	}
 }
