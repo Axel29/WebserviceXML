@@ -12,7 +12,7 @@ class User extends BaseModel
 	{
 		$this->table = 'user u';
 
-		$fields = ['`idUser`', '`username`', '`password`', '`apiKey`', '`apiSecret`', '`r`.`role`',];
+		$fields = ['`idUser`', '`email`', '`username`', '`password`', '`apiKey`', '`apiSecret`', '`r`.`role`',];
 		
 		$where = [];
 		$join = [
@@ -41,6 +41,7 @@ class User extends BaseModel
 	public static function getRequiredFields()
 	{
 		$requiredFields = [
+			'email'    => 'string',
 			'username' => 'string',
 			'password' => 'string',
 			'role'     => 'int',
@@ -63,7 +64,7 @@ class User extends BaseModel
 		 * Check that the user doesn't already exist.
 		 * If so, return this ID
 		 */
-		if ($existingUser = $this->findBy('username', $datas['username'])) {
+		if ($existingUser = $this->findBy('email', $datas['email'])) {
 			$insertedUser = $existingUser[0]['idUser'];
 			return $insertedUser;
 		} else {
@@ -75,8 +76,9 @@ class User extends BaseModel
 				$apiKey    = uniqid();
 				$apiSecret = substr(md5(uniqid() . uniqid()), 0, 15);
 
-				$stmt      = $pdo->prepare('INSERT INTO `user` (`username`, `password`, `apiKey`, `apiSecret`, `role`) 
-									   		VALUES (:username, :password, :apiKey, :apiSecret, :role);');
+				$stmt      = $pdo->prepare('INSERT INTO `user` (`email`, `username`, `password`, `apiKey`, `apiSecret`, `role`) 
+									   		VALUES (:email, :username, :password, :apiKey, :apiSecret, :role);');
+				$stmt->bindParam(':email', $datas['email'], PDO::PARAM_STR);
 				$stmt->bindParam(':username', $datas['username'], PDO::PARAM_STR);
 				$stmt->bindParam(':password', $datas['password'], PDO::PARAM_STR);
 				$stmt->bindParam(':apiKey', $apiKey, PDO::PARAM_STR);
@@ -110,7 +112,7 @@ class User extends BaseModel
 			}
 			
 			$queryString = 'UPDATE `user` 
-					  		SET `username` = :username, `password` = :password';
+					  		SET `email` = :email, `username` = :username, `password` = :password';
 
 			if (isset($datas['role'])) {
 				$queryString .= ', role = :role';
@@ -119,6 +121,7 @@ class User extends BaseModel
 			$queryString .= ' WHERE `idUser` =  :idUser;';
 
 			$stmt = $pdo->prepare($queryString);
+			$stmt->bindParam(':email', $datas['email'], PDO::PARAM_STR);
 			$stmt->bindParam(':username', $datas['username'], PDO::PARAM_STR);
 			$stmt->bindParam(':password', $datas['password'], PDO::PARAM_STR);
 			if (isset($datas['role'])) {
@@ -128,7 +131,6 @@ class User extends BaseModel
 			$stmt->execute();
 			return true;
 		} catch (PDOException $e) {
-			echo $e->getMessage();
 			return false;
 		} catch (Exception $e) {
 			return false;

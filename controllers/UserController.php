@@ -165,6 +165,7 @@ class UserController extends BaseController
 		foreach ($users as $user) {
 			$userNode = $list->addChild('user');
 			$userNode->addAttribute('id', $user['idUser']);
+			$userNode->addChild('email', $user['email']);
 			$userNode->addChild('username', $user['username']);
 			$userNode->addChild('password', $user['password']);
 			$userNode->addChild('apiKey', $user['apiKey']);
