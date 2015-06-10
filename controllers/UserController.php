@@ -1,16 +1,16 @@
 <?php
-class EditorController extends BaseController
+class UserController extends BaseController
 {
 	/**
-	 * @var $id int Editor's ID
+	 * @var $id int User's ID
 	 */
 	private $id = null;
 
 	/**
 	 * Redirect the request to the matching method regarding the request method
-	 * Route: /editor/index/id/{id}
+	 * Route: /user/index/id/{id}
 	 *
-	 * @param $id int ID of the editor. Used for POST, PUT and DELETE methods
+	 * @param $id int ID of the user. Used for POST, PUT and DELETE methods
 	 */
 	public function indexAction($id = null)
 	{
@@ -39,34 +39,34 @@ class EditorController extends BaseController
 	}
 
 	/**
-	 * Show the full editors list or a specific editor by it's ID
+	 * Show the full users list or a specific user by it's ID
 	 *
-	 * @param $id int Editor's ID
+	 * @param $id int User's ID
 	 */
 	public function show()
 	{
-		$editorModel = new Editor();
+		$userModel = new User();
 
-		// Show the full editor list or a specific editor by it's ID
-		$datas = $editorModel->findBy('idEditor', $this->getId());
+		// Show the full user list or a specific user by it's ID
+		$datas = $userModel->findBy('idUser', $this->getId());
 
-		if ($datas) {
-			$this->xml = $this->generateXml($datas)->asXML();
+		if ($this->getId() && !$datas) {
+			$this->exitError(400, "This user doesn't exist.");
+		}
 
-			if ($errors = $this->validateXML($this->xml)) {
-				$this->exitError(400, $errors);
-			} else {
-				$this->loadLayout('xml');
-				echo $this->xml;
-			}
+		$this->xml = $this->generateXml($datas)->asXML();
+
+		if ($errors = $this->validateXML($this->xml)) {
+			$this->exitError(400, $errors);
 		} else {
-			$this->exitError(400, "This editor doesn't exist.");
+			$this->loadLayout('xml');
+			echo $this->xml;
 		}
 	}
 
 	/**
-	 * Add new editor
-	 * Route: /editor
+	 * Add new user
+	 * Route: /user
 	 */
 	public function add()
 	{
@@ -77,12 +77,12 @@ class EditorController extends BaseController
 		}
 
 		// Check every required field
-		$this->checkRequiredFields(Editor::getRequiredFields(), $_POST);
+		$this->checkRequiredFields(User::getRequiredFields(), $_POST);
 
-		$editorModel    = new Editor();
-		$insertedEditor = $editorModel->insertEditor($_POST);
+		$userModel    = new User();
+		$insertedUser = $userModel->insertUser($_POST);
 
-		if ($insertedEditor) {
+		if ($insertedUser) {
 			$this->sendStatus(201);
 			return;
 		} else {
@@ -91,8 +91,8 @@ class EditorController extends BaseController
 	}
 
 	/**
-	 * Update editor
-	 * Route: /editor/index/id/{id}
+	 * Update user
+	 * Route: /user/index/id/{id}
 	 */
 	public function update()
 	{
@@ -109,12 +109,14 @@ class EditorController extends BaseController
 		}
 
 		// Check every required field
-		$this->checkRequiredFields(Editor::getRequiredFields(), $_PUT);
+		$requiredFields = User::getRequiredFields();
+		if (isset($requiredFields['role'])) unset($requiredFields['role']);
+		$this->checkRequiredFields($requiredFields, $_PUT);
 
-		$editorModel  = new Editor();
-		$updateEditor = $editorModel->updateEditor($this->getId(), $_PUT);
+		$userModel  = new User();
+		$updateUser = $userModel->updateUser($this->getId(), $_PUT);
 
-		if ($updateEditor) {
+		if ($updateUser) {
 			$this->sendStatus(204);
 			return;
 		} else {
@@ -123,29 +125,51 @@ class EditorController extends BaseController
 	}
 
 	/**
-	 * Delete editor. Forbiddent action.
-	 * Route: /editor/index/id/{id}
+	 * Delete user.
+	 * Route: /user/index/id/{id}
 	 *
-	 * @param $id int Editor's ID to delete
+	 * @param $id int User's ID to delete
 	 */
 	public function delete()
 	{		
-		$this->exitError(405, 'Editors deletion is not allowed.');
+		// Security check for the request method
+		if (!$this->getRequestMethod() == 'DELETE') {
+			$this->exitError(405, 'Only DELETE methods are allowed.');
+			return;
+		}
+
+		if (!$this->getId()) {
+			$this->exitError(400, "The 'id' must be specified.");
+		}
+
+		$userModel   = new User();
+		$deletedUser = $userModel->deleteUser($this->getId());
+
+        if ($deletedUser) {
+            $this->sendStatus(204);
+        } else {
+            $this->exitError(400, 'An error has occured. Please try again.');
+        }
 	}
 
 	/**
 	 * Generate XML from database.
-	 * Can generate either the entire database's XML, either only one editor's XML.
+	 * Can generate either the entire database's XML, either only one user's XML.
 	 *
-	 * @param array $editor Editor to insert in the XML
-	 * @return SimpleXMLElement $editors List of editors or editor
+	 * @param array $user User to insert in the XML
+	 * @return SimpleXMLElement $users List of users or user
 	 */
-	public function generateXml($editors = [])
+	public function generateXml($users = [])
 	{
-		$list = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><editors/>');
-		foreach ($editors as $editor) {
-			$editorNode = $list->addChild('editor', $editor['editor']);
-			$editorNode->addAttribute('id', $editor['idEditor']);
+		$list = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><users/>');
+		foreach ($users as $user) {
+			$userNode = $list->addChild('user');
+			$userNode->addAttribute('id', $user['idUser']);
+			$userNode->addChild('username', $user['username']);
+			$userNode->addChild('password', $user['password']);
+			$userNode->addChild('apiKey', $user['apiKey']);
+			$userNode->addChild('apiSecret', $user['apiSecret']);
+			$userNode->addChild('role', $user['role']);
 		}
 		return $list;
 	}
@@ -166,7 +190,7 @@ class EditorController extends BaseController
 
 		$result = '';
 
-		if (!$domDocument->schemaValidate(SCHEMAS_PATH . 'editors.xsd')) {
+		if (!$domDocument->schemaValidate(SCHEMAS_PATH . 'users.xsd')) {
 			$errors = libxml_get_errors();
 
 			foreach ($errors as $error) {

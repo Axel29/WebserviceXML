@@ -1,283 +1,165 @@
 <?php
 class User extends BaseModel
 {
-	public function getUsers() 
+	/**
+	 * Retrieve every available users or users by some param
+	 *
+	 * @param string $paramName Param's name to find by
+	 * @param mixed $paramValue Param's value
+	 * @return array $users Collection of Users
+	 */
+	public function findBy($paramName = null, $paramValue = null)
 	{
-		$this->table = array('user U');
-		$join = array('user_role UR ON UR.id_user_role = user_role');
-		$users = $this->select(array(), array(), array(), $join);
+		$this->table = 'user u';
 
-		if (count($users) == 0) {
-			echo "Il n'y a pas d'utilisateurs";
+		$fields = ['`idUser`', '`username`', '`password`', '`apiKey`', '`apiSecret`', '`r`.`role`',];
+		
+		$where = [];
+		$join = [
+			[
+				'type'  => 'INNER JOIN',
+				'table' => 'role r',
+				'on'    => 'u.role = r.idRole',
+			],
+		];
+		if ($paramName && $paramValue) {
+			$where = [
+				$paramName => $paramValue,
+			];
 		}
-		else {
-			return $users;
-		}
-	}
 
-	public function getRoles() 
-	{
-		$this->table = 'user_role';
+		$users = $this->select($fields, $where, [], $join);
 
-		$roles = $this->select();
-
-		if (count($roles) == 0) {
-			echo "Il n'y a pas de droits utilisateurs";
-		}
-		else {
-			return $roles;
-		}
-	}
-
-	public function getUser($login,$password) 
-	{
-		$this->table = array('user U');
-		$join = array('user_role UR ON UR.id_user_role = user_role');
-		$query = $this->select(array(), array(), array(), $join, array(), null, 'one');
-		if (!count($query)) {
-			echo "Utilisateur ou mot de passe inccorect";
-		}
-		else {
-			$_SESSION['userlogged'] = sha1($login);
-			$user  = new User();
-			$role = $user->getUserRoleById($query['id_user_role']);
-			$_SESSION['userId']			= $query['id_user'];
-			$_SESSION['userName'] 		= $query['name'];	 
-			$_SESSION['userRoleEdit'] 	= $role['can_edit'];
-			$_SESSION['userRoleDelete'] = $role['can_delete'];
-			$_SESSION['userRoleCreate'] = $role['can_create'];
-			return true;
-		}
-	}
-
-	public function getUserById($id)
-	{
-		$this->table = array('user');
-		$where = array('id_user' => $id);
-		$user = $this->select(array(), $where, array(), array(), array(), null, 'one');
-		if (!count($user)) {
-			echo "Aucun utilisateur avec cet id";
-		}
-		else {
-			return $user;
-		}	
+		return $users;
 	}
 
 	/**
-	 * Get every user with a specific role
-	 * @param int $roleId
-	 * @return array $users
+	 * Get list of required fields and their types
+	 *
+	 * @return array $requiredFields List of required fields as array
 	 */
-	public function getUsersByRole($roleId)
+	public static function getRequiredFields()
+	{
+		$requiredFields = [
+			'username' => 'string',
+			'password' => 'string',
+			'role'     => 'int',
+		];
+
+		return $requiredFields;
+	}
+
+	/**
+	 * Insert a new user in database.
+	 * If the user already exists, return the existing user's ID.
+	 *
+	 * @param array $datas User's datas
+	 * @param PDO $pdo Current's PDO object
+	 * @return int|bool $insertedUser Inserted user's ID or false if an error has occurred
+	 */
+	public function insertUser($datas, $pdo = null)
 	{
 		/*
-		 * SQL query example:
-		 * SELECT *
-		 * FROM user U
-		 * INNER JOIN user_role UR ON U.user_role = UR.id_user_role
-		 * WHERE U.user_role = 1;
+		 * Check that the user doesn't already exist.
+		 * If so, return this ID
 		 */
-		$this->table = array('user U');
-		$fields = array('U.id_user', 'U.name_user', 'U.email');
-		$join = array('user_role UR ON U.user_role = UR.id_user_role');
-		$where = array('U.user_role' => 1);
-		$users = $this->select($fields, $where, array(), $join);
-
-		if (!count($users) || count($users) == 0) {
-			return false;
+		if ($existingUser = $this->findBy('username', $datas['username'])) {
+			$insertedUser = $existingUser[0]['idUser'];
+			return $insertedUser;
 		} else {
-			return $users;
-		}
-	}
+			try {
+				if (!$pdo) {
+					$pdo  = $this->db;
+				}
 
-	public function getUserRoleById($id)
-	{
-		$this->table = array('user_role');
-		$where = array('id_user_role' => $id);
-		$user = $this->select(array(), $where, array(), array(), array(), null, 'one');
-		if (!count($user)) {
-			echo "Aucun role utilisateur avec cet id";
-		}
-		else {
-			return $user;
-		}	
-	}
+				$apiKey    = uniqid();
+				$apiSecret = substr(md5(uniqid() . uniqid()), 0, 15);
 
-	public function updateUser($user)
-	{
-		var_dump($user);
-		$fields = [];
-		$this->table = 'user';
-		$where = array('id_user' => $user['id']);
+				$stmt      = $pdo->prepare('INSERT INTO `user` (`username`, `password`, `apiKey`, `apiSecret`, `role`) 
+									   		VALUES (:username, :password, :apiKey, :apiSecret, :role);');
+				$stmt->bindParam(':username', $datas['username'], PDO::PARAM_STR);
+				$stmt->bindParam(':password', $datas['password'], PDO::PARAM_STR);
+				$stmt->bindParam(':apiKey', $apiKey, PDO::PARAM_STR);
+				$stmt->bindParam(':apiSecret', $apiSecret, PDO::PARAM_STR);
+				$stmt->bindParam(':role', $datas['role'], PDO::PARAM_INT);
+				$stmt->execute();
 
-		$query = $this->select($fields, $where);
-
-		if(count($query) == 0){
-			self::doInsertUser($user);
-		}else{
-			self::doUpdateUser($user);
-		}
-	}
-
-	public function deleteUser($id)
-	{
-		$this->table = 'user';
-		$where = array('id_user' => $id);
-		$query = $this->delete($where);
-
-		if(count($query) == 0) {
-			echo "There are no user with this id";
-		}
-		else {
-			$deleted = true;
-		}
-	}
-	
-	public function insertUser($user)
-	{
-		$userExists  = false;
-		$fields      = [];
-		$this->table = 'user';
-		$where       = array('email' => $user['email']);
-		
-		$query       = $this->select($fields, $where, array(), array(), array(), null, 'one');
-
-		// If the user doesn't exist, we insert him
-		if(count($query) == 0 || !$query){
-			self::doInsertUser($user);
-		}else{
-			$userExists = true;
-		}
-	}
-	
-	/**
-	 * Insert the user into database
-	 * @param array $user
-	 * @return ADMX_Model_User
-	 */
-	public function doInsertUser($user)
-	{
-		$fields = array(
-						'name_user' => $user['name'],
-						'email'     => $user['email'],
-						'password'  => sha1($user['password']),
-						'hash'      => sha1(uniqid(rand())),
-						'user_role' => $user['role']
-							);
-		$this->table = 'user';
-		$this->insert($fields);
-		return $this;
-	}
-
-	/**
-	 * Edit the user values
-	 * @param array $user
-	 */
-	public function editUser($user)
-	{
-		$userExists  = false;
-		$fields      = [];
-		$this->table = 'user';
-		$where       = array('id_user' => $user['id_user']);
-		
-		$query       = $this->select($fields, $where, array(), array(), array(), null, 'one');
-		var_dump($user);
-		// If the user doesn't exist, we insert him
-		if(count($query) == 0 || !$query){
-			$userExists = true;
-		}else{
-			self::doUpdateUser($user);
+				$insertedUser = $pdo->lastInsertId();
+				return $insertedUser;
+			} catch (PDOException $e) {
+				return false;
+			} catch (Exception $e) {
+				return false;
+			}
 		}
 	}
 
 	/**
-	 * Update the user
-	 * @param array $user
-	 * @return ADMX_Model_User
+	 * Update user
+	 *
+	 * @param int $idUser User's ID
+	 * @param array $datas User's datas
+	 * @param PDO $pdo Current's PDO object
+	 * @return bool true or false if an error has occurred
 	 */
-	public function doUpdateUser($user)
+	public function updateUser($idUser, $datas, $pdo = null)
 	{
-		$fields = array(
-					'id_user'   => $user['id_user'],
-					'name_user' => $user['name'],
-					'email'     => $user['email'],
-					'user_role' => $user['role']
-				  );
+		try {
+			if (!$pdo) {
+				$pdo  = $this->db;
+			}
+			
+			$queryString = 'UPDATE `user` 
+					  		SET `username` = :username, `password` = :password';
 
-		$where = array('id_user' => $user['id_user']);
+			if (isset($datas['role'])) {
+				$queryString .= ', role = :role';
+			}
 
-		$this->update($fields, $where);
-		return $this;
-	}
+			$queryString .= ' WHERE `idUser` =  :idUser;';
 
-	public function insertUserRole($role)
-	{
-		$fields = [];
-		$this->table = 'user_role';
-		$where = array('name' => $role['name']);
-
-		$query = $this->select($fields, $where);
-
-		if(count($query) == 0){
-			self::doInsertUserRole($role);
-		}else{
-			self::doUpdateUserRole($role);
+			$stmt = $pdo->prepare($queryString);
+			$stmt->bindParam(':username', $datas['username'], PDO::PARAM_STR);
+			$stmt->bindParam(':password', $datas['password'], PDO::PARAM_STR);
+			if (isset($datas['role'])) {
+				$stmt->bindParam(':role', $datas['role'], PDO::PARAM_INT);
+			}
+			$stmt->bindParam(':idUser', $idUser, PDO::PARAM_INT);
+			$stmt->execute();
+			return true;
+		} catch (PDOException $e) {
+			echo $e->getMessage();
+			return false;
+		} catch (Exception $e) {
+			return false;
 		}
 	}
 
-	public function updateUserRole($role)
+	/**
+	 * Delete an user by it's ID
+	 *
+	 * @param int $idUser User's ID
+	 * @return int|bool Number of affected rows or false if an error has occurred
+	 */
+	public function deleteUser($idUser)
 	{
-		$fields = [];
-		$this->table = 'user_role';
-		$where = array('id_user_role' => $role['id']);
+		try {
+			$pdo  = $this->db;
+			$stmt = $pdo->prepare('DELETE 
+								   FROM `user` 
+								   WHERE `idUser` =  :idUser;');
+			$stmt->bindParam(':idUser', $idUser, PDO::PARAM_INT);
+			$stmt->execute();
 
-		$query = $this->select($fields, $where);
-
-		if(count($query) != 0){
-			self::doUpdateUserRole($role);
+			/*
+			 * Check that the update was performed on an existing user.
+			 * MySQL won't send any error as, regarding to him, the request is correct, so we have to handle it manually.
+			 */
+			return $stmt->rowCount();
+		} catch (PDOException $e) {
+			return false;
+		} catch (Exception $e) {
+			return false;
 		}
-	}
-
-	public function deleteUserRole($id)
-	{
-		$this->table = 'user_role';
-		$where = array('id_user_role' => $id);
-		$query = $this->delete($where);
-
-		if(count($query) == 0) {
-			echo "There are no user role with this id";
-		}
-		else {
-			$deleted = true;
-		}
-	}
-	
-
-	public function doInsertUserRole($role)
-	{
-		$fields = array(
-						'name' => $role['name'],
-						'can_create' => $role['create'],
-						'can_edit' => $role['edit'],
-						'can_read' => 1,
-						'can_delete' => $role['delete']
-							);
-		$this->table = 'user_role';
-		$this->insert($fields);
-		return $this;
-	}
-
-
-	public function doUpdateUserRole($role)
-	{
-		$fields = array(
-						'can_create' => $role['create'],
-						'can_edit' => $role['edit'],
-						'can_delete' => $role['delete']
-							);
-		$where = array('id_user_role' => $role['id']);
-		$this->table = 'user_role';
-		$this->update($fields, $where);
-		return $this;
 	}
 }
