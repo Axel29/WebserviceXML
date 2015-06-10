@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:element name="username" type="xs:string" />
+    <xs:element name="password" type="xs:string" />
+    <xs:element name="apiKey" type="xs:string" />
+    <xs:element name="apiSecret" type="xs:string" />
+    <xs:element name="role" type="xs:string" />
+
+    <xs:element name="user">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="username" />
+                <xs:element ref="password" />
+                <xs:element ref="apiKey" />
+                <xs:element ref="apiSecret" />
+                <xs:element ref="role" />
+            </xs:sequence>
+            <xs:attribute name="id" type="xs:positiveInteger" use="required" />
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="users">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="user" minOccurs="0" maxOccurs="unbounded" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>
