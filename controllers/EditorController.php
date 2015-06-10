@@ -10,15 +10,24 @@ class EditorController extends BaseController
 	private $id = null;
 
 	/**
+	 * @var $page int Editor's page
+	 */
+	private $page = null;
+
+	/**
 	 * Redirect the request to the matching method regarding the request method
 	 * Route: /editor/index/id/{id}
 	 *
 	 * @param $id int ID of the editor. Used for POST, PUT and DELETE methods
 	 */
-	public function indexAction($id = null)
+	public function indexAction($id = null, $page = null)
 	{
 		if ($id) {
 			$this->setId($id);
+		}
+
+		if ($page) {
+			$this->setPage($page);
 		}
 
 		switch ($this->getRequestMethod()) {
@@ -49,21 +58,22 @@ class EditorController extends BaseController
 	public function show()
 	{
 		$editorModel = new Editor();
+		$page = $this->getPage();
 
 		// Show the full editor list or a specific editor by it's ID
-		$datas = $editorModel->findBy('idEditor', $this->getId());
+		$datas = $editorModel->findBy('idEditor', $this->getId(), $page);
 
-		if ($datas) {
-			$this->xml = $this->generateXml($datas)->asXML();
-
-			if ($errors = $this->validateXML($this->xml)) {
-				$this->exitError(400, $errors);
-			} else {
-				$this->loadLayout('xml');
-				echo $this->xml;
-			}
-		} else {
+		if ($this->getId() && !$datas) {
 			$this->exitError(400, "This editor doesn't exist.");
+		}
+
+		$this->xml = $this->generateXml($datas)->asXML();
+
+		if ($errors = $this->validateXML($this->xml)) {
+			$this->exitError(400, $errors);
+		} else {
+			$this->loadLayout('xml');
+			echo $this->xml;
 		}
 	}
 
@@ -145,11 +155,18 @@ class EditorController extends BaseController
 	 */
 	public function generateXml($editors = [])
 	{
+		$encodedUrlPrev = md5('toto');
+		$encodedUrlNext = md5('toto222');
 		$list = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><editors/>');
 		foreach ($editors as $editor) {
 			$editorNode = $list->addChild('editor', $editor['editor']);
 			$editorNode->addAttribute('id', $editor['idEditor']);
 		}
+		$list->addChild('prev', $encodedUrlPrev);
+		$list->addChild('next', $encodedUrlNext);
+		$this->loadLayout('xml');
+		echo($list->asXML());
+		die;
 		return $list;
 	}
 
@@ -220,6 +237,30 @@ class EditorController extends BaseController
 			$this->id = $id;
 		} else {
 			$this->exitError(400, sprintf('The ID must be an integer. %s given', gettype($id)));
+		}
+	}
+
+	/**
+	 * Get the current page
+	 *
+	 * @return int
+	 */
+	public function getPage()
+	{
+		return $this->page;
+	}
+
+	/**
+	 * Set the current page
+	 *
+	 * @param int $page Current page
+	 */
+	public function setPage($page)
+	{
+		if ($this->isInt($page)) {
+			$this->page = $page;
+		} else {
+			$this->exitError(400, sprintf('The page must be an integer. %s given', gettype($page)));
 		}
 	}
 }

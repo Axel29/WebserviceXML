@@ -6,9 +6,10 @@ class Editor extends BaseModel
 	 *
 	 * @param string $paramName Param's name to find by
 	 * @param mixed $paramValue Param's value
+	 * @param int $page Current page
 	 * @return array $editors Collection of Editors
 	 */
-	public function findBy($paramName = null, $paramValue = null)
+	public function findBy($paramName = null, $paramValue = null, $page = null)
 	{
 		$this->table = 'editor e';
 
@@ -16,6 +17,13 @@ class Editor extends BaseModel
 		
 		$where = [];
 		$join  = [];
+
+		if ($page) {
+			$limit = $page - 1 . ', ' . $this->getLimit();
+		} else {
+			$limit = '';
+		}
+
 		if ($paramName && $paramValue) {
 			if ($paramName == 'idGame') {
 				$join = [
@@ -40,8 +48,8 @@ class Editor extends BaseModel
 				];
 			}
 		}
-
-		$editors = $this->select($fields, $where, [], $join);
+		
+		$editors = $this->select($fields, $where, [], $join, [], $limit);
 
 		return $editors;
 	}

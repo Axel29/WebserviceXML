@@ -156,7 +156,7 @@ class BaseController
 	 */
 	public function isInt($value)
 	{
-		if (is_numeric($value) && is_int((int)$value)) {
+		if (is_numeric($value) && is_int((int)$value) && (int)$value > 0) {
 			return true;
 		}
 
