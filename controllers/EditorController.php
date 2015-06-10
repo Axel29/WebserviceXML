@@ -155,15 +155,42 @@ class EditorController extends BaseController
 	 */
 	public function generateXml($editors = [])
 	{
-		$encodedUrlPrev = md5('toto');
-		$encodedUrlNext = md5('toto222');
+		$routing  = new Routing();
+		$route    = $routing->parseUri();
+		$page     = isset($route['args']['page']) ? $route['args']['page'] : null;
+
 		$list = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><editors/>');
 		foreach ($editors as $editor) {
 			$editorNode = $list->addChild('editor', $editor['editor']);
 			$editorNode->addAttribute('id', $editor['idEditor']);
 		}
-		$list->addChild('prev', $encodedUrlPrev);
-		$list->addChild('next', $encodedUrlNext);
+
+		if ($page) {
+			$prevPage = $page - 1;
+			$nextPage = $page + 1;
+
+			$editorModel = new Editor();
+			$prevPageExists = false;
+			$nextPageExists = $editorModel->pageExists($nextPage);
+
+			if ($page > 1) {
+				$prevPageExists = $editorModel->pageExists($prevPage);
+				$urlPrev = BASE_URL . '/' . $_GET['p'];
+				$urlPrev = preg_replace('/(page\/\d+)/', 'page/' . $prevPage, $urlPrev);
+			} else {
+				$urlPrev = '';
+			}
+
+			if ($nextPageExists) {
+				$urlNext = BASE_URL . '/' . $_GET['p'];
+				$urlNext = preg_replace('/(page\/\d+)/', 'page/' . $nextPage, $urlNext);
+			} else {
+				$urlNext = '';
+			}
+
+			$list->addChild('prev', $urlPrev);
+			$list->addChild('next', $urlNext);
+		}
 		$this->loadLayout('xml');
 		echo($list->asXML());
 		die;

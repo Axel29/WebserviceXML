@@ -55,6 +55,27 @@ class Editor extends BaseModel
 	}
 
 	/**
+	 * Checks if a page exists
+	 *
+	 * @return bool
+	 */
+	public function pageExists($page)
+	{
+		$pdo = $this->db;
+		$stmt = $pdo->prepare("SELECT COUNT(*) as 'total'
+							   FROM `editor`
+							   LIMIT " . $page - 1 . ", " . $this->getLimit() . ";");
+		$stmt->execute();
+
+		$result = $stmt->fetch();
+		if ($result) {
+			return $result['total'];
+		} else {
+			return false;
+		}
+	}
+
+	/**
 	 * Get list of required fields and their types
 	 *
 	 * @return array $requiredFields List of required fields as array
