@@ -6,9 +6,11 @@ class Mode extends BaseModel
 	 *
 	 * @param string $paramName Param's name to find by
 	 * @param mixed $paramValue Param's value
+	 * @param bool $notPaginated Should paginate or not
+	 * @param int $page Current page
 	 * @return array $modes Collection of Modes
 	 */
-	public function findBy($paramName = null, $paramValue = null)
+	public function findBy($paramName = null, $paramValue = null, $notPaginated = true, $page = 1)
 	{
 		$this->table = 'mode m';
 		
@@ -44,7 +46,13 @@ class Mode extends BaseModel
 			}
 		}
 
-		$modes = $this->select($fields, $where, [], $join);
+		if ($notPaginated) {
+			$limit = '';
+		} else {
+			$limit = $page - 1 . ', ' . $this->getLimit();
+		}
+
+		$modes = $this->select($fields, $where, [], $join, [], $limit);
 
 		return $modes;
 	}
