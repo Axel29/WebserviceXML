@@ -36,7 +36,7 @@ if (file_exists($controllerFile)) {
 }
 
 $auth = new Auth();
-// if ($auth->authentificate()) {
+if ($auth->authentificate()) {
 	$controller = new $controllerName;
 	$action = $route['action'] . 'Action';
 	if (method_exists($controller, $action)) {
@@ -45,7 +45,7 @@ $auth = new Auth();
 		header("HTTP/1.0 404 Not Found");
 		exit('Oops an error has occured! Please try again later.');
 	}
-// } else {
-// 	header("HTTP/1.0 403 Forbidden");
-// 	exit('You are not allowed to access this ressource.');
-// }
+} else {
+	header("HTTP/1.0 403 Forbidden");
+	exit('You are not allowed to access this ressource.');
+}
