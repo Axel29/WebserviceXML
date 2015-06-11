@@ -337,7 +337,7 @@ class BaseModel
 	 */
 	public function getLimit()
 	{
-		return (int)'1';
+		return (int)'10';
 	}
 
 	/**
