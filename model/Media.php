@@ -133,7 +133,7 @@ class Media extends BaseModel
 	public function updateMedia($idMedia, $datas)
 	{
 		try {
-			return $this->directInsert($idMedia, $datas);
+			return $this->directUpdate($idMedia, $datas);
 		} catch (PDOException $e) {
 			return false;
 		} catch (Exception $e) {
