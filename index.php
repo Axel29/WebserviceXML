@@ -36,7 +36,7 @@ if (file_exists($controllerFile)) {
 }
 
 $auth = new Auth();
-if ($auth->authentificate()) {
+if ($auth->authenticate()) {
 	$controller = new $controllerName;
 	$action = $route['action'] . 'Action';
 	if (method_exists($controller, $action)) {

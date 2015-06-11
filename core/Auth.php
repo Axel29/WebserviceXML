@@ -9,7 +9,7 @@ class Auth
 	 *
 	 * @return bool
 	 */
-	public function authentificate()
+	public function authenticate()
 	{
 		if (!isset($_SERVER['HTTP_PUB']) || !isset($_SERVER['HTTP_USEREMAIL']) || !isset($_SERVER['HTTP_APIKEY'])) {
 			return false;
