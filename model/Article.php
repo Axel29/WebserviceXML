@@ -6,9 +6,11 @@ class Article extends BaseModel
 	 *
 	 * @param string $paramName Param's name to find by
 	 * @param mixed $paramValue Param's value
+	 * @param bool $notPaginated Should paginate or not
+	 * @param int $page Current page
 	 * @return array $articles Collection of articles as array
 	 */
-	public function findBy($paramName = null, $paramValue = null)
+	public function findBy($paramName = null, $paramValue = null, $notPaginated = true, $page = 1)
 	{
 		$this->table = 'article';
 
@@ -24,13 +26,20 @@ class Article extends BaseModel
 		
 		$where = [];
 		$join  = [];
+		
 		if ($paramName && $paramValue) {
 			$where = [
 				$paramName => $paramValue,
 			];
 		}
 
-		$articles = $this->select($fields, $where, [], $join);
+		if ($notPaginated) {
+			$limit = '';
+		} else {
+			$limit = $page - 1 . ', ' . $this->getLimit();
+		}
+
+		$articles = $this->select($fields, $where, [], $join, [], $limit);
 
 		return $articles;
 	}
@@ -85,6 +94,19 @@ class Article extends BaseModel
 		if (!$pdo) {
 			$pdo  = $this->db;
 		}
+
+		// Check that the game's ID exists
+		$stmt = $pdo->prepare('SELECT `idGame`
+							   FROM `game`
+							   WHERE `idGame` = :idGame;');
+		$stmt->bindParam(':idGame', $datas['game_idGame'], PDO::PARAM_INT);
+		$stmt->execute();
+
+		$game = $stmt->fetch();
+		if (!count($game) || !isset($game['idGame'])) {
+			return false;
+		}
+
 		$stmt = $pdo->prepare('INSERT INTO `article` (`type`, `title`, `user_name`, `date`, `console_names`, `game_idGame`) 
 							   VALUES (:type, :title, :user_name, :date, :console_names, :game_idGame);');
 		$stmt->bindParam(':type', $datas['type'], PDO::PARAM_STR);
@@ -131,6 +153,33 @@ class Article extends BaseModel
 		if (!$pdo) {
 			$pdo  = $this->db;
 		}
+
+		if (isset($datas['game_idGame'])) {
+			// Check that the game's ID exists
+			$stmt = $pdo->prepare('SELECT `idGame`
+								   FROM `game`
+								   WHERE `idGame` = :idGame;');
+			$stmt->bindParam(':idGame', $datas['game_idGame'], PDO::PARAM_INT);
+			$stmt->execute();
+
+			$game = $stmt->fetch();
+			if (!count($game) || !isset($game['idGame'])) {
+				return false;
+			}
+		}
+		
+		// Check that the article's ID exists
+		$stmt = $pdo->prepare('SELECT `idArticle`
+							   FROM `article`
+							   WHERE `idArticle` = :idArticle;');
+		$stmt->bindParam(':idArticle', $idArticle, PDO::PARAM_INT);
+		$stmt->execute();
+
+		$article = $stmt->fetch();
+		if (!count($article) || !isset($article['idArticle'])) {
+			return false;
+		}
+
 		$stmt = $pdo->prepare('UPDATE `article` 
 							   SET `type`          = :type,
 								   `title`         = :title,
