@@ -6,12 +6,20 @@ class Analyse extends BaseModel
 	 *
 	 * @param string $paramName Param's name to find by
 	 * @param mixed $paramValue Param's value
+	 * @param bool $notPaginated Should paginate or not
+	 * @param int $page Current page
 	 * @return array $analyses Collection of analyses as array
 	 */
-	public function findBy($paramName = null, $paramValue = null)
+	public function findBy($paramName = null, $paramValue = null, $notPaginated = true, $page = 1)
 	{
 		$this->table = 'analyse';
 		
+		if ($notPaginated) {
+			$limit = '';
+		} else {
+			$limit = $page - 1 . ', ' . $this->getLimit();
+		}
+
 		$where = [];
 		if ($paramName && $paramValue) {
 			$where = [
@@ -19,7 +27,7 @@ class Analyse extends BaseModel
 			];
 		}
 
-		$analyses = $this->select(['*'], $where);
+		$analyses = $this->select(['*'], $where, [], [], [], $limit);
 
 		return $analyses;
 	}

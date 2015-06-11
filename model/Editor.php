@@ -7,6 +7,7 @@ class Editor extends BaseModel
 	 * @param string $paramName Param's name to find by
 	 * @param mixed $paramValue Param's value
 	 * @param bool $notPaginated Should paginate or not
+	 * @param int $page Current page
 	 * @return array $editors Collection of Editors
 	 */
 	public function findBy($paramName = null, $paramValue = null, $notPaginated = true, $page = 1)
