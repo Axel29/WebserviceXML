@@ -6,9 +6,11 @@ class Edition extends BaseModel
 	 *
 	 * @param string $paramName Param's name to find by
 	 * @param mixed $paramValue Param's value
+	 * @param bool $notPaginated Should paginate or not
+	 * @param int $page Current page
 	 * @return array $editions Colleciton of Editions
 	 */
-	public function findBy($paramName = null, $paramValue = null)
+	public function findBy($paramName = null, $paramValue = null, $notPaginated = true, $page = 1)
 	{
 		$this->table = 'edition';
 		
@@ -26,7 +28,13 @@ class Edition extends BaseModel
 			];
 		}
 
-		$editions = $this->select($fields, $where);
+		if ($notPaginated) {
+			$limit = '';
+		} else {
+			$limit = $page - 1 . ', ' . $this->getLimit();
+		}
+
+		$editions = $this->select($fields, $where, [], [], [], $limit);
 
 		return $editions;
 	}
