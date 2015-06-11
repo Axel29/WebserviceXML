@@ -101,10 +101,11 @@ abstract class CRUD extends BaseController
 	/**
 	 * Validate XML from XSD
 	 *
-	 * @param $xml SimpleXMLElement XML to validate
+	 * @param SimpleXMLElement $xml XML to validate
+	 * @param string $xsd Path to the XSD file
 	 * @return $result string Errors to display or empty string
 	 */
-	public function validateXML($xml)
+	public function validateXML($xml, $xsd)
 	{
 		// Enable user error handling
 		libxml_use_internal_errors(true);
@@ -114,7 +115,7 @@ abstract class CRUD extends BaseController
 
 		$result = '';
 
-		if (!$domDocument->schemaValidate(SCHEMAS_PATH . 'editors.xsd')) {
+		if (!$domDocument->schemaValidate($xsd)) {
 			$errors = libxml_get_errors();
 
 			foreach ($errors as $error) {
