@@ -6,9 +6,11 @@ class Media extends BaseModel
 	 *
 	 * @param string $paramName Param's name to find by
 	 * @param mixed $paramValue Param's value
+	 * @param bool $notPaginated Should paginate or not
+	 * @param int $page Current page
 	 * @return array $medias Collection of medias
 	 */
-	public function findBy($paramName = null, $paramValue = null)
+	public function findBy($paramName = null, $paramValue = null, $notPaginated = true, $page = 1)
 	{
 		$this->table = 'media';
 
@@ -31,7 +33,13 @@ class Media extends BaseModel
 			];
 		}
 
-		$medias = $this->select($fields, $where, [], $join);
+		if ($notPaginated) {
+			$limit = '';
+		} else {
+			$limit = $page - 1 . ', ' . $this->getLimit();
+		}
+
+		$medias = $this->select($fields, $where, [], $join, [], $limit);
 
 		return $medias;
 	}
