@@ -42,6 +42,9 @@
     <!-- Titre du contenu -->
     <xs:element name="title" type="xs:string" />
 
+    <xs:element name="prev" type="xs:string" />
+    <xs:element name="next" type="xs:string" />
+
     <!-- Prix -->
     <xs:element name="price">
         <xs:complexType>
@@ -289,6 +292,8 @@
         <xs:complexType>
             <xs:sequence>
                 <xs:element ref="console" maxOccurs="unbounded" />
+                <xs:element ref="prev" minOccurs="0" maxOccurs="1" />
+                <xs:element ref="next" minOccurs="0" maxOccurs="1" />
             </xs:sequence>
         </xs:complexType>
     </xs:element>
