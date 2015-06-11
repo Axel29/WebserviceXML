@@ -9,22 +9,22 @@ class EditorController extends CRUD
 	public function show()
 	{
 		$editorModel = new Editor();
-		$page = $this->getPage() ? $this->getPage() : 1;
+		$page        = $this->getPage() ? $this->getPage() : 1;
 
 		// Show the full editor list or a specific editor by it's ID
 		$datas = $editorModel->findBy('idEditor', $this->getId(), false, $page);
 
-		if ($this->getId() && !$datas) {
-			$this->exitError(400, "This editor doesn't exist.");
-		}
+		if ($datas) {
+			$this->xml = $this->generateXml($datas)->asXML();
 
-		$this->xml = $this->generateXml($datas)->asXML();
-
-		if ($errors = $this->validateXML($this->xml)) {
-			$this->exitError(400, $errors);
+			if ($errors = $this->validateXML($this->xml, SCHEMAS_PATH . 'editors.xsd')) {
+				$this->exitError(400, $errors);
+			} else {
+				$this->loadLayout('xml');
+				echo $this->xml;
+			}
 		} else {
-			$this->loadLayout('xml');
-			echo $this->xml;
+			$this->exitError(400, "The page you specified doesn't exist or the ID is not correct.");
 		}
 	}
 
