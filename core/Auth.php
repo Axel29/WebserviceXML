@@ -23,11 +23,20 @@ class Auth
 		$userModel     = new User();
 		$user          = $userModel->findBy('apiKey', $apiKey);
 
-		// echo '<pre>';var_dump($user[0]);
+		$routing    = new Routing();
+		$parsedUri  = $routing->parseUri();
+		$controller = $parsedUri['controller'];
+
 		if ($user) {
 			$privateKey    = hash_hmac("sha256", $user[0]['idUser'] . $user[0]['email'] . time() . $user[0]['apiKey'], $user[0]['apiSecret']);
 
 			if ($user[0]['email'] == $email && $publicKey == $privateKey) {
+				// Forbid simple users to access "user" and "role" pages
+				if ($user[0]['idRole'] != Role::ADMIN_ROLE && ($controller == 'user' || $controller == 'role')) {
+					return false;
+				}
+
+				// Forbid simple users to access any page except GET requests
 				if ($user[0]['idRole'] == Role::USER_ROLE && $requestMethod != 'GET') {
 					return false;
 				} else {
