@@ -24,7 +24,11 @@ class GameController extends CRUD
 				echo $this->xml;
 			}
 		} else {
-			$this->exitError(400, "This game doesn't exist.");
+			if ($this->getId()) {
+				$this->exitError(400, "The ID you specified can't be found.");
+			} else {
+				$this->exitError(400, "The page you specified doesn't exist.");
+			}
 		}
 	}
 
