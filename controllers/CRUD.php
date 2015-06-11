@@ -19,9 +19,9 @@ abstract class CRUD extends BaseController
 
 	/**
 	 * Redirect the request to the matching method regarding the request method
-	 * Route: /editor/index/id/{id}
+	 * Route: /{controller}/index/id/{id}
 	 *
-	 * @param $id int ID of the editor. Used for POST, PUT and DELETE methods
+	 * @param $id int ID of the entity. Used for POST, PUT and DELETE methods
 	 */
 	public function indexAction($id = null, $page = null)
 	{
