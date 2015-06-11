@@ -167,7 +167,7 @@ class Article extends BaseModel
 				return false;
 			}
 		}
-		
+
 		// Check that the article's ID exists
 		$stmt = $pdo->prepare('SELECT `idArticle`
 							   FROM `article`

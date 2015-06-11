@@ -95,6 +95,19 @@ class Media extends BaseModel
 		if (!$pdo) {
 			$pdo = $this->db;
 		}
+
+		// Check that the game's ID exists
+		$stmt = $pdo->prepare('SELECT `idGame`
+							   FROM `game`
+							   WHERE `idGame` = :idGame;');
+		$stmt->bindParam(':idGame', $datas['game_idGame'], PDO::PARAM_INT);
+		$stmt->execute();
+
+		$game = $stmt->fetch();
+		if (!count($game) || !isset($game['idGame'])) {
+			return false;
+		}
+
 		$stmt = $pdo->prepare('INSERT INTO `media` (`type`, `url`, `unit`, `width`, `height`, `console_names`, `game_idGame`) 
 							   VALUES (:type, :url, :unit, :width, :height, :console_names, :game_idGame);');
 		$stmt->bindParam(':type', $datas['type'], PDO::PARAM_STR);
@@ -142,6 +155,19 @@ class Media extends BaseModel
 		if (!$pdo) {
 			$pdo  = $this->db;
 		}
+
+		// Check that the media's ID exists
+		$stmt = $pdo->prepare('SELECT `idMedia`
+							   FROM `media`
+							   WHERE `idMedia` = :idMedia;');
+		$stmt->bindParam(':idMedia', $idMedia, PDO::PARAM_INT);
+		$stmt->execute();
+
+		$media = $stmt->fetch();
+		if (!count($media) || !isset($media['idMedia'])) {
+			return false;
+		}
+
 		$stmt = $pdo->prepare('UPDATE `media` 
 							   SET `type`      = :type,
 								   `url`           = :url,
