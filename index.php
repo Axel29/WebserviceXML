@@ -20,6 +20,7 @@ require_once(ROOT . 'core/Auth.php');
 require_once(ROOT . 'core/Routing.php');
 require_once(ROOT . 'core/BaseModel.php');
 require_once(ROOT . 'core/BaseController.php');
+require_once(ROOT . 'controllers/CRUD.php');
 
 $routing = new Routing();
 $route   = $routing->parseUri();
@@ -35,15 +36,16 @@ if (file_exists($controllerFile)) {
 }
 
 $auth = new Auth();
-if ($auth->authentificate()) {
+// if ($auth->authentificate()) {
 	$controller = new $controllerName;
-	if (method_exists($controller, $route['action'])) {
-		$routing->call_user_func_named($controller, $route['action'], $route['args']);
+	$action = $route['action'] . 'Action';
+	if (method_exists($controller, $action)) {
+		$routing->call_user_func_named($controller, $action, $route['args']);
 	} else {
 		header("HTTP/1.0 404 Not Found");
 		exit('Oops an error has occured! Please try again later.');
 	}
-} else {
-	header("HTTP/1.0 403 Forbidden");
-	exit('You are not allowed to access this ressource.');
-}
+// } else {
+// 	header("HTTP/1.0 403 Forbidden");
+// 	exit('You are not allowed to access this ressource.');
+// }

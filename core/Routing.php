@@ -23,9 +23,15 @@ class Routing
 		$params = array_values($params);
 
 		// Associate key - values for args
-		$args = [];
-		$i    = 0;
+		$realParams = [];
+		$args       = [];
+		$i          = 0;
 		foreach ($params as $param) {
+			// Real params
+			if (isset($params[$i+1]) && $params[$i+1]) {
+				$realParams[] = $param . '/' . $params[$i+1];
+			}
+
 			if ($i%2 == 0 && isset($params[$i+1])) {
 				$args[$param] = $params[$i+1];
 			} else {
@@ -36,8 +42,9 @@ class Routing
 		}
 
 		$parsedUri = [
+			'realUrl'	 => rtrim(BASE_URL . '/' . $controller . '/' . $action . '/' . implode('/', $realParams), '/'),
 			'controller' => $controller,
-			'action'     => $action . 'Action',
+			'action'     => $action,
 			'args'       => $args,
 		];
 
