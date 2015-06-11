@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:element name="prev" type="xs:string" />
+    <xs:element name="next" type="xs:string" />
+
     <!-- Résumé du test -->
     <xs:element name="report" type="xs:string" />
 
@@ -52,7 +55,7 @@
     <xs:element name="comments">
         <xs:complexType>
             <xs:sequence>
-                <xs:element ref="comment" minOccurs="0" />
+                <xs:element ref="comment" minOccurs="0" maxOccurs="unbounded" />
             </xs:sequence>
         </xs:complexType>
     </xs:element>
@@ -84,6 +87,8 @@
         <xs:complexType>
             <xs:sequence>
                 <xs:element ref="test" minOccurs="0" maxOccurs="unbounded" />
+                <xs:element ref="prev" minOccurs="0" maxOccurs="1" />
+                <xs:element ref="next" minOccurs="0" maxOccurs="1" />
             </xs:sequence>
         </xs:complexType>
     </xs:element>
