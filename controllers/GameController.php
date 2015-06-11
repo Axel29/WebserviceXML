@@ -298,7 +298,8 @@ class GameController extends CRUD
 	 */
 	public function generateXml($games = [])
 	{
-		$list = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><list/>');
+		$list           = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><list/>');
+		$hasCorrectGame = false;
 		foreach ($games as $game) {
 			// Check that every datas exist, otherwise we skip this console.
 			$idGame = $game['idGame'];
@@ -320,6 +321,8 @@ class GameController extends CRUD
 
 			if (!$genders || !$editors || !$themes || !$consoles || !$languages) {
 				continue;
+			} else {
+				$hasCorrectGame = true;
 			}
 
 			// If everything is okay, we can process
@@ -562,7 +565,7 @@ class GameController extends CRUD
 			}
 		}
 
-		if (!$this->getId()) {
+		if (!$this->getId() && $hasCorrectGame) {
 			$nextPrevPagesUrls = $this->getNextPrevPages('Game');
 			$list->addChild('prev', $nextPrevPagesUrls['prev']);
 			$list->addChild('next', $nextPrevPagesUrls['next']);
