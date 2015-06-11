@@ -127,6 +127,7 @@ class BaseController
 	        201 => 'Created',
 	        204 => 'No content',
 	        400 => 'Bad request',
+	        403 => 'Forbidden',
 	        404 => 'Not found',
 	        401 => 'Unauthorized',
 	        405 => 'Method not allowed',

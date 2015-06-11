@@ -1,6 +1,9 @@
 <?php
 class Role extends BaseModel
 {
+	const USER_ROLE  = 1;
+	const ADMIN_ROLE = 2;
+
 	/**
 	 * Retrieve every available roles or roles by some param
 	 *

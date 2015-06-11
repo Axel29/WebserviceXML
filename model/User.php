@@ -12,7 +12,7 @@ class User extends BaseModel
 	{
 		$this->table = 'user u';
 
-		$fields = ['`idUser`', '`email`', '`username`', '`password`', '`apiKey`', '`apiSecret`', '`r`.`role`',];
+		$fields = ['`idUser`', '`email`', '`username`', '`password`', '`apiKey`', '`apiSecret`', '`r`.`idRole`', '`r`.`role`',];
 		
 		$where = [];
 		$join = [
