@@ -24,7 +24,11 @@ class AnalyseController extends CRUD
 				echo $this->xml;
 			}
 		} else {
-			$this->exitError(400, "The page you specified doesn't exist or the ID is not correct.");
+			if ($this->getId()) {
+				$this->exitError(400, "The ID you specified can't be found.");
+			} else {
+				$this->exitError(400, "The page you specified doesn't exist.");
+			}
 		}
 	}
 
