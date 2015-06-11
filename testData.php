@@ -216,9 +216,12 @@ $_PUT = [
 	'pegi'           => 'CONSOLE pegi PUT',
 	'modes'          => [
 		[
+			// Update the association
 			'idMode' => '1',
+			'mode'   => 'MODE mode 1 PUT',
 		],
 		[
+			// Insert a new mode and associate it
 			'mode'   => 'MODE mode 2 PUT',
 		],
 	],
@@ -226,9 +229,12 @@ $_PUT = [
 	'cover_back'  => 'COVER BACK PUT',
 	'supports'    => [
 		[
+			// Update the association
 			'idSupport' => '1',
+			'support'   => 'SUPPORT support 1 PUT',
 		],
 		[
+			// Insert a new support and associate it
 			'support'   => 'SUPPORT support 2 PUT',
 		],
 	],
@@ -608,7 +614,6 @@ $_PUT = [
 			'gender'   => 'Genre PUT n°1',
 		],
 		[
-			'idGender' => '2',
 			'gender'   => 'Genre PUT n°2',
 		],
 	],
@@ -619,7 +624,6 @@ $_PUT = [
 			'editor'   => 'Editeur PUT n°1',
 		],
 		[
-			'idEditor' => '2',
 			'editor'   => 'Editeur PUT n°2',
 		],
 	],
@@ -629,7 +633,6 @@ $_PUT = [
 			'theme'   => 'Thème PUT n°1',
 		],
 		[
-			'idTheme' => '2',
 			'theme'   => 'Thème PUT n°2',
 		],
 	],
@@ -771,7 +774,6 @@ $_PUT = [
 			'language'   => 'Langage PUT n°1',
 		],
 		[
-			'idLanguage' => '2',
 			'language'   => 'Langage PUT n°2',
 		],
 	],
