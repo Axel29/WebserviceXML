@@ -6,9 +6,11 @@ class Theme extends BaseModel
 	 *
 	 * @param string $paramName Param's name to find by
 	 * @param mixed $paramValue Param's value
+	 * @param bool $notPaginated Should paginate or not
+	 * @param int $page Current page
 	 * @return array $themes Collection of Themes
 	 */
-	public function findBy($paramName = null, $paramValue = null)
+	public function findBy($paramName = null, $paramValue = null, $notPaginated = true, $page = 1)
 	{
 		$this->table = 'theme t';
 
@@ -41,7 +43,13 @@ class Theme extends BaseModel
 			}
 		}
 
-		$themes = $this->select($fields, $where, [], $join);
+		if ($notPaginated) {
+			$limit = '';
+		} else {
+			$limit = $page - 1 . ', ' . $this->getLimit();
+		}
+
+		$themes = $this->select($fields, $where, [], $join, [], $limit);
 
 		return $themes;
 	}
