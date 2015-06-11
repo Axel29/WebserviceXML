@@ -5,7 +5,7 @@ $postFields = [
 	'role' => 'Test curl',
 ];
 
-$public_key = hash_hmac("sha256", '1' . 'axel.bouaziz@hotmail.fr' . time() . 'jfdljkhqepiyezh3893IYHnds', 'fdjfsdhfsdjfkn');
+$public_key = hash_hmac("sha256", '1' . 'axel.bouaziz@hotmail.fr' . time() . 'fdjfsdhfsdjfkn', 'jfdljkhqepiyezh3893IYHnds');
 
 $headers    = [
 	'PUB: ' . $public_key,

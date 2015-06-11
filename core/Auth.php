@@ -25,7 +25,7 @@ class Auth
 
 		// echo '<pre>';var_dump($user[0]);
 		if ($user) {
-			$privateKey    = hash_hmac("sha256", $user[0]['idUser'] . $user[0]['email'] . time() . $user[0]['apiSecret'], $user[0]['apiKey']);
+			$privateKey    = hash_hmac("sha256", $user[0]['idUser'] . $user[0]['email'] . time() . $user[0]['apiKey'], $user[0]['apiSecret']);
 
 			if ($user[0]['email'] == $email && $publicKey == $privateKey) {
 				if ($user[0]['idRole'] == Role::USER_ROLE && $requestMethod != 'GET') {
