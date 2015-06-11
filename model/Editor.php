@@ -6,10 +6,10 @@ class Editor extends BaseModel
 	 *
 	 * @param string $paramName Param's name to find by
 	 * @param mixed $paramValue Param's value
-	 * @param int $page Current page
+	 * @param bool $notPaginated Should paginate or not
 	 * @return array $editors Collection of Editors
 	 */
-	public function findBy($paramName = null, $paramValue = null, $page = null)
+	public function findBy($paramName = null, $paramValue = null, $notPaginated = true, $page = 1)
 	{
 		$this->table = 'editor e';
 
@@ -18,10 +18,10 @@ class Editor extends BaseModel
 		$where = [];
 		$join  = [];
 
-		if ($page) {
-			$limit = $page - 1 . ', ' . $this->getLimit();
-		} else {
+		if ($notPaginated) {
 			$limit = '';
+		} else {
+			$limit = $page - 1 . ', ' . $this->getLimit();
 		}
 
 		if ($paramName && $paramValue) {
@@ -52,27 +52,6 @@ class Editor extends BaseModel
 		$editors = $this->select($fields, $where, [], $join, [], $limit);
 
 		return $editors;
-	}
-
-	/**
-	 * Checks if a page exists
-	 *
-	 * @return bool
-	 */
-	public function pageExists($page)
-	{
-		$pdo = $this->db;
-		$stmt = $pdo->prepare("SELECT COUNT(*) as 'total'
-							   FROM `editor`
-							   LIMIT " . $page - 1 . ", " . $this->getLimit() . ";");
-		$stmt->execute();
-
-		$result = $stmt->fetch();
-		if ($result) {
-			return $result['total'];
-		} else {
-			return false;
-		}
 	}
 
 	/**
