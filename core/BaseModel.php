@@ -339,4 +339,30 @@ class BaseModel
 	{
 		return (int)'1';
 	}
+
+	/**
+	 * Checks if a page exists
+	 *
+	 * @param int $page Page to test
+	 * @param string $tableName Table's name to select
+	 * @return bool
+	 */
+	public function pageExists($page, $tableName)
+	{
+		$pdo             = $this->db;
+		$messagesPerPage = $this->getLimit();
+		$firstEntry      = ($page - 1) * $messagesPerPage;
+		$field           = 'id' . ucfirst($tableName);
+		$stmt            = $pdo->prepare("SELECT `" . $field . "`
+										  FROM `" . $tableName . "`
+							   		 	  LIMIT " . $firstEntry . ", " . $messagesPerPage . ";");
+		$stmt->execute();
+
+		$result = $stmt->fetch();
+		if ($result) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 }
