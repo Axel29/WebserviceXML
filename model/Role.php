@@ -9,9 +9,11 @@ class Role extends BaseModel
 	 *
 	 * @param string $paramName Param's name to find by
 	 * @param mixed $paramValue Param's value
+	 * @param bool $notPaginated Should paginate or not
+	 * @param int $page Current page
 	 * @return array $roles Collection of Roles
 	 */
-	public function findBy($paramName = null, $paramValue = null)
+	public function findBy($paramName = null, $paramValue = null, $notPaginated = true, $page = 1)
 	{
 		$this->table = 'role';
 
@@ -24,7 +26,13 @@ class Role extends BaseModel
 			];
 		}
 
-		$roles = $this->select($fields, $where);
+		if ($notPaginated) {
+			$limit = '';
+		} else {
+			$limit = $page - 1 . ', ' . $this->getLimit();
+		}
+
+		$roles = $this->select($fields, $where, [], [], [], $limit);
 
 		return $roles;
 	}
