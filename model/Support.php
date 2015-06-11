@@ -6,9 +6,11 @@ class Support extends BaseModel
 	 *
 	 * @param string $paramName Param's name to find by
 	 * @param mixed $paramValue Param's value
+	 * @param bool $notPaginated Should paginate or not
+	 * @param int $page Current page
 	 * @return array $supports Collection of supports
 	 */
-	public function findBy($paramName = null, $paramValue = null)
+	public function findBy($paramName = null, $paramValue = null, $notPaginated = true, $page = 1)
 	{
 		$this->table = 'support s';
 		
@@ -44,7 +46,13 @@ class Support extends BaseModel
 			}
 		}
 
-		$supports = $this->select($fields, $where, [], $join);
+		if ($notPaginated) {
+			$limit = '';
+		} else {
+			$limit = $page - 1 . ', ' . $this->getLimit();
+		}
+
+		$supports = $this->select($fields, $where, [], $join, [], $limit);
 
 		return $supports;
 	}
