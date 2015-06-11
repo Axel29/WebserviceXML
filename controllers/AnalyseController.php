@@ -131,7 +131,7 @@ class AnalyseController extends CRUD
 		}
 
 		if (!$this->getId()) {
-			$nextPrevPagesUrls = $this->getNextPrevPages('Editor');
+			$nextPrevPagesUrls = $this->getNextPrevPages('Analyse');
 			$list->addChild('prev', $nextPrevPagesUrls['prev']);
 			$list->addChild('next', $nextPrevPagesUrls['next']);
 		}
