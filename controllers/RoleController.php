@@ -98,24 +98,7 @@ class RoleController extends CRUD
 	 */
 	public function delete()
 	{		
-		// Security check for the request method
-		if (!$this->getRequestMethod() == 'DELETE') {
-			$this->exitError(405, 'Only DELETE methods are allowed.');
-			return;
-		}
-
-		if (!$this->getId()) {
-			$this->exitError(400, "The 'id' must be specified.");
-		}
-
-		$roleModel   = new Role();
-		$deletedRole = $roleModel->deleteRole($this->getId());
-
-        if ($deletedRole) {
-            $this->sendStatus(204);
-        } else {
-            $this->exitError(400, 'An error has occured. Please try again.');
-        }
+		$this->exitError(405, 'Roles deletion is not allowed.');
 	}
 
 	/**

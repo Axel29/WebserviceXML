@@ -115,30 +115,4 @@ class Role extends BaseModel
 			return false;
 		}
 	}
-
-	/**
-	 * Delete an role by it's ID
-	 *
-	 * @param int $idRole Role's ID
-	 * @return int|bool Number of affected rows or false if an error has occurred
-	 */
-	public function deleteRole($idRole)
-	{
-		try {
-			$pdo  = $this->db;
-			$stmt = $pdo->prepare('DELETE FROM `role` WHERE `idRole` = :idRole;');
-			$stmt->bindParam(':idRole', $idRole, PDO::PARAM_INT);
-			$stmt->execute();
-
-			/*
-			 * Check that the update was performed on an existing role.
-			 * MySQL won't send any error as, regarding to him, the request is correct, so we have to handle it manually.
-			 */
-			return $stmt->rowCount();
-		} catch (PDOException $e) {
-			return false;
-		} catch (Exception $e) {
-			return false;
-		}
-	}
 }
