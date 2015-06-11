@@ -81,14 +81,15 @@ class User extends BaseModel
 					$pdo  = $this->db;
 				}
 
-				$apiKey    = uniqid();
-				$apiSecret = substr(md5(uniqid() . uniqid()), 0, 15);
+				$apiKey            = uniqid();
+				$apiSecret         = substr(md5(uniqid() . uniqid()), 0, 15);
+				$encryptedPassword = md5($datas['password']);
 
 				$stmt      = $pdo->prepare('INSERT INTO `user` (`email`, `username`, `password`, `apiKey`, `apiSecret`, `role`) 
 									   		VALUES (:email, :username, :password, :apiKey, :apiSecret, :role);');
 				$stmt->bindParam(':email', $datas['email'], PDO::PARAM_STR);
 				$stmt->bindParam(':username', $datas['username'], PDO::PARAM_STR);
-				$stmt->bindParam(':password', $datas['password'], PDO::PARAM_STR);
+				$stmt->bindParam(':password', $encryptedPassword, PDO::PARAM_STR);
 				$stmt->bindParam(':apiKey', $apiKey, PDO::PARAM_STR);
 				$stmt->bindParam(':apiSecret', $apiSecret, PDO::PARAM_STR);
 				$stmt->bindParam(':role', $datas['role'], PDO::PARAM_INT);
@@ -128,10 +129,12 @@ class User extends BaseModel
 
 			$queryString .= ' WHERE `idUser` =  :idUser;';
 
+			$encryptedPassword = md5($datas['password']);
+
 			$stmt = $pdo->prepare($queryString);
 			$stmt->bindParam(':email', $datas['email'], PDO::PARAM_STR);
 			$stmt->bindParam(':username', $datas['username'], PDO::PARAM_STR);
-			$stmt->bindParam(':password', $datas['password'], PDO::PARAM_STR);
+			$stmt->bindParam(':password', $encryptedPassword, PDO::PARAM_STR);
 			if (isset($datas['role'])) {
 				$stmt->bindParam(':role', $datas['role'], PDO::PARAM_INT);
 			}
