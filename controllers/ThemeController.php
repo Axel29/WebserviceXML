@@ -28,9 +28,9 @@ class ThemeController extends CRUD
 			}
 		} else {
 			if ($this->getId()) {
-				$this->exitError(400, "The ID you specified can't be found.");
+				$this->exitError(404, "The ID you specified can't be found.");
 			} else {
-				$this->exitError(400, "The page you specified doesn't exist.");
+				$this->exitError(404, "The page you specified doesn't exist.");
 			}
 		}
 	}
