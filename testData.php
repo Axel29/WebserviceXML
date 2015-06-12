@@ -609,7 +609,6 @@ $_PUT = [
 	'genders' => [
 		[
 			'idGender' => '1',
-			'gender'   => 'Genre PUT n°1',
 		],
 		[
 			'gender'   => 'Genre PUT n°2',
@@ -619,7 +618,6 @@ $_PUT = [
 	'editors' => [
 		[
 			'idEditor' => '1',
-			'editor'   => 'Editeur PUT n°1',
 		],
 		[
 			'editor'   => 'Editeur PUT n°2',
@@ -628,7 +626,6 @@ $_PUT = [
 	'themes' => [
 		[
 			'idTheme' => '1',
-			'theme'   => 'Thème PUT n°1',
 		],
 		[
 			'theme'   => 'Thème PUT n°2',
@@ -769,7 +766,6 @@ $_PUT = [
 	'languages' => [
 		[
 			'idLanguage' => '1',
-			'language'   => 'Langage PUT n°1',
 		],
 		[
 			'language'   => 'Langage PUT n°2',
