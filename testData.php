@@ -218,7 +218,6 @@ $_PUT = [
 		[
 			// Update the association
 			'idMode' => '1',
-			'mode'   => 'MODE mode 1 PUT',
 		],
 		[
 			// Insert a new mode and associate it
@@ -231,7 +230,6 @@ $_PUT = [
 		[
 			// Update the association
 			'idSupport' => '1',
-			'support'   => 'SUPPORT support 1 PUT',
 		],
 		[
 			// Insert a new support and associate it

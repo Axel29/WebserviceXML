@@ -137,17 +137,23 @@ class GameController extends CRUD
 
 		// Check every required fields for genders
 		foreach ($_PUT['genders'] as $gender) {
-			$this->checkRequiredFields(Gender::getRequiredFields(), $gender);
+			$requiredFields = Gender::getRequiredFields();
+			if (isset($gender['idGender'])) unset($requiredFields['gender']);
+			$this->checkRequiredFields($requiredFields, $gender);
 		}
 		
 		// Check every required fields for editors
 		foreach ($_PUT['editors'] as $editor) {
-			$this->checkRequiredFields(Editor::getRequiredFields(), $editor);
+			$requiredFields = Editor::getRequiredFields();
+			if (isset($editor['idEditor'])) unset($requiredFields['editor']);
+			$this->checkRequiredFields($requiredFields, $editor);
 		}
 		
 		// Check every required fields for themes
 		foreach ($_PUT['themes'] as $theme) {
-			$this->checkRequiredFields(Theme::getRequiredFields(), $theme);
+			$requiredFields = Theme::getRequiredFields();
+			if (isset($theme['idTheme'])) unset($requiredFields['theme']);
+			$this->checkRequiredFields($requiredFields, $theme);
 		}
 
 		// Check every required fields for console
@@ -230,7 +236,9 @@ class GameController extends CRUD
 
 		// Check every required fields for languages
 		foreach ($_PUT['languages'] as $language) {
-			$this->checkRequiredFields(Language::getRequiredFields(), $language);
+			$requiredFields = Language::getRequiredFields();
+			if (isset($language['idTheme'])) unset($requiredFields['language']);
+			$this->checkRequiredFields($requiredFields, $language);
 		}
 
 		// Check every required fields for articles

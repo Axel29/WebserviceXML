@@ -146,18 +146,166 @@ class ConsoleController extends CRUD
 		if (!$this->getId()) {
 			$this->exitError(400, "The 'id' must be specified.");
 		}
-
+$_PUT = [
+	'game_idGame'    => '1',
+	'business_model' => 'CONSOLE business_model PUT',
+	'pegi'           => 'CONSOLE pegi PUT',
+	'modes'          => [
+		[
+			// Update the association
+			'idMode' => '1',
+			// 'mode'   => 'MODE mode 1 PUT',
+		],
+		[
+			// Insert a new mode and associate it
+			'mode'   => 'MODE mode 2 PUT',
+		],
+	],
+	'cover_front' => 'COVER FRONT PUT',
+	'cover_back'  => 'COVER BACK PUT',
+	'supports'    => [
+		[
+			// Update the association
+			'idSupport' => '1',
+			// 'support'   => 'SUPPORT support 1 PUT',
+		],
+		[
+			// Insert a new support and associate it
+			'support'   => 'SUPPORT support 2 PUT',
+		],
+	],
+	'release'  => '2000-01-01',
+	'editions' => [
+		[
+			'idEdition' => '1',
+			'name'      => 'EDITION name 1 PUT',
+			'content'   => 'EDITION content 1 PUT',
+			'shops'     => [
+				[
+					'idShop' => '1',
+					'url'    => 'SHOP url 1 PUT',
+					'name'   => 'SHOP name 1 PUT',
+					'price'  => '1.10',
+					'devise' => '€',
+				],
+				[
+					'idShop' => '2',
+					'url'    => 'SHOP url 2 PUT',
+					'name'   => 'SHOP name 2 PUT',
+					'price'  => '2.20',
+					'devise' => '$',
+				],
+			],
+		],
+		[
+			'idEdition' => '2',
+			'name'      => 'EDITION name 2 PUT',
+			'content'   => 'EDITION content 2 PUT',
+			'shops'     => [
+				[
+					'idShop' => '3',
+					'url'    => 'SHOP url 3 PUT',
+					'name'   => 'SHOP name 3 PUT',
+					'price'  => '3.30',
+					'devise' => '€',
+				],
+				[
+					'idShop' => '4',	
+					'url'    => 'SHOP url 4 PUT',
+					'name'   => 'SHOP name 4 PUT',
+					'price'  => '4.40',
+					'devise' => '$',
+				],
+			],
+		],
+	],
+	'name'        => 'CONSOLE name PUT',
+	'description' => 'CONSOLE description PUT',
+	'dlcs'        => [
+		[
+			'idDlc'			    => '1',
+			'title'             => 'DLC title 1 PUT',
+			'description'       => 'DLC description 1 PUT',
+			'price'             => '1.10',
+			'devise'            => '€',
+		],
+		[
+			'idDlc'			    => '2',
+			'title'             => 'DLC title 2 PUT',
+			'description'       => 'DLC description 2 PUT',
+			'price'             => '2.20',
+			'devise'            => '$',
+		],
+	],
+	'configs' => [
+		[
+			'idConfig'			=> '1',
+			'config'            => 'CONFIG config 1 PUT',
+			'type'              => 'CONFIG type 1 PUT',
+		],
+		[
+			'idConfig'			=> '2',
+			'config'            => 'CONFIG config 2 PUT',
+			'type'              => 'CONFIG type 2 PUT',
+		],
+	],
+	'tests' => [
+		[
+			'idTest'            => '1',
+			'report'            => 'TEST report PUT',
+			'date'              => '2001-01-01 00:00:00',
+			'user_name'         => 'TEST user_name PUT',
+			'note'              => '1',
+			'comments'          => [
+				[
+					'idComment'   => '1',
+					'date'        => '2001-01-01 01:01:01',
+					'user_name'   => 'COMMENT user_name 1 PUT',
+					'note'        => '1',
+					'like'        => '1',
+					'dislike'     => '1',
+					'text'        => 'COMMENT text 1 PUT',
+				],
+				[
+					'idComment'   => '2',
+					'date'        => '2002-02-02 02:02:02',
+					'user_name'   => 'COMMENT user_name 2 PUT',
+					'note'        => '2',
+					'like'        => '2',
+					'dislike'     => '2',
+					'text'        => 'COMMENT text 2 PUT',
+				],
+			],
+			'analyses' => [
+				[
+					'idAnalyse'   => '1',
+					'analyse'     => 'ANALYSE analyse 1 PUT',
+					'type'        => 'ANALYSE type 1 PUT',
+				],
+				[
+					'idAnalyse'   => '2',
+					'analyse'     => 'ANALYSE analyse 2 PUT',
+					'type'        => 'ANALYSE type 2 PUT',
+				],
+			],
+		],
+	],
+];
 		// Check every required field
 		$this->checkRequiredFields(Console::getRequiredFields(), $_PUT, 'Y-m-d');
 
 		// Check every required fields for modes
 		foreach ($_PUT['modes'] as $mode) {
-			$this->checkRequiredFields(Mode::getRequiredFields(), $mode);
+			$requiredFields = Mode::getRequiredFields();
+			if (isset($mode['idMode'])) unset($requiredFields['mode']);
+			$this->checkRequiredFields($requiredFields, $mode);
 		}
 
 		// Check every required fields for supports
 		foreach ($_PUT['supports'] as $support) {
-			$this->checkRequiredFields(Support::getRequiredFields(), $support);
+			$requiredFields = Support::getRequiredFields();
+			if (isset($support['idSupport'])) unset($requiredFields['support']);
+			$this->checkRequiredFields($requiredFields, $support);
 		}
 
 		// Check every required fields for editions
