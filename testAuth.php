@@ -1,9 +1,6 @@
 <?php
-$urlSearch = 'http://ws-xml.localhost.com/role';
+$urlSearch = 'http://apixml.josealbea.com/';
 		
-$postFields = [
-	'role' => 'Test curl',
-];
 
 $public_key = hash_hmac("sha256", '1' . 'axel.bouaziz@hotmail.fr' . time() . 'fdjfsdhfsdjfkn', 'jfdljkhqepiyezh3893IYHnds');
 
@@ -12,8 +9,6 @@ $headers    = [
 	'USEREMAIL: axel.bouaziz@hotmail.fr',
 	'APIKEY: fdjfsdhfsdjfkn',
 ];
-
-$dataSearch = http_build_query($postFields);
 
 $userAgent  = "Mozilla/5.0";
 $referer    = 'http://ws-xml.localhost.com/role';
@@ -27,5 +22,8 @@ curl_setopt($curlSearch, CURLOPT_HTTPHEADER, $headers);
 curl_setopt($curlSearch, CURLOPT_RETURNTRANSFER, 1);
 
 $postXML = curl_exec($curlSearch);
+$dom = new DomDocument('1.0', 'UTF-8');
+$xml = $dom->load($postXML);
+header("Content-type: text/xml; charset=utf-8");
 echo($postXML);
 curl_close($curlSearch);
