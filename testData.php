@@ -640,10 +640,8 @@ $_PUT = [
 			'modes'          => [
 				[
 					'idMode' => '1',
-					'mode'   => 'Mode PUT n°1',
 				],
 				[
-					'idMode' => '2',
 					'mode'   => 'Mode PUT n°2',
 				],
 			],
@@ -652,10 +650,8 @@ $_PUT = [
 			'supports'    => [
 				[
 					'idSupport' => '1',
-					'support'   => 'Support PUT n°1',
 				],
 				[
-					'idSupport' => '2',
 					'support'   => 'Support PUT n°2',
 				],
 			],
