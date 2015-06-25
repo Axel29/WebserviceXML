@@ -28,7 +28,7 @@ class Auth
 		$controller = $parsedUri['controller'];
 
 		if ($user) {
-			$privateKey    = hash_hmac("sha256", $user[0]['idUser'] . $user[0]['email'] . time() . $user[0]['apiKey'], $user[0]['apiSecret']);
+			$privateKey    = hash_hmac("sha256", $user[0]['idUser'] . $user[0]['email'] /*. time() */ . $user[0]['apiKey'], $user[0]['apiSecret']);
 
 			if ($user[0]['email'] == $email && $publicKey == $privateKey) {
 				// Forbid simple users to access "user" and "role" pages
