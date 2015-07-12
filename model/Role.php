@@ -29,7 +29,9 @@ class Role extends BaseModel
 		if ($notPaginated) {
 			$limit = '';
 		} else {
-			$limit = $page - 1 . ', ' . $this->getLimit();
+			$entriesPerPage = $this->getLimit();
+			$firstEntry     = ($page - 1) * $entriesPerPage;
+			$limit          = $firstEntry . ', ' . $entriesPerPage;
 		}
 
 		$roles = $this->select($fields, $where, [], [], [], $limit);

@@ -31,7 +31,9 @@ class Edition extends BaseModel
 		if ($notPaginated) {
 			$limit = '';
 		} else {
-			$limit = $page - 1 . ', ' . $this->getLimit();
+			$entriesPerPage = $this->getLimit();
+			$firstEntry     = ($page - 1) * $entriesPerPage;
+			$limit          = $firstEntry . ', ' . $this->getLimit();
 		}
 
 		$editions = $this->select($fields, $where, [], [], [], $limit);

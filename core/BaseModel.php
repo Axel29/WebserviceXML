@@ -350,12 +350,12 @@ class BaseModel
 	public function pageExists($page, $tableName)
 	{
 		$pdo             = $this->db;
-		$messagesPerPage = $this->getLimit();
-		$firstEntry      = ($page - 1) * $messagesPerPage;
+		$entriesPerPage  = $this->getLimit();
+		$firstEntry      = ($page - 1) * $entriesPerPage;
 		$field           = 'id' . ucfirst($tableName);
 		$stmt            = $pdo->prepare("SELECT `" . $field . "`
 										  FROM `" . $tableName . "`
-							   		 	  LIMIT " . $firstEntry . ", " . $messagesPerPage . ";");
+							   		 	  LIMIT " . $firstEntry . ", " . $entriesPerPage . ";");
 		$stmt->execute();
 
 		$result = $stmt->fetch();
