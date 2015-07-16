@@ -264,7 +264,7 @@ class Game extends BaseModel
 			 */
 			$editorModel = new Editor();
 
-			// Stock every mode IDs to remove deleted ones from game_has_gender table
+			// Stock every gender IDs to remove deleted ones from game_has_gender table
 			$editorIds = [];
 			foreach ($datas['editors'] as $editor) {
 				if (isset($editor['idEditor'])) {
@@ -476,9 +476,9 @@ class Game extends BaseModel
 			$stmt = $pdo->prepare('DELETE 
 								   FROM `game` 
 								   WHERE `idGame` = :idGame;');
-			$stmt->bindParam(':idGame', $idConsole, PDO::PARAM_INT);
+			$stmt->bindParam(':idGame', $idGame, PDO::PARAM_INT);
 			$stmt->execute();
-
+			
 			/*
 			 * Check that the update was performed on an existing game.
 			 * MySQL won't send any error as, regarding to him, the request is correct, so we have to handle it manually.

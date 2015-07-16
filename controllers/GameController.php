@@ -164,12 +164,16 @@ class GameController extends CRUD
 
 			// Check every required fields for modes
 			foreach ($console['modes'] as $mode) {
-				$this->checkRequiredFields(Mode::getRequiredFields(), $mode);
+				$requiredFields = Mode::getRequiredFields();
+				if (isset($mode['idMode'])) unset($requiredFields['mode']);
+				$this->checkRequiredFields($requiredFields, $mode);
 			}
 
 			// Check every required fields for supports
 			foreach ($console['supports'] as $support) {
-				$this->checkRequiredFields(Support::getRequiredFields(), $support);
+				$requiredFields = Support::getRequiredFields();
+				if (isset($support['idSupport'])) unset($requiredFields['support']);
+				$this->checkRequiredFields($requiredFields, $support);
 			}
 
 			// Check every required fields for editions
@@ -237,7 +241,7 @@ class GameController extends CRUD
 		// Check every required fields for languages
 		foreach ($_PUT['languages'] as $language) {
 			$requiredFields = Language::getRequiredFields();
-			if (isset($language['idTheme'])) unset($requiredFields['language']);
+			if (isset($language['idLanguage'])) unset($requiredFields['language']);
 			$this->checkRequiredFields($requiredFields, $language);
 		}
 
